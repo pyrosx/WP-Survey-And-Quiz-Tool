@@ -73,11 +73,12 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed var dump displaying when displaying certain surveys/polls
 * Fixed duplication of quiz/poll/survey not assigning correct sections to questions
 * Fixed scripts/styles not loading on <= WP 3.2.1
-* Fixed several PHP notices
+* Fixed many PHP notices
 * Fixed the survey_results shortcode so it is positioned correctly in a post/page
 * Fixed default dropdown answer
 * Fixed bug when using custom permalinks and viewing the quiz on Firefox
 * Added ability to show quiz review only on fail
+* Added success rate to questions
 
 = 2.10.2 =
 
