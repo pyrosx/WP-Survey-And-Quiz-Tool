@@ -5,6 +5,10 @@
 
 	<?php require WPSQT_DIR.'pages/admin/misc/navbar.php'; ?>
 
+	<form action="" method="post">
+		<input type="submit" name="deleteall" value="Delete All Results" />
+	</form>
+
 	<?php require 'result.total.script.php'; ?>
 
 </div>

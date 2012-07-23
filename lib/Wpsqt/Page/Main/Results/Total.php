@@ -14,6 +14,10 @@ class Wpsqt_Page_Main_Results_Total extends Wpsqt_Page {
 	public function process(){
 		
 		global $wpdb;
+
+		if (isset($_POST['deleteall'])) {
+			Wpsqt_System::deleteAllResults($_GET['id']);
+		}
 		
 		$result = $wpdb->get_row(
 					$wpdb->prepare("SELECT * FROM `".WPSQT_TABLE_SURVEY_CACHE."` WHERE item_id = %d",
