@@ -74,12 +74,13 @@ $hardPoints = 0;
 				<h4><?php echo "<u>"; print stripslashes($questionArray['name']); echo "</u>"; ?></h4>
 				<?php if ( ucfirst($questionArray['type']) == 'Multiple'
 						|| ucfirst($questionArray['type']) == 'Single'  ){
+						$addPoints = (!empty($questionArray['points']) ? intval($questionArray['points']) : 1);
 						if ( isset($section['answers'][$questionId]['mark']) 
 						  && $section['answers'][$questionId]['mark'] == 'correct' ){
-							$currentPoints++;
+							$currentPoints += $addPoints;
 							$hardPoints++;
 						}
-						$totalPoints++;	
+						$totalPoints += $addPoints;	
 					?>
 					<div style="margin-left: 35px; margin-bottom: 40px;">
 					<b>Answers (Correct are marked green)</b>
