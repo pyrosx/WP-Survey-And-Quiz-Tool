@@ -110,8 +110,9 @@ var saveOrder = function() {
                     $correct_answer = 0;
                     
                     $RESULTS_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM ".WPSQT_TABLE_RESULTS ) );
+                    $lastID = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM ".WPSQT_TABLE_RESULTS." ORDER BY `id` DESC LIMIT 0,1" ) );
                     
-                    for($i = 1; $i <= $RESULTS_count*2; $i++){
+                    for($i = 1; $i <= $lastID; $i++){
                     
                         $rawResult = $wpdb->get_row(
                                         $wpdb->prepare("SELECT * FROM ".WPSQT_TABLE_RESULTS." WHERE id = $i"),ARRAY_A);
@@ -119,12 +120,13 @@ var saveOrder = function() {
                         $rawResult['sections'] = unserialize($rawResult['sections']);
                         
                         foreach((array)$rawResult['sections'] as $result_sections){
-                            if(isset($result_sections['answers'][$question['id']]['mark']) && $result_sections['answers'][$question['id']]['mark'] == 'correct') $correct_answer++;
+                            if($result_sections['answers'][$question['id']]['mark'] == 'correct') $correct_answer++;
                         }
                     }
                     $success_rate = number_format(($correct_answer/$RESULTS_count)*100, 0);
                     //echo ($success_rate);
                     echo ($success_rate<80 ? "<span style=\"color:red;\">$success_rate%</span>" : "<span style=\"color:green;\">$success_rate%</span>");
+                    echo 'Out of:' . $correct_answer .'/'. $RESULTS_count;
                     ?>
                 </td>
                 
