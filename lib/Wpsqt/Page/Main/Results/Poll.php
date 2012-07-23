@@ -21,10 +21,16 @@ class Wpsqt_Page_Main_Results_Poll extends Wpsqt_Page_Main_Results {
 		foreach ($sections as $section) {
 			foreach ($section['questions'] as $question) {
 				$total = 0;
-				foreach($question['answers'] as $answer) {
-					$total += $answer['count'];
+				if (!empty($question['answers']) && is_array($question['answers'])) {
+					foreach($question['answers'] as $answer) {
+						$total += $answer['count'];
+					}
 				}
 				echo '<h3>'.$question['name'].'</h3>';
+				if ($question['type'] == 'Free Text') {
+					echo 'This question has free text answers which cannot be shown';
+					continue;
+				}
 				?>
 				<table class="widefat post fixed" cellspacing="0">
 				<thead>
