@@ -443,7 +443,7 @@ class Wpsqt_Core {
 				if ($question['type'] == 'Free Text') {
 					$uncachedResult = $wpdb->get_results(
 						$wpdb->prepare("SELECT * FROM `".WPSQT_TABLE_RESULTS."` WHERE item_id = %d",
-									   array($_GET['id'])), ARRAY_A
+									   array($surveyId)), ARRAY_A
 									);
 					$uncachedresults = $uncachedResult;
 					// Storing all the IDs for free text questions
