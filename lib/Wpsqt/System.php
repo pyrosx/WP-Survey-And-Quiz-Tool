@@ -461,5 +461,18 @@ class Wpsqt_System {
 		return apply_filters('wpsqt_survey_question_types', $questions );
 		
 	}
+
+	/**
+	 * Deletes all results from a survey/poll
+	 *
+	 */
+	public static function deleteAllResults($id) {
+		global $wpdb;
+
+		$wpdb->query($wpdb->prepare("DELETE FROM `".WPSQT_TABLE_SURVEY_CACHE."` WHERE item_id = %d",
+							array($id)));
+		$wpdb->query($wpdb->prepare("DELETE FROM `".WPSQT_TABLE_RESULTS."` WHERE item_id = %d",
+							array($id)));
+	}
 	
 }
