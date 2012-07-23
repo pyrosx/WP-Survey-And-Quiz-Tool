@@ -5,6 +5,10 @@
 	<h2>WP Survey And Quiz Tool - Results</h2>
 		
 	<?php require WPSQT_DIR.'pages/admin/misc/navbar.php'; ?>	
+
+	<form action="" method="post">
+		<input type="submit" name="deleteall" value="Delete All Results" />
+	</form>
 	
 	<?php if ( isset($message) ) { ?>
 	<div class="updated">

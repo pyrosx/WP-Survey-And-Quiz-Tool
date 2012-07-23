@@ -5,6 +5,11 @@ require_once WPSQT_DIR.'lib/Wpsqt/Page/Main/Results.php';
 class Wpsqt_Page_Main_Results_Poll extends Wpsqt_Page_Main_Results {
 	
 	public function init(){
+
+		if (isset($_POST['deleteall'])) {
+			Wpsqt_System::deleteAllResults($_GET['id']);
+		}
+
 		$this->_pageView = 'admin/poll/result.php';
 	}
 
@@ -17,6 +22,11 @@ class Wpsqt_Page_Main_Results_Poll extends Wpsqt_Page_Main_Results {
 								);
 		
 		$sections = unserialize($results['sections']);
+
+		if (empty($sections) || !is_array($sections)) {
+			echo 'There are no results for this poll yet';
+			return;
+		}
 
 		foreach ($sections as $section) {
 			foreach ($section['questions'] as $question) {

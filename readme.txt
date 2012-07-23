@@ -80,6 +80,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed question points when assigned more than one
 * Added ability to show quiz review only on fail
 * Added success rate to questions
+* Added ability to delete all results for poll/survey
 
 = 2.10.2 =
 
