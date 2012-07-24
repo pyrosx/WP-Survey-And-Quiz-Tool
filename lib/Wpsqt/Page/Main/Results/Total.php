@@ -26,15 +26,17 @@ class Wpsqt_Page_Main_Results_Total extends Wpsqt_Page {
 		$this->_pageVars['sections'] = unserialize($result['sections']);
 		
 		if (!empty($this->_pageVars['sections'])) {
-			foreach($this->_pageVars['sections'][0]['questions'] as $questionKey => $question) {
-				if ($question['type'] == 'Free Text') {
-					$uncachedResult = $wpdb->get_results(
-						$wpdb->prepare("SELECT * FROM `".WPSQT_TABLE_RESULTS."` WHERE item_id = %d",
-									   array($_GET['id'])), ARRAY_A
-									);
-					$this->_pageVars['uncachedresults'] = $uncachedResult;
-					// Storing all the IDs for free text questions
-					$this->_pageVars['freetextq'][] = $questionKey;
+			foreach($this->_pageVars['sections'] as $section) {
+				foreach($section['questions'] as $questionKey => $question) {
+					if ($question['type'] == 'Free Text') {
+						$uncachedResult = $wpdb->get_results(
+							$wpdb->prepare("SELECT * FROM `".WPSQT_TABLE_RESULTS."` WHERE item_id = %d",
+										   array($_GET['id'])), ARRAY_A
+										);
+						$this->_pageVars['uncachedresults'] = $uncachedResult;
+						// Storing all the IDs for free text questions
+						$this->_pageVars['freetextq'][] = $questionKey;
+					}
 				}
 			}
 		}

@@ -3,7 +3,7 @@ Contributors: Fubra,Backie,olliea95
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=99WUGVV4HY5ZE&lc=GB&item_name=CATN%20Plugins&item_number=catn&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted 
 Tags: Quiz,test,exam,survey,results,email,quizzes,charts,google charts,wpsqt,tool,poll,polling,polls
 Requires at least: 3.1
-Tested up to: 3.3-beta2
+Tested up to: 3.4.1
 Stable tag: 2.11
 A highly customisable Quiz, Survey and Poll plugin to which allows for unlimited questions and sections.
 
@@ -65,6 +65,10 @@ Any further issues then feel free to create a thread on the <a href="http://word
 
 == ChangeLog ==
 
+= 2.11.1 =
+
+* Fixed survey total results not showing free text answers on some sections
+* Added the shortcode for the quiz/survey/poll on edit page
 = 2.11 =
 
 * Fixed poll results page when limited by cookie
