@@ -44,7 +44,7 @@
 					<tr>
 						<td>
 							<input type="hidden" name="sectionid[<?php echo $key; ?>]" value="<?php echo $data['id']; ?>" />
-							<input type="text" name="section_name[<?php echo $key; ?>]" value="<?php echo $data['name']; ?>" size="30" id="name_<?php echo $key; ?>" />
+							<input type="text" name="section_name[<?php echo $key; ?>]" value="<?php echo stripslashes($data['name']); ?>" size="30" id="name_<?php echo $key; ?>" />
 						</td>
 						<td>
 							<select name="difficulty[<?php echo $key; ?>]" id="difficulty_<?php echo $key; ?>">
