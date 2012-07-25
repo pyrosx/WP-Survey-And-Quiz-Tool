@@ -68,7 +68,9 @@ Any further issues then feel free to create a thread on the <a href="http://word
 = 2.11.1 =
 
 * Fixed survey total results not showing free text answers on some sections
+* Fixed division by zero error for question success rate
 * Added the shortcode for the quiz/survey/poll on edit page
+
 = 2.11 =
 
 * Fixed poll results page when limited by cookie

@@ -123,8 +123,11 @@ var saveOrder = function() {
                             if(isset($result_sections['answers'][$question['id']]['mark']) && ($result_sections['answers'][$question['id']]['mark'] == 'correct')) $correct_answer++;
                         }
                     }
-                    $success_rate = number_format(($correct_answer/$RESULTS_count)*100, 0);
-                    //echo ($success_rate);
+					if ($RESULTS_count > 0) {
+						$success_rate = number_format(($correct_answer/$RESULTS_count)*100, 0);
+					} else {
+						$success_rate = 0;
+					}
                     echo ($success_rate<80 ? "<span style=\"color:red;\">$success_rate%</span>" : "<span style=\"color:green;\">$success_rate%</span>");
                     ?>
                 </td>
