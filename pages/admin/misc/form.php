@@ -13,7 +13,7 @@
 						?>
 						<select id="<?php echo $name; ?>" name="<?php echo $name; ?>">
 							<?php foreach( $option["args"] as $arg ){ ?>
-							<option value="<?php echo $arg; ?>"<?php if ($option["value"] == $arg) { ?> selected="selected"<?php } ?>><?php echo $arg; ?></option>
+							<option value="<?php echo stripslashes($arg); ?>"<?php if ($option["value"] == $arg) { ?> selected="selected"<?php } ?>><?php echo stripslashes($arg); ?></option>
 							<?php } ?>
 						</select>
 						<?php

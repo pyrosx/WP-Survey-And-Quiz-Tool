@@ -69,6 +69,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 
 * Fixed survey total results not showing free text answers on some sections
 * Fixed division by zero error for question success rate
+* Fixed issue with section names that contained apostrophes
 * Added the shortcode for the quiz/survey/poll on edit page
 
 = 2.11 =
