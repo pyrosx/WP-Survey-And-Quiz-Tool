@@ -12,6 +12,46 @@ require_once WPSQT_DIR.'lib/Wpsqt/Tokens.php';
 class Wpsqt_Mail {
 	
 	/**
+	 * Sends the notification email to respondent
+	 *
+	 * @since 2.11.1
+	 */
+	private function _sendRespondentMail($address) {
+
+		$quizName = $_SESSION['wpsqt']['current_id'];
+		
+		$objTokens = Wpsqt_Tokens::getTokenObject();
+		$objTokens->setDefaultValues();
+
+		$emailMessage = $_SESSION['wpsqt'][$quizName]['details']['email_template'];
+		
+		if ( empty($emailMessage) ){
+			$emailMessage = get_option('wpsqt_email_template');
+		}
+		
+		if ( empty($emailMessage) ){
+			
+			$emailMessage  = 'There is a new result to view'.PHP_EOL.PHP_EOL;
+			$emailMessage .= 'Person Name : %USER_NAME%'.PHP_EOL;
+			$emailMessage .= 'Result can be viewed at %RESULT_VIEW_URL%'.PHP_EOL;
+			
+		}
+		
+		$emailMessage = $objTokens->doReplacement($emailMessage);
+									
+		$quizDetails = $_SESSION['wpsqt'][$quizName]['details'];
+		$emailTemplate = (empty($quizDetails['email_template'])) ? get_option('wpsqt_email_template'):$quizDetails['email_template'];
+		$fromEmail = ( get_option('wpsqt_from_email') ) ?  get_option('wpsqt_from_email') : get_option('admin_email');
+
+		$type = ucfirst($_SESSION['wpsqt'][$quizName]['details']['type']);
+		$blogname = get_bloginfo('name');
+		$emailSubject = $type.' Notification From '.$blogname;
+		$headers = 'From: '.$blogname.' <'.$fromEmail.'>' . "\r\n";
+
+		mail($address,$emailSubject,$emailMessage,$headers);
+	}
+
+	/**
 	 * Sends the notificatione mail.
 	 * 
 	 * @since 2.0
@@ -70,7 +110,7 @@ class Wpsqt_Mail {
 		
 		if ( isset($_SESSION['wpsqt'][$quizName]['details']['send_user']) 
 		  && $_SESSION['wpsqt'][$quizName]['details']['send_user'] == "yes" && isset($_SESSION['wpsqt'][$quizName]['person']['email']) ) {
-			$emailList[] = $_SESSION['wpsqt'][$quizName]['person']['email'];
+			self::_sendRespondentMail($_SESSION['wpsqt'][$quizName]['person']['email']);
 		}
 		
 		if ( $_SESSION['wpsqt'][$quizName]['details']['notificaton_type'] == 'instant' ){
