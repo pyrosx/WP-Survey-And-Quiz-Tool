@@ -1,6 +1,6 @@
 <div class="pre-content"></div>
 <div class="quiz">
-<h1><?php echo $_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['name']; ?></h1>
+<h1><?php echo stripslashes($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['name']); ?></h1>
 
 <?php if ( isset($_SESSION['wpsqt']['current_message']) ) { ?>
 	<p><?php echo $_SESSION['wpsqt']['current_message']; ?></p>
