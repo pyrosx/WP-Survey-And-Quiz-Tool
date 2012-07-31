@@ -41,6 +41,9 @@ foreach ( $_SESSION['wpsqt'][$quizName]['sections'] as $section ){ ?>
 					?>				
 					<b><u>Answer Given</u></b>
 					<p class="answer_given" style="background-color : #c0c0c0; border : 1px dashed black; padding : 5px;overflow:auto;height : 200px;"><?php if ( isset($section['answers'][$questionId]['given']) && is_array($section['answers'][$questionId]['given']) ){ echo nl2br(esc_html(stripslashes(current($section['answers'][$questionId]['given'])))); } ?></p>
+					<?php if (isset($questionArray['explanation'])) { ?>
+						<p class="wpsqt-answer-explanation"><?=$questionArray['explanation']?></p>
+					<?php } ?>
 					<?php if ( isset($questionArray['hint']) && $questionArray['hint'] != "" ) { ?>- <a href="#" class="show_hide_hint">Show/Hide Hint</a></p>
 					<div class="hint">
 						<h5>Hint</h5>
