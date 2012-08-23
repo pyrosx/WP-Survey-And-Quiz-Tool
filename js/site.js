@@ -4,6 +4,18 @@ jQuery(document).ready( function() {
 		jQuery(this).hide();
 		return false;
 	});
+	jQuery('.wpsqt-show-toggle').click( function() {
+		jQuery(this).siblings('.wpsqt-toggle-block').show();
+		jQuery(this).siblings('.wpsqt-hide-toggle').show();
+		jQuery(this).hide();
+		return false;
+	});
+	jQuery('.wpsqt-hide-toggle').click( function() {
+		jQuery(this).siblings('.wpsqt-toggle-block').hide();
+		jQuery(this).siblings('.wpsqt-show-toggle').show();
+		jQuery(this).hide();
+		return false;
+	});
 	jQuery('.wpst_question input').click( function() {
 		console.log();
 		var explanationText = jQuery(this).parents('.wpst_question').children('.wpsqt-answer-explanation:hidden');

@@ -48,7 +48,9 @@ class Wpsqt_Tokens {
 						   ->addToken("USER_AGENT", "The user agent of the user who has taken the quiz or survey.")
 						   ->addToken("USER_EMAIL", "The email address of the user who has taken the quiz or survey.")
 						   ->addToken("USER_FNAME", "The first name of the user")
-						   ->addToken("USER_LNAME", "The last name of the user");
+						   ->addToken("USER_LNAME", "The last name of the user")
+						   ->addToken("TB_B", "Toggle block of information after this tag") 
+						   ->addToken("TB_E", "End of block of information to be toggled"); 
 			
 		}
 		
@@ -144,6 +146,9 @@ class Wpsqt_Tokens {
 		$this->setTokenValue('USER_NAME'   , ( isset($_SESSION['wpsqt'][$quizName]['person']['name']) ) ? $_SESSION['wpsqt'][$quizName]['person']['name'] : 'Anonymous User');
 		$this->setTokenValue('USER_FNAME'   , ( isset($_SESSION['wpsqt'][$quizName]['person']['fname']) ) ? $_SESSION['wpsqt'][$quizName]['person']['fname'] : 'Anonymous');
 		$this->setTokenValue('USER_LNAME'   , ( isset($_SESSION['wpsqt'][$quizName]['person']['lname']) ) ? $_SESSION['wpsqt'][$quizName]['person']['lname'] : 'User');
+		// Toggle a block of information
+		$this->setTokenValue('TB_B'   , '<div class="wpsqt-toggle"><div class="wpsqt-show-toggle"> <a href="#">[ '.__('More').' >> ]</a></div><div class="wpsqt-toggle-block" style="display:none;">');
+		$this->setTokenValue('TB_E'   , '</div><div class="wpsqt-hide-toggle" style="display:none;"><a href="#">[ << '.__('Less').']</a></div></div>' );
 		
 		apply_filters("wpsqt_set_token_values", $this);
 		
