@@ -58,9 +58,10 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 				$objTokens->setDefaultValues();
 				//	- replace the tokens
 				$explanation = $objTokens->doReplacement( $question['explanation'] );
-				
-				echo '<a href="#" class="wpsqt-show-answer" style="display: none;">Show answer</a>';
-				echo '<div class="wpsqt-answer-explanation" style="display: none;">'.nl2br(stripslashes($explanation)).'</div>';
+				if ($question['explanation_onlyatfinish'] !== "yes" ) { 
+					echo '<a href="#" class="wpsqt-show-answer" style="display: none;">Show answer</a>';
+					echo '<div class="wpsqt-answer-explanation" style="display: none;">'.nl2br(stripslashes($explanation)).'</div>';
+				}
 			} ?>
 			
 	</div>
