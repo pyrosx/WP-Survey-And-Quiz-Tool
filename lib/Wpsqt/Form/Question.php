@@ -41,7 +41,7 @@ class Wpsqt_Form_Question extends Wpsqt_Form {
 			$typeHelpText .= "<strong>".$type."</strong> ".$text."<br />";
 		}
 		
-		$this->addOption("wpsqt_name", "Question", "text", $options['question'], "The text for the question (the actual question)." )
+		$this->addOption("wpsqt_name", "Question", "textarea", $options['question'], "The text for the question (the actual question)." )
 			 ->addOption("wpsqt_type", "Type", "select", $options['type'], $typeHelpText, array_keys($questionTypes) )
 			 ->addOption("wpsqt_likertmatrixscale", "Likert Matrix Scale", "select", $options['likertmatrixscale'], "Scale 1-5 or Disagree/Agree", array("1-5", "Disagree/Agree"))
 			 ->addOption("wpsqt_likertscale", "Likert Scale", "select", $options['likertscale'], "What should the likert display to?", array('10', '5', '3', 'Agree/Disagree'))
