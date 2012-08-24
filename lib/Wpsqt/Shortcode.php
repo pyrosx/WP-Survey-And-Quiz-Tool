@@ -480,17 +480,31 @@ class Wpsqt_Shortcode {
 		$correctAnswers = 0;
 		$canAutoMark = true;
 
-		if ($_SESSION['wpsqt'][$quizName]['details']['type'] == 'quiz')
+		if ($_SESSION['wpsqt'][$quizName]['details']['type'] == 'quiz') {
 			$passMark = (int)$_SESSION['wpsqt'][$quizName]['details']['pass_mark'];
+			// Set $AutoMarkWhenFreetext
+			if ( isset($_SESSION['wpsqt'][$quizName]['details']['automark_whenfreetxt']) ) {
+				$AutoMarkWhenFreetxt = $_SESSION['wpsqt'][$quizName]['details']['automark_whenfreetxt'];
+			} else {
+				$AutoMarkWhenFreetxt = "no";
+			}
+		}
 
 		foreach ( $_SESSION['wpsqt'][$quizName]['sections'] as $quizSection ){
 			if ( $this->_type != "quiz" || ( isset($quizSection['can_automark']) && $quizSection['can_automark'] == false) ){
-				$canAutoMark = false;
+				// Only if AutoMarkWhenFreetext is set to 'yes' will $canAutoMark be ignored
+				if (  preg_match( "/yes/" , $AutoMarkWhenFreetxt) !== 1 ) {
+					$canAutoMark = false;
 					break;
+				}
 			}
 
 			foreach ( $quizSection['questions'] as $key => $question ){
-				$totalPoints += $question['points'];
+				//  AutoMarkWhenFreetext: 'no' and 'include' will mark freetext questions as 'incorrect', 
+				// 'exclude will ignore the freetext questions' and not add them to the $totalPoints
+				if (  ! (  preg_match( "/exclude/" , $AutoMarkWhenFreetxt) == 1  && ($question['type'] == "Free Text"))   ){
+					$totalPoints += $question['points'];
+				}
 			}
 
 			if ( !isset($quizSection['stats']) ) {
