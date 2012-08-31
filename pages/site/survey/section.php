@@ -2,7 +2,14 @@
 <div class="quiz">
 <h1><?php echo $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["name"]; ?></h1>
 
-<form method="post" action="<?php echo esc_url($_SERVER["REQUEST_URI"]); ?>">
+<?php 
+if (isset($GLOBALS['q_config']) && isset($GLOBALS['q_config']['url_info']['url'])) {
+	$url = $GLOBALS['q_config']['url_info']['url'];
+} else {
+	$url = $_SERVER['REQUEST_URI'];
+}
+?>
+<form method="post" action="<?php echo esc_url($url); ?>">
 	<input type="hidden" name="step" value="<?php echo ($_SESSION["wpsqt"]["current_step"]+1); ?>">
 	<input type="hidden" name="wpsqt_nonce" value="<?php echo WPSQT_NONCE_CURRENT; ?>" />
 <?php 		
