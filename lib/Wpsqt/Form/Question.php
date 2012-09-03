@@ -30,6 +30,7 @@ class Wpsqt_Form_Question extends Wpsqt_Form {
 							 'section' => false,
 							 'add_text' => false,
 							 'explanation' => false,
+							 'explanation_onlyatfinish' => false,
 							 'required' => false,
 					 		 'image' => false,
 					 		 'likertscale' => false,
@@ -41,7 +42,7 @@ class Wpsqt_Form_Question extends Wpsqt_Form {
 			$typeHelpText .= "<strong>".$type."</strong> ".$text."<br />";
 		}
 		
-		$this->addOption("wpsqt_name", "Question", "text", $options['question'], "The text for the question (the actual question)." )
+		$this->addOption("wpsqt_name", "Question", "textarea", $options['question'], "The text for the question (the actual question)." )
 			 ->addOption("wpsqt_type", "Type", "select", $options['type'], $typeHelpText, array_keys($questionTypes) )
 			 ->addOption("wpsqt_likertmatrixscale", "Likert Matrix Scale", "select", $options['likertmatrixscale'], "Scale 1-5 or Disagree/Agree", array("1-5", "Disagree/Agree"))
 			 ->addOption("wpsqt_likertscale", "Likert Scale", "select", $options['likertscale'], "What should the likert display to?", array('10', '5', '3', 'Agree/Disagree'))
@@ -51,6 +52,7 @@ class Wpsqt_Form_Question extends Wpsqt_Form {
 			 ->addOption("wpsqt_section", "Section", "select", $options['section'], "The section/page this question should be in/on.", $sections)
 			 ->addOption("wpsqt_required", "Required", "yesno", $options['required'], "Should the user be forced to answer the question to progress to the next step?")
 			 ->addOption("wpsqt_explanation", "Answer Explanation", "textarea", $options['explanation'], "What shall be shown when 'show answer' is pressed. <b>Leave blank for no answer explanation to be available.</b>\nWill also display on quiz review page.", array(), false)
+			 ->addOption("wpsqt_explanation_onlyatfinish", "Answer Explanation only at finish", "yesno", $options['explanation_onlyatfinish'], "Only show the explanation of an answer after the quiz is taken and &quot;Finish Display&quot; is set to &quot;Review&quot; .", array(), false)
 			 ->addOption("wpsqt_add_text", "Additional Text", "textarea", $options['add_text'], "Additional text/html for questions, good for using html to display images.",array(),false)
 			 ->addOption("wpsqt_image", "Image", "image", $options['image'], "The image that is to be associated with the question.", array(),  false );
 			

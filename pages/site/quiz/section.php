@@ -58,8 +58,17 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 			<?php require Wpsqt_Question::getDisplayView($question); ?>
 
 			<?php if (isset($question['explanation']) && !empty($question['explanation'])) {
-				echo '<a href="#" class="wpsqt-show-answer" style="display: none;">Show answer</a>';
-				echo '<div class="wpsqt-answer-explanation" style="display: none;">'.nl2br(stripslashes($question['explanation'])).'</div>';
+				// Parse the explanation text with the token replacement method
+				// 	- Set up the token object
+				require_once WPSQT_DIR.'/lib/Wpsqt/Tokens.php';
+				$objTokens = Wpsqt_Tokens::getTokenObject();
+				$objTokens->setDefaultValues();
+				//	- replace the tokens
+				$explanation = $objTokens->doReplacement( $question['explanation'] );
+				if (!isset($question['explanation_onlyatfinish']) || $question['explanation_onlyatfinish'] !== "yes" ) { 
+					echo '<a href="#" class="wpsqt-show-answer" style="display: none;">Show answer</a>';
+					echo '<div class="wpsqt-answer-explanation" style="display: none;">'.nl2br(stripslashes($explanation)).'</div>';
+				}
 			} ?>
 			
 	</div>

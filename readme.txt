@@ -74,8 +74,11 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed additional text not displaying for certain questions in surveys
 * Fixed %SCORE_PERCENTAGE% not correctly rounding
 * Changed the email message to respondent to use view page instead of mark
+* Changed field for question name to textarea for better readability
 * Added token for the results view page
 * Added the shortcode for the quiz/survey/poll on edit page
+* Added ability to only show answer explanation on quiz review
+* Added ability to add extra information to answer explanation through the use of %TB_B% and %TB_E% tokens
 
 = 2.11 =
 
