@@ -71,6 +71,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed division by zero error for question success rate
 * Fixed issue with section names that contained apostrophes
 * Fixed the answer explanation for free text questions not showing
+* Fixed additional text not displaying for certain questions in surveys
 * Changed the email message to respondent to use view page instead of mark
 * Added token for the results view page
 * Added the shortcode for the quiz/survey/poll on edit page

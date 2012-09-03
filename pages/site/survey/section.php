@@ -33,6 +33,10 @@ foreach ($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"] as 
 			}	
 			
 			echo stripslashes($question["name"]); 
+
+			if ( !empty($question['add_text']) ){ ?>
+				<p><?php echo nl2br(stripslashes($question['add_text'])); ?></p>
+			<?php }
 			
 			// See if the question has been missed and this is a replay
 			if ( !empty($_SESSION['wpsqt']['current_message']) && !in_array($questionId,$_SESSION['wpsqt']['required']) ){
