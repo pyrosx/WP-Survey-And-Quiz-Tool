@@ -79,6 +79,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Added the shortcode for the quiz/survey/poll on edit page
 * Added ability to only show answer explanation on quiz review
 * Added ability to add extra information to answer explanation through the use of %TB_B% and %TB_E% tokens
+* Added ability to mark a quiz even if it has free text questions
 
 = 2.11 =
 
