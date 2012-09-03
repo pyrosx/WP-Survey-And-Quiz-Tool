@@ -121,7 +121,8 @@ class Wpsqt_Tokens {
 			// Calculate percentage
 			preg_match('$(\d*)\scorrect\sout\sof\s(\d*)$', $_SESSION['wpsqt']['current_score'], $score);
 			if (isset($score) && is_array($score) && isset($score[2]) && $score[2] != 0) {
-				$percentage = $score[1] / $score[2] * 100 . '%';
+				$percentage = $score[1] / $score[2] * 100;
+				$percentage = number_format($percentage, 1) . '%';
 			} else {
 				$percentage = '?%';
 			}
