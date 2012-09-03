@@ -30,6 +30,7 @@ class Wpsqt_Form_Question extends Wpsqt_Form {
 							 'section' => false,
 							 'add_text' => false,
 							 'explanation' => false,
+							 'explanation_onlyatfinish' => false,
 							 'required' => false,
 					 		 'image' => false,
 					 		 'likertscale' => false,
