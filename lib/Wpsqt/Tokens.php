@@ -140,8 +140,12 @@ class Wpsqt_Tokens {
 		$this->setTokenValue('SCORE_PERCENTAGE' , ( isset($percentage) ) ? $percentage : '');
 		$this->setTokenValue('SCORE_PASSFAIL', (isset($_SESSION['wpsqt'][$quizName]['details']['pass_mark']) && $_SESSION['wpsqt'][$quizName]['details']['pass_mark'] > (int)rtrim($percentage, "%")) ? 'Fail' : 'Pass');
 		$this->setTokenValue('SCORE_COMPETENT', (isset($_SESSION['wpsqt'][$quizName]['details']['pass_mark']) && $_SESSION['wpsqt'][$quizName]['details']['pass_mark'] > (int)rtrim($percentage, "%")) ? 'Not yet competent' : 'Competent');
-		$this->setTokenValue('RESULT_URL'  , WPSQT_URL_MAIN."&section=results&subsection=mark&id=".$_SESSION['wpsqt']['item_id']."&resultid=".$_SESSION['wpsqt']['result_id'] );
-		$this->setTokenValue('RESULT_VIEW_URL'  , WPSQT_URL_MAIN."&section=results&subsection=view&id=".$_SESSION['wpsqt']['item_id']."&resultid=".$_SESSION['wpsqt']['result_id'] );
+
+		if (isset($_SESSION['wpsqt']['result_id'])) {
+			$this->setTokenValue('RESULT_URL'  , WPSQT_URL_MAIN."&section=results&subsection=mark&id=".$_SESSION['wpsqt']['item_id']."&resultid=".$_SESSION['wpsqt']['result_id'] );
+			$this->setTokenValue('RESULT_VIEW_URL'  , WPSQT_URL_MAIN."&section=results&subsection=view&id=".$_SESSION['wpsqt']['item_id']."&resultid=".$_SESSION['wpsqt']['result_id'] );
+		}
+
 		$this->setTokenValue('USER_EMAIL'  , ( isset($_SESSION['wpsqt'][$quizName]['person']['email']) ) ? $_SESSION['wpsqt'][$quizName]['person']['email'] : '');
 		$this->setTokenValue('USER_NAME'   , ( isset($_SESSION['wpsqt'][$quizName]['person']['name']) ) ? $_SESSION['wpsqt'][$quizName]['person']['name'] : 'Anonymous User');
 		$this->setTokenValue('USER_FNAME'   , ( isset($_SESSION['wpsqt'][$quizName]['person']['fname']) ) ? $_SESSION['wpsqt'][$quizName]['person']['fname'] : 'Anonymous');
