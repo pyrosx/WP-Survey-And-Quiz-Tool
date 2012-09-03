@@ -25,6 +25,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 							'limit_one_cookie' => false,
 							'timer' => '0',
 							'pass_mark' => '80', 
+							'automark_whenfreetext' => 'no',
 							'finish_display' => false, 
 							'status' => false, 
 							'contact' => false, 
@@ -47,6 +48,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 			 ->addOption("wpsqt_limit_one_cookie", "Limit to one submission per computer (using cookies)", "yesno", $options['limit_one_cookie'], "Limit the quiz to one submission per computer/browser")
 			 ->addOption("wpsqt_timer", "Timer value for the quiz","text", $options['timer'], "Enter the countdown timer value for the quiz. <b>Enter 0 for no timer</b>")
 			 ->addOption("wpsqt_pass_mark", "Pass mark", "text", $options['pass_mark'], "What is the pass mark of this quiz (percentage)?")
+			 ->addOption("wpsqt_automark_whenfreetxt", "Auto mark when freetext questions", "select", $options['automark_whenfreetext'], "Automark questions that can be automarked, although the quiz contains freetext or open questions which cannot? Choosing 'include freetext' will include the freetext questions in the grand total, 'exclude freetext' will not. <br/><i>In other words: 'include' will mark freetext questions as 'incorrect', 'exclude will ignore the freetext questions</i>'",array('no','yes - include opentext', 'yes - exclude opentext') )
 			 ->addOption("wpsqt_finish_display", "Finish Display",'select', $options['finish_display'], "What should be displayed on the finishing of the quiz.", array("Finish message","Quiz Review"))
 			 ->addOption("wpsqt_status", "Status", "select", $options['status'], "Status of the quiz either enabled where users can take it or disabled where users can't.", array('enabled','disabled'))
 			 ->addOption("wpsqt_send_user", "Send notification email to user as well", "yesno", $options["send_user"], "Should we send a notification email to the user who took the quiz. You must enable the 'use wordpress details' option below and the use must be logged in for this to work. This is due to a bug in the 'take contact details' option." )
