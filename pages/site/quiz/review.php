@@ -2,6 +2,10 @@
 $currentPoints = 0; 
 $totalPoints = 0;
 $hardPoints = 0;
+// Set up the token object to be able to parse the explanation text with the token replacement method
+require_once WPSQT_DIR.'/lib/Wpsqt/Tokens.php';
+$objTokens = Wpsqt_Tokens::getTokenObject();
+$objTokens->setDefaultValues();
 
 foreach ( $_SESSION['wpsqt'][$quizName]['sections'] as $section ){ ?>
 		<h3><?php echo $section['name']; ?></h3>
@@ -34,15 +38,22 @@ foreach ( $_SESSION['wpsqt'][$quizName]['sections'] as $section ){ ?>
 							<?php } ?>
 						</ol>
 					</p>
-					<?php if (isset($questionArray['explanation'])) { ?>
-						<p class="wpsqt-answer-explanation"><?=$questionArray['explanation']?></p>
+					<?php if (isset($questionArray['explanation'])) { 
+						
+						// replace the tokens
+						$explanation = $objTokens->doReplacement( $questionArray['explanation'] );
+						?>
+						<p class="wpsqt-answer-explanation"><?=$explanation?></p>
 					<?php } ?>
 				<?php } else { 
 					?>				
 					<b><u>Answer Given</u></b>
 					<p class="answer_given" style="background-color : #c0c0c0; border : 1px dashed black; padding : 5px;overflow:auto;height : 200px;"><?php if ( isset($section['answers'][$questionId]['given']) && is_array($section['answers'][$questionId]['given']) ){ echo nl2br(esc_html(stripslashes(current($section['answers'][$questionId]['given'])))); } ?></p>
-					<?php if (isset($questionArray['explanation'])) { ?>
-						<p class="wpsqt-answer-explanation"><?=$questionArray['explanation']?></p>
+					<?php if (isset($questionArray['explanation'])) { 
+						// replace the tokens
+						$explanation = $objTokens->doReplacement( $questionArray['explanation'] );
+						?>
+						<p class="wpsqt-answer-explanation"><?=$explanation?></p>
 					<?php } ?>
 					<?php if ( isset($questionArray['hint']) && $questionArray['hint'] != "" ) { ?>- <a href="#" class="show_hide_hint">Show/Hide Hint</a></p>
 					<div class="hint">
