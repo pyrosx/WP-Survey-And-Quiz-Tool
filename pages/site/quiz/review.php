@@ -29,8 +29,8 @@ foreach ( $_SESSION['wpsqt'][$quizName]['sections'] as $section ){ ?>
 						}
 						$totalPoints++;	
 					?>				
-					<b><u>Mark</u></b> - <?php if (isset($section['answers'][$questionId]['mark'])) { echo $section['answers'][$questionId]['mark']; } else { echo 'Incorrect'; } ?><br />
-					<b><u>Answers</u></b>
+					<b><u><?php _e('Mark', 'wp-survey-and-quiz-tool'); ?></u></b> - <?php if (isset($section['answers'][$questionId]['mark'])) { echo $section['answers'][$questionId]['mark']; } else { echo 'Incorrect'; } ?><br />
+					<b><u><?php _e('Answers', 'wp-survey-and-quiz-tool'); ?></u></b>
 					<p class="answer_given">
 						<ol>
 							<?php foreach ($questionArray['answers'] as $answerKey => $answer){ ?>
@@ -47,7 +47,7 @@ foreach ( $_SESSION['wpsqt'][$quizName]['sections'] as $section ){ ?>
 					<?php } ?>
 				<?php } else { 
 					?>				
-					<b><u>Answer Given</u></b>
+					<b><u><?php _e('Answer Given', 'wp-survey-and-quiz-tool'); ?></u></b>
 					<p class="answer_given" style="background-color : #c0c0c0; border : 1px dashed black; padding : 5px;overflow:auto;height : 200px;"><?php if ( isset($section['answers'][$questionId]['given']) && is_array($section['answers'][$questionId]['given']) ){ echo nl2br(esc_html(stripslashes(current($section['answers'][$questionId]['given'])))); } ?></p>
 					<?php if (isset($questionArray['explanation'])) { 
 						// replace the tokens
@@ -55,13 +55,13 @@ foreach ( $_SESSION['wpsqt'][$quizName]['sections'] as $section ){ ?>
 						?>
 						<p class="wpsqt-answer-explanation"><?=$explanation?></p>
 					<?php } ?>
-					<?php if ( isset($questionArray['hint']) && $questionArray['hint'] != "" ) { ?>- <a href="#" class="show_hide_hint">Show/Hide Hint</a></p>
+					<?php if ( isset($questionArray['hint']) && $questionArray['hint'] != "" ) { ?>- <a href="#" class="show_hide_hint"><?php _e('Show/Hide Hint', 'wp-survey-and-quiz-tool'); ?></a></p>
 					<div class="hint">
-						<h5>Hint</h5>
+						<h5><?php _e('Hint', 'wp-survey-and-quiz-tool'); ?></h5>
 						<p style="background-color : #c9c9c9;padding : 5px;"><?php echo nl2br(esc_html(stripslashes($questionArray['hint']))); ?></p>
 					</div>
 					<?php } else { ?></p><?php } ?>
 				<?php } ?>
 			<?php } ?>
 		<?php } ?>
-	<p><font size="+3">Total Points <?php echo $_SESSION['wpsqt']['current_score']; ?></font></p>
+	<p><font size="+3"><?php _e('Total Points', 'wp-survey-and-quiz-tool'); echo $_SESSION['wpsqt']['current_score']; ?></font></p>

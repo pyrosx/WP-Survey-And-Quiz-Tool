@@ -66,7 +66,7 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 				//	- replace the tokens
 				$explanation = $objTokens->doReplacement( $question['explanation'] );
 				if (!isset($question['explanation_onlyatfinish']) || $question['explanation_onlyatfinish'] !== "yes" ) { 
-					echo '<a href="#" class="wpsqt-show-answer" style="display: none;">Show answer</a>';
+					echo '<a href="#" class="wpsqt-show-answer" style="display: none;">'; _e('Show answer', 'wp-survey-and-quiz-tool'); echo '</a>';
 					echo '<div class="wpsqt-answer-explanation" style="display: none;">'.nl2br(stripslashes($explanation)).'</div>';
 				}
 			} ?>
@@ -77,7 +77,7 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 if ($sectionKey == (count($_SESSION['wpsqt'][$quizName]['sections']) - 1)) {
 	?><p><input type='submit' value='Submit' class='button-secondary' /></p><?php
 } else {
-	?><p><input type='submit' value='Next &raquo;' class='button-secondary' /></p><?php
+	?><p><input type='submit' value='<?php _e('Next', 'wp-survey-and-quiz-tool'); ?> &raquo;' class='button-secondary' /></p><?php
 }
 ?>
 	
