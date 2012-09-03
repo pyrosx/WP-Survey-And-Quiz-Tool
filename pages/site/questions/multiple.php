@@ -9,7 +9,7 @@
 					 && $question['include_other'] == 'yes' ){					
 				?>
 				<li>
-					<input type="checkbox" name="answers[<?php echo $questionKey; ?>]" value="0" id="answer_<?php echo $question['id']; ?>_other"> <label for="answer_<?php echo $question['id']; ?>_other">Other</label> <input type="text" name="other[<?php echo $questionKey; ?>]" value="" />
+					<input type="checkbox" name="answers[<?php echo $questionKey; ?>]" value="0" id="answer_<?php echo $question['id']; ?>_other"> <label for="answer_<?php echo $question['id']; ?>_other"><?php _e('Other', 'wp-survey-and-quiz-tool'); ?></label> <input type="text" name="other[<?php echo $questionKey; ?>]" value="" />
 				</li>
 				<?php } ?>
 			</ul>

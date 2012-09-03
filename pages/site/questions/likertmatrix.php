@@ -9,11 +9,11 @@
 			<td>4</td>
 			<td>5</td>
 		<?php } else { ?>
-			<td width="20%">Strongly Disagree</td>
-			<td width="20%">Disagree</td>
-			<td width="20%">No Opinion</td>
-			<td width="20%">Agree</td>
-			<td width="20%">Strongly Agree</td>
+			<td width="20%"><?php _e('Strongly Disagree', 'wp-survey-and-quiz-tool'); ?></td>
+			<td width="20%"><?php _e('Disagree', 'wp-survey-and-quiz-tool'); ?></td>
+			<td width="20%"><?php _e('No Opinion', 'wp-survey-and-quiz-tool'); ?></td>
+			<td width="20%"><?php _e('Agree', 'wp-survey-and-quiz-tool'); ?></td>
+			<td width="20%"><?php _e('Strongly Agree', 'wp-survey-and-quiz-tool'); ?></td>
 		<?php } ?>
 	</tr>
 </thead>
@@ -30,7 +30,7 @@
 
 <?php if (isset($question['likertmatrixcustom']) && $question['likertmatrixcustom'] == 'yes') { ?>
 	<tr>
-		<td>Other: <input type="text" name="answers[<?php echo $questionKey; ?>][custom][text]" id="answer_<?php echo $questionKey; ?>_custom_text" /></td>
+		<td><?php _e('Other', 'wp-survey-and-quiz-tool'); ?>: <input type="text" name="answers[<?php echo $questionKey; ?>][custom][text]" id="answer_<?php echo $questionKey; ?>_custom_text" /></td>
 		<td><input type="radio" name="answers[<?php echo $questionKey; ?>][custom][]" value="other_1" id="answer_<?php echo $questionKey; ?>_custom_1" /></td>
 		<td><input type="radio" name="answers[<?php echo $questionKey; ?>][custom][]" value="other_2" id="answer_<?php echo $questionKey; ?>_custom_2" /></td>
 		<td><input type="radio" name="answers[<?php echo $questionKey; ?>][custom][]" value="other_3" id="answer_<?php echo $questionKey; ?>_custom_3" /></td>
