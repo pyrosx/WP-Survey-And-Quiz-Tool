@@ -488,6 +488,8 @@ class Wpsqt_Shortcode {
 			} else {
 				$AutoMarkWhenFreetxt = "no";
 			}
+		} else {
+			$AutoMarkWhenFreetxt = false;
 		}
 
 		foreach ( $_SESSION['wpsqt'][$quizName]['sections'] as $quizSection ){
