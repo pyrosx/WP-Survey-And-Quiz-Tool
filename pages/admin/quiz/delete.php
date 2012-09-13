@@ -7,7 +7,7 @@
 	
 	<form method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>">
 		<input type="hidden" name="wpsqt_nonce" value="<?php echo WPSQT_NONCE_CURRENT; ?>" />
-		<p style="text-align: center;">Are you sure you want to delete the "<em><?php esc_html_e($quizName); ?></em>" quiz?</p>
+		<p style="text-align: center;">Are you sure you want to delete the "<em><?php esc_html_e($quizName, 'wp-survey-and-quiz-tool'); ?></em>" quiz?</p>
 		<p style="text-align: center;"><input type="submit" name="confirm" value="Yes" class='button-secondary' /></p>
 	</form>
 	

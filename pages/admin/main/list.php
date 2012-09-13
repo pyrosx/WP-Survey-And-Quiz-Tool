@@ -62,28 +62,28 @@
 					<th scope="row"><?php echo $result['id']; ?></th>
 					<td class="column-title">
 						<strong>
-							<a class="row-title" href="<?php echo WPSQT_URL_MAIN;?>&section=edit&subsection=<?php esc_html_e($result["type"]); ?>&id=<?php esc_html_e($result['id']); ?>"><?php esc_html_e($result["name"]); ?></a><?php if ($type == "all"){?> <strong>- <?php esc_html_e(ucfirst($result["type"])); ?></strong><?php }?>
+							<a class="row-title" href="<?php echo WPSQT_URL_MAIN;?>&section=edit&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result['id'], 'wp-survey-and-quiz-tool'); ?>"><?php esc_html_e($result["name"], 'wp-survey-and-quiz-tool'); ?></a><?php if ($type == "all"){?> <strong>- <?php esc_html_e(ucfirst($result["type"]), 'wp-survey-and-quiz-tool'); ?></strong><?php }?>
 						</strong>
 						<div class="row-actions">
-							<span class="edit"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=edit&subsection=<?php esc_html_e($result["type"]); ?>&id=<?php esc_html_e($result["id"]); ?>">Edit</a> | </span>
-							<span class="duplicate"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=duplicate&subsection=<?php esc_html_e($result["type"]); ?>&id=<?php esc_html_e($result["id"]); ?>">Duplicate</a> | </span>
-							<span class="section"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=sections&subsection=<?php esc_html_e($result["type"]); ?>&id=<?php esc_html_e($result["id"]); ?>">Sections</a> | </span>
-							<span class="questions"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=questions&subsection=<?php esc_html_e($result["type"]); ?>&id=<?php esc_html_e($result["id"]); ?>">Questions</a> | </span>
-							<span class="form"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=form&subsection=<?php esc_html_e($result['type']); ?>&id=<?php esc_html_e($result["id"]); ?>">Form</a> | </span>
+							<span class="edit"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=edit&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Edit</a> | </span>
+							<span class="duplicate"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=duplicate&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Duplicate</a> | </span>
+							<span class="section"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=sections&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Sections</a> | </span>
+							<span class="questions"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=questions&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Questions</a> | </span>
+							<span class="form"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=form&subsection=<?php esc_html_e($result['type'], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Form</a> | </span>
 							<?php if ($result['type'] == 'survey'){ ?>
-							<span class="results"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=<?php esc_html_e($result['type']); ?>&id=<?php esc_html_e($result["id"]); ?>">Single Results</a> | </span>
-							<span class="results"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=total&id=<?php esc_html_e($result["id"]); ?>">Total Results</a> | </span>
+							<span class="results"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=<?php esc_html_e($result['type'], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Single Results</a> | </span>
+							<span class="results"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=total&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Total Results</a> | </span>
 							<?php } else { ?>
-							<span class="results"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=<?php esc_html_e($result["type"]); ?>&id=<?php esc_html_e($result["id"]); ?>">Results</a> | </span>
+							<span class="results"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Results</a> | </span>
 							<?php } ?>
-							<span class="delete"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=delete&id=<?php esc_html_e($result["id"]); ?>">Delete</a></span>
+							<span class="delete"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=delete&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Delete</a></span>
 						</div>
 					</td>
-					<td><font color="<?php if ($result['status'] == 'enabled'){ ?>#00FF00<?php } else { ?>#FF0000<?php }?>"><?php esc_html_e(ucfirst($result["status"])); ?></font></td>
+					<td><font color="<?php if ($result['status'] == 'enabled'){ ?>#00FF00<?php } else { ?>#FF0000<?php }?>"><?php esc_html_e(ucfirst($result["status"]), 'wp-survey-and-quiz-tool'); ?></font></td>
 					<td class="comments column-comments">
 						<div class="post-com-count-wrapper">
-							<a class="post-com-count" title=" pending" href="<?php echo WPSQT_URL_MAIN;?>&section=results&subsection=<?php esc_html_e($result["type"]); ?>&id=<?php esc_html_e($result["id"]); ?>">
-								<span class="comment-count"><?php esc_html_e($result["results"]); ?></span>
+							<a class="post-com-count" title=" pending" href="<?php echo WPSQT_URL_MAIN;?>&section=results&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">
+								<span class="comment-count"><?php esc_html_e($result["results"], 'wp-survey-and-quiz-tool'); ?></span>
 							</a>
 						</div>
 					</td>
