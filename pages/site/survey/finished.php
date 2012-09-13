@@ -14,16 +14,14 @@ $objTokens->setDefaultValues();
 			// PARSE TOKENS
 			$string = $objTokens->doReplacement($_SESSION['wpsqt'][$quizName]['details']['finish_message']);
 			echo nl2br($string);
-		} else { ?>
-		Thank you for your time..
-	<?php } ?>
+		} else {
+			_e('Thank you for your time.', 'wp-survey-and-quiz-tool');
+		} ?>
 <?php } else if ($_SESSION['wpsqt'][$quizName]['details']['finish_display'] == 'Results') {
 	$id = (int) $_SESSION['wpsqt']['item_id'];
 	$result = $wpdb->get_row("SELECT * FROM `".WPSQT_TABLE_SURVEY_CACHE."` WHERE item_id = '".$id."'", ARRAY_A);
 	$sections = unserialize($result['sections']);
 	require_once(WPSQT_DIR.'pages/admin/surveys/result.total.script.site.php');
-} else { ?>
-
-<p>Thank you for completing our survey!</p>
-
-<?php } ?>
+} else {
+	echo '<p>'; _e('Thank you for completing our survey!', 'wp-survey-and-quiz-tool'); echo '</p>';
+} ?>
