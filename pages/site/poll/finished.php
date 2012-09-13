@@ -20,7 +20,7 @@ $objTokens->setDefaultValues();
 			$message = $objTokens->doReplacement($message);
 			echo nl2br($message);
 		} else {
-			echo '<h2>Thank you for taking the poll</h2>';
+			echo '<h2>'; _e('Thank you for taking the poll.', 'wp-survey-and-quiz-tool'); echo '</h2>';
 		}
 	}
 ?>
