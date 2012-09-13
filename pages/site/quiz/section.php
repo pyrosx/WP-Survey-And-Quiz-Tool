@@ -75,7 +75,7 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 <?php } ?>
 <?php
 if ($sectionKey == (count($_SESSION['wpsqt'][$quizName]['sections']) - 1)) {
-	?><p><input type='submit' value='Submit' class='button-secondary' /></p><?php
+	?><p><input type='submit' value='<?php _e('Submit', 'wp-survey-and-quiz-tool'); ?>' class='button-secondary' /></p><?php
 } else {
 	?><p><input type='submit' value='<?php _e('Next', 'wp-survey-and-quiz-tool'); ?> &raquo;' class='button-secondary' /></p><?php
 }
