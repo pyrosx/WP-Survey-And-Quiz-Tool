@@ -728,15 +728,17 @@ class Wpsqt_Shortcode {
 					}
 				}
 				if ($cachedSections[$sectionKey]['questions'][$question['id']]['type'] == "Likert Matrix") {
-					foreach ($section['answers'][$question['id']]['given'] as $givenAnswerData) {
-						if (is_array($givenAnswerData)) {
-							// Other field:
-							$otherText = $givenAnswerData['text'];
-							$givenAnswerData = explode("_", $givenAnswerData[0]);
-							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswerData[0]][$givenAnswerData[1]]['count'] += 1;
-						} else {
-							$givenAnswerData = explode("_", $givenAnswerData);
-							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswerData[0]][$givenAnswerData[1]]['count'] += 1;
+					if (isset($section['answers'][$question['id']]['given'])) {
+						foreach ($section['answers'][$question['id']]['given'] as $givenAnswerData) {
+							if (is_array($givenAnswerData)) {
+								// Other field:
+								$otherText = $givenAnswerData['text'];
+								$givenAnswerData = explode("_", $givenAnswerData[0]);
+								$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswerData[0]][$givenAnswerData[1]]['count'] += 1;
+							} else {
+								$givenAnswerData = explode("_", $givenAnswerData);
+								$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswerData[0]][$givenAnswerData[1]]['count'] += 1;
+							}
 						}
 					}
 				}
