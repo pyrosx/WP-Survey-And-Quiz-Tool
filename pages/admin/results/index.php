@@ -100,6 +100,7 @@
 		<div class="tablenav">
 		
 			<div class="tablenav-pages">			   
+				<a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&export=csv&id=<?php echo urlencode($_GET['id']); ?>">Export CSV</a>
 		   		<?php echo Wpsqt_Core::getPaginationLinks($currentPage, $numberOfPages); ?>	
 			</div>
 		</div>
