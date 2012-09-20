@@ -76,12 +76,14 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed %SCORE_PERCENTAGE% not correctly rounding
 * Changed the email message to respondent to use view page instead of mark
 * Changed field for question name to textarea for better readability
+* Changed the front end strings to allow translations - see <a href="https://github.com/fubralimited/WP-Survey-And-Quiz-Tool/wiki/Translators">the translators page</a> for info on how to translate
 * Added token for the results view page
 * Added the shortcode for the quiz/survey/poll on edit page
 * Added ability to only show answer explanation on quiz review
 * Added ability to add extra information to answer explanation through the use of %TB_B% and %TB_E% tokens
 * Added ability to mark a quiz even if it has free text questions
 * Added ability to export the results of a quiz to csv
+* Added Russian (ru_RU) and Dutch (nl_NL) translations
 
 = 2.11 =
 
