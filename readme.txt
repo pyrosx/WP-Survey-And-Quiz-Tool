@@ -5,7 +5,7 @@ Tags: Quiz,test,exam,survey,results,email,quizzes,charts,google charts,wpsqt,too
 Requires at least: 3.1
 Tested up to: 3.4.1
 Text Domain: wp-survey-and-quiz-tool
-Stable tag: 2.11
+Stable tag: 2.12
 A highly customisable Quiz, Survey and Poll plugin to which allows for unlimited questions and sections.
 
 == Description ==
@@ -66,7 +66,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 
 == ChangeLog ==
 
-= 2.11.1 =
+= 2.12 =
 
 * Fixed survey total results not showing free text answers on some sections
 * Fixed division by zero error for question success rate
