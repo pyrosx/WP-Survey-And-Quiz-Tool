@@ -66,6 +66,11 @@ Any further issues then feel free to create a thread on the <a href="http://word
 
 == ChangeLog ==
 
+= 2.12.1 =
+
+* Fixed several PHP notices
+* Fixed navigation bar on quiz/survey/poll delete page
+
 = 2.12 =
 
 * Fixed survey total results not showing free text answers on some sections

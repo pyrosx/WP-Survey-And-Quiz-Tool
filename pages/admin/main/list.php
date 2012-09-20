@@ -76,7 +76,7 @@
 							<?php } else { ?>
 							<span class="results"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Results</a> | </span>
 							<?php } ?>
-							<span class="delete"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=delete&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Delete</a></span>
+							<span class="delete"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=delete&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Delete</a></span>
 						</div>
 					</td>
 					<td><font color="<?php if ($result['status'] == 'enabled'){ ?>#00FF00<?php } else { ?>#FF0000<?php }?>"><?php esc_html_e(ucfirst($result["status"]), 'wp-survey-and-quiz-tool'); ?></font></td>
