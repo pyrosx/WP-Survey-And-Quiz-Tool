@@ -45,16 +45,16 @@ class Wpsqt_Page_Main_Results_Poll extends Wpsqt_Page_Main_Results {
 				<table class="widefat post fixed" cellspacing="0">
 				<thead>
 					<tr>
-						<th class="manage-column column-title" scope="col">Answer</th>
-						<th scope="col" width="75">Votes</th>
-						<th scope="col" width="90">Percentage</th>
+						<th class="manage-column column-title" scope="col"><?php _e('Answer', 'wp-survey-and-quiz-tool'); ?></th>
+						<th scope="col" width="75"><?php _e('Votes', 'wp-survey-and-quiz-tool'); ?></th>
+						<th scope="col" width="90"><?php _e('Percentage', 'wp-survey-and-quiz-tool'); ?></th>
 					</tr>			
 				</thead>
 				<tfoot>
 					<tr>
-						<th class="manage-column column-title" scope="col">Answer</th>
-						<th scope="col" width="75">Votes</th>
-						<th scope="col" width="90">Percentage</th>
+						<th class="manage-column column-title" scope="col"><?php _e('Answer', 'wp-survey-and-quiz-tool'); ?></th>
+						<th scope="col" width="75"><?php _e('Votes', 'wp-survey-and-quiz-tool'); ?></th>
+						<th scope="col" width="90"><?php _e('Percentage', 'wp-survey-and-quiz-tool'); ?></th>
 					</tr>			
 				</tfoot>
 				<tbody>

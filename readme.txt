@@ -4,6 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=99WUG
 Tags: Quiz,test,exam,survey,results,email,quizzes,charts,google charts,wpsqt,tool,poll,polling,polls
 Requires at least: 3.1
 Tested up to: 3.4.1
+Text Domain: wp-survey-and-quiz-tool
 Stable tag: 2.11
 A highly customisable Quiz, Survey and Poll plugin to which allows for unlimited questions and sections.
 

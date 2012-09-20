@@ -152,8 +152,8 @@ class Wpsqt_Tokens {
 		$this->setTokenValue('USER_FNAME'   , ( isset($_SESSION['wpsqt'][$quizName]['person']['fname']) ) ? $_SESSION['wpsqt'][$quizName]['person']['fname'] : 'Anonymous');
 		$this->setTokenValue('USER_LNAME'   , ( isset($_SESSION['wpsqt'][$quizName]['person']['lname']) ) ? $_SESSION['wpsqt'][$quizName]['person']['lname'] : 'User');
 		// Toggle a block of information
-		$this->setTokenValue('TB_B'   , '<div class="wpsqt-toggle"><div class="wpsqt-show-toggle"> <a href="#">[ '.__('More').' >> ]</a></div><div class="wpsqt-toggle-block" style="display:none;">');
-		$this->setTokenValue('TB_E'   , '</div><div class="wpsqt-hide-toggle" style="display:none;"><a href="#">[ << '.__('Less').']</a></div></div>' );
+		$this->setTokenValue('TB_B'   , '<div class="wpsqt-toggle"><div class="wpsqt-show-toggle"> <a href="#">[ '.__('More', 'wp-survey-and-quiz-tool').' >> ]</a></div><div class="wpsqt-toggle-block" style="display:none;">');
+		$this->setTokenValue('TB_E'   , '</div><div class="wpsqt-hide-toggle" style="display:none;"><a href="#">[ << '.__('Less', 'wp-survey-and-quiz-tool').']</a></div></div>' );
 		
 		apply_filters("wpsqt_set_token_values", $this);
 		

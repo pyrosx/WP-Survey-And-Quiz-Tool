@@ -144,13 +144,13 @@ class Wpsqt_Shortcode {
 		if ( !empty($this->_errors) ){
 			global $message;
 			if ( isset($this->_errors["session"]) ){
-				$message = "PHP Sessions error. Check your sessions settings.";
+				$message = __("PHP Sessions error. Check your sessions settings.", 'wp-survey-and-quiz-tool');
 			} elseif ( isset($this->_errors["noexist"]) ){
-				$message = "No such quiz/survey/poll";
+				$message = __("No such quiz/survey/poll", 'wp-survey-and-quiz-tool');
 			} elseif ( isset($this->_errors['name']) ) {
-				$message = "No quiz identifier/name was given";
+				$message = __("No quiz identifier/name was given", 'wp-survey-and-quiz-tool');
 			} elseif ( isset($this->_errors["type"]) ){
-				$message = "Invalid type given";
+				$message = __("Invalid type given", 'wp-survey-and-quiz-tool');
 			}
 			$message = apply_filters("wpsqt_".$this->_type."_error",$message, $this->_errors);
 			echo $message;
@@ -160,7 +160,7 @@ class Wpsqt_Shortcode {
 
 		// Checks if the quiz/survey/poll is disabled
 		if (isset($_SESSION['wpsqt'][$quizName]['details']['status']) && $_SESSION['wpsqt'][$quizName]['details']['status'] == 'disabled') {
-			echo 'This '.$_SESSION['wpsqt'][$quizName]['details']['type'].' is currently disabled.';
+			printf(__('This %s is currently disabled.', 'wp-survey-and-quiz-tool'), $_SESSION['wpsqt'][$quizName]['details']['type']);
 			return;
 		}
 
@@ -170,7 +170,7 @@ class Wpsqt_Shortcode {
 			$ip = $_SERVER['REMOTE_ADDR'];
 			$results = $wpdb->get_results('SELECT * FROM `'.WPSQT_TABLE_RESULTS. '` WHERE `ipaddress` = "'.$ip.'" AND `item_id` = "'.$item_id.'"', ARRAY_A);
 			if (count($results) != 0) {
-				echo 'You appear to have already taken this '.$this->_type.'.';
+				printf(__('You appear to have already taken this %s.', 'wp-survey-and-quiz-tool'), $this->_type);
 				if ($this->_type == 'poll' && isset($_SESSION['wpsqt'][$quizName]['details']['show_results_limited']) && $_SESSION['wpsqt'][$quizName]['details']['show_results_limited'] == 'yes') {
 					require_once WPSQT_DIR.'/lib/Wpsqt/Page.php';
 					require_once WPSQT_DIR.'/lib/Wpsqt/Page/Main/Results/Poll.php';
@@ -187,7 +187,7 @@ class Wpsqt_Shortcode {
 			$results = $wpdb->get_results('SELECT * FROM `'.WPSQT_TABLE_RESULTS. '` WHERE `item_id` = "'.$item_id.'"', ARRAY_A);
 			foreach ($results as $result) {
 				if (isset($result['person_name']) && $result['person_name'] == $user_login) {
-					echo 'You appear to have already taken this '.$this->_type.'.';
+					printf(__('You appear to have already taken this %s.', 'wp-survey-and-quiz-tool'), $this->_type);
 					return;
 				}
 			}
@@ -197,7 +197,7 @@ class Wpsqt_Shortcode {
 		if (isset($_SESSION['wpsqt'][$quizName]['details']['limit_one_cookie']) && $_SESSION['wpsqt'][$quizName]['details']['limit_one_cookie'] == 'yes') {
 			$quizNameEscaped = str_replace(" ", "_", $quizName);
 			if (isset($_COOKIE['wpsqt_'.$quizNameEscaped.'_taken']) && $_COOKIE['wpsqt_'.$quizNameEscaped.'_taken'] == 'yes') {
-				echo 'You appear to have already taken this '.$this->_type.'.';
+				printf(__('You appear to have already taken this %s.', 'wp-survey-and-quiz-tool'), $this->_type);
 				$id = (int) $_SESSION['wpsqt']['item_id'];
 				$result = $wpdb->get_row("SELECT * FROM `".WPSQT_TABLE_SURVEY_CACHE."` WHERE item_id = '".$id."'", ARRAY_A);
 				$sections = unserialize($result['sections']);

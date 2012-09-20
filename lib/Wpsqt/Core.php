@@ -41,6 +41,7 @@ class Wpsqt_Core {
 		add_action('init', array($this,"init"));
 		add_action('admin_bar_menu', array($this,"adminbar"),999);
 		add_action( 'init' , array($this,"enqueue_files"));
+
 		
 		// Register the top scores widget
 		require_once WPSQT_DIR.'lib/Wpsqt/Widget.php';
@@ -89,6 +90,8 @@ class Wpsqt_Core {
 		if ( isset($_SESSION['wpsqt']) ) {
 			unset($_SESSION['wpsqt']['current_message']);
 		}
+
+		load_plugin_textdomain('wp-survey-and-quiz-tool', false, basename(WPSQT_DIR).'/lang/');
 	}
 
 	/**
