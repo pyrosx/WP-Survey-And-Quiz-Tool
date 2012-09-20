@@ -31,8 +31,10 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 
 		$results = $wpdb->get_results('SELECT * FROM '.WPSQT_TABLE_RESULTS.' WHERE item_id = "'.$id.'"', ARRAY_A);
 
+		$this->csvLines[] = 'ID, Name, Score, Total, Percentage, Pass/Fail, Status, Date';
 		foreach( $results as $result ){ 
 			$csvline = $result['id'].","; 
+			$csvline .= $result['person_name'].',';
 			if($result['total'] == 0) {$csvline .= ',,';} else {$csvline .= $result['score'].",".$result['total'].",";}
 			if($result['total'] == 0) {$csvline .= ',';} else {$csvline .= $result['percentage']."%,";}
 			if ($result['pass'] == 1) {$csvline .= "Pass,";} else {$csvline .= "Fail,";}
