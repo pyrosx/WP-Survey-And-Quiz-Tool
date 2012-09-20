@@ -14,9 +14,8 @@ class Wpsqt_Page_Main_Results_Quiz extends Wpsqt_Page_Main_Results {
 			$path = $csvExporter->saveFile();
 
 			echo '<iframe src='.plugins_url($path, WPSQT_FILE).' style="display:none;"></iframe>';
-		} else {
-			$this->_pageView = 'admin/results/index.php';
 		}
+		$this->_pageView = 'admin/results/index.php';
 	}	
 	
 }
