@@ -80,6 +80,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Added ability to only show answer explanation on quiz review
 * Added ability to add extra information to answer explanation through the use of %TB_B% and %TB_E% tokens
 * Added ability to mark a quiz even if it has free text questions
+* Added ability to export the results of a quiz to csv
 
 = 2.11 =
 
