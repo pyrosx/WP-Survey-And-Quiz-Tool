@@ -75,6 +75,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed timer not showing due to extra whitespace in javascript
 * Added Spanish (es_ES) translation
 * Added Italian (it_IT) translation
+* Added Swedish (sv_SE) translation
 * Added option to hide/show survey results when survey is already taken and limiting is enabled
 
 = 2.12 =
