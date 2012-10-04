@@ -188,6 +188,14 @@ class Wpsqt_Shortcode {
 			foreach ($results as $result) {
 				if (isset($result['person_name']) && $result['person_name'] == $user_login) {
 					printf(__('You appear to have already taken this %s.', 'wp-survey-and-quiz-tool'), $this->_type);
+					if ($this->_type == 'poll' && isset($_SESSION['wpsqt'][$quizName]['details']['show_results_limited']) && $_SESSION['wpsqt'][$quizName]['details']['show_results_limited'] == 'yes') {
+						$id = (int) $_SESSION['wpsqt']['item_id'];
+						$result = $wpdb->get_row("SELECT * FROM `".WPSQT_TABLE_SURVEY_CACHE."` WHERE item_id = '".$id."'", ARRAY_A);
+						$sections = unserialize($result['sections']);
+						require_once WPSQT_DIR.'/lib/Wpsqt/Page.php';
+						require_once WPSQT_DIR.'/lib/Wpsqt/Page/Main/Results/Poll.php';
+						Wpsqt_Page_Main_Results_Poll::displayResults($id);
+					}
 					return;
 				}
 			}
@@ -198,12 +206,14 @@ class Wpsqt_Shortcode {
 			$quizNameEscaped = str_replace(" ", "_", $quizName);
 			if (isset($_COOKIE['wpsqt_'.$quizNameEscaped.'_taken']) && $_COOKIE['wpsqt_'.$quizNameEscaped.'_taken'] == 'yes') {
 				printf(__('You appear to have already taken this %s.', 'wp-survey-and-quiz-tool'), $this->_type);
-				$id = (int) $_SESSION['wpsqt']['item_id'];
-				$result = $wpdb->get_row("SELECT * FROM `".WPSQT_TABLE_SURVEY_CACHE."` WHERE item_id = '".$id."'", ARRAY_A);
-				$sections = unserialize($result['sections']);
-				require_once WPSQT_DIR.'/lib/Wpsqt/Page.php';
-				require_once WPSQT_DIR.'/lib/Wpsqt/Page/Main/Results/Poll.php';
-				Wpsqt_Page_Main_Results_Poll::displayResults($id);
+				if ($this->_type == 'poll' && isset($_SESSION['wpsqt'][$quizName]['details']['show_results_limited']) && $_SESSION['wpsqt'][$quizName]['details']['show_results_limited'] == 'yes') {
+					$id = (int) $_SESSION['wpsqt']['item_id'];
+					$result = $wpdb->get_row("SELECT * FROM `".WPSQT_TABLE_SURVEY_CACHE."` WHERE item_id = '".$id."'", ARRAY_A);
+					$sections = unserialize($result['sections']);
+					require_once WPSQT_DIR.'/lib/Wpsqt/Page.php';
+					require_once WPSQT_DIR.'/lib/Wpsqt/Page/Main/Results/Poll.php';
+					Wpsqt_Page_Main_Results_Poll::displayResults($id);
+				}
 				return;
 			}
 		}
