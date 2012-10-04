@@ -20,6 +20,7 @@ class Wpsqt_Form_Survey extends Wpsqt_Form {
 							'limit_one' => false,
 							'limit_one_wp' => false,
 							'limit_one_cookie' => false,
+							'show_results_limited' => false,
 							'status' => false,
 							'finish_display' => false,
 							'contact' => false,
@@ -35,6 +36,7 @@ class Wpsqt_Form_Survey extends Wpsqt_Form {
 			 ->addOption("wpsqt_limit_one", "Limit to one submission per IP","yesno", $options['limit_one'], "Limit the quiz to one submission per IP.")
 			 ->addOption("wpsqt_limit_one_wp", "Limit to one submission per WP user","yesno", $options['limit_one_wp'], "Limit the quiz to one submission per WP user. You must have the Use WP Details option below set to yes.")
 			 ->addOption("wpsqt_limit_one_cookie", "Limit to one submission per computer (using cookies)", "yesno", $options['limit_one_cookie'], "Limit the quiz to one submission per computer/browser")
+			 ->addOption("wpsqt_show_results_limited", "Show the results if the user has already taken the survey", "yesno", $options['show_results_limited'], "If limiting is enabled (by either method) do you want to show the results to the user if they have already taken the survey?")
 			 ->addOption("wpsqt_contact", "Take contact details", "yesno", $options['contact'] ,"This will show a form for users to enter their contact details before proceeding.")
 			 ->addOption("wpsqt_notificaton_type", "Complete Notification", "select", $options['notificaton_type'] , "Send a notification email of completion.",array('none','instant') )
 			 ->addOption("wpsqt_use_wp", "Use WordPress user details", "yesno", $options['use_wp'], "This will allow you to have the survey to use the details of the user if they are signed in. If enabled the contact form will not be shown if enabled.")
