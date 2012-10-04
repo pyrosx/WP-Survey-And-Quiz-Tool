@@ -72,6 +72,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed navigation bar on quiz/survey/poll delete page
 * Fixed multiple choice survey questions only counting first option selected
 * Added Spanish (es_ES) translation
+* Added Italian (it_IT) translation
 * Added option to hide/show survey results when survey is already taken and limiting is enabled
 
 = 2.12 =
