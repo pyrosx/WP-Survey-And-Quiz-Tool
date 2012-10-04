@@ -20,7 +20,7 @@ class Wpsqt_Form_Survey extends Wpsqt_Form {
 							'limit_one' => false,
 							'limit_one_wp' => false,
 							'limit_one_cookie' => false,
-							'show_results_limited' => false,
+							'show_results_limited' => true,
 							'status' => false,
 							'finish_display' => false,
 							'contact' => false,
