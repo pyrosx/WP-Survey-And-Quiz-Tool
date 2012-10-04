@@ -100,6 +100,14 @@
 				  		} else {
 				  			$wordScale = false;
 				  		}
+
+						// Remove the 'other' answers if it isn't allowed
+						$questionMeta = $wpdb->get_row('SELECT meta FROM '.WPSQT_TABLE_QUESTIONS.' WHERE id = "'.$questonKey.'"', ARRAY_A);
+						$questionMeta = unserialize($questionMeta['meta']);
+						if ($questionMeta['likertmatrixcustom'] == 'no'){
+							unset($question['answers']['other']);
+						}
+
 					  	foreach($question['answers'] as $optionkey => $matrixOption) {
 					  			$googleChartUrl = 'http://chart.apis.google.com/chart?&cht=bvs&chxs=0,'.$chartTextColour.','.$chartTextSize.',0,lt,'.$chartTextColour.'|1,'.$chartTextColour.','.$chartTextSize.',1,lt,'.$chartTextColour.'';
 								$valueArray    = array();
