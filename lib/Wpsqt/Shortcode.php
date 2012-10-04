@@ -711,7 +711,11 @@ class Wpsqt_Shortcode {
 					}
 				} else {
 					if(isset($section['answers'][$question['id']])) {
-						$givenAnswer = (int) current($section['answers'][$question['id']]['given']);
+						if (is_array($section['answers'][$question['id']]['given']) && count($section['answers'][$question['id']]['given']) > 1) {
+							$givenAnswer = $section['answers'][$question['id']]['given'];
+						} else {
+							$givenAnswer = (int) current($section['answers'][$question['id']]['given']);
+						}
 					} else {
 						$givenAnswer = NULL;
 					}
@@ -749,8 +753,15 @@ class Wpsqt_Shortcode {
 						$givenAnswer = NULL;
 					}
 				}
-				if (isset($cachedSections[$sectionKey]['questions'][$question['id']]['type']) && $cachedSections[$sectionKey]['questions'][$question['id']]['type'] != "Multiple" && isset($cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer]["count"]))
-					$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer]["count"]++;
+				if (isset($cachedSections[$sectionKey]['questions'][$question['id']]['type']) && $cachedSections[$sectionKey]['questions'][$question['id']]['type'] != "Multiple") {
+					if (is_array($givenAnswer)) {
+						foreach ($givenAnswer as $answer) {
+							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$answer]["count"]++;
+						}
+					} else {
+						$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer]["count"]++;
+					}
+				}
 			}
 		}
 		if ( !empty($surveyResults) ){

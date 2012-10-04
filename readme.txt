@@ -70,6 +70,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 
 * Fixed several PHP notices
 * Fixed navigation bar on quiz/survey/poll delete page
+* Fixed multiple choice survey questions only counting first option selected
 * Added Spanish (es_ES) translation
 
 = 2.12 =
