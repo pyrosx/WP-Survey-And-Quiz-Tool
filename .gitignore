@@ -1,3 +1,5 @@
 lang/po
 *.po
 *.sh
+Vagrantfile
+.vagrant

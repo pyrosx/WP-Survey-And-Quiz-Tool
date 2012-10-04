@@ -50,7 +50,7 @@ define( 'WPSQT_URL_MAIN'             , admin_url('admin.php?page='.WPSQT_PAGE_MA
 define( 'WPSQT_URL_MAINENTANCE'      , admin_url('admin.php?page='.WPSQT_PAGE_MAINTENANCE) );
 define( 'WPSQT_CONTACT_EMAIL'        , 'support@catn.com' );
 define( 'WPSQT_VERSION'              , '2.12' );
-define( 'WPSQT_DIR'                  , dirname(__FILE__).'/' );
+define( 'WPSQT_DIR'                  , realpath(dirname(__FILE__)).'/') ;
 define( 'WPSQT_FILE'     , __FILE__ );
 
 require_once WPSQT_DIR.'lib/Wpsqt/Core.php';
