@@ -302,8 +302,6 @@ class Wpsqt_Shortcode {
 									jQuery(".timer").hide();
 								}
 							}, 1000);
-
-
 						});
 					</script>
 				<?php
