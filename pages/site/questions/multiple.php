@@ -1,12 +1,14 @@
 			<ul class="wpsqt_multiple_question">
 			<?php
-$answers = array();
-				while (count($question['answers']) > 0) {
-					$key = array_rand($question['answers']);
-					$answers[$key] = $question['answers'][$key];
-					unset($question['answers'][$key]);
+				if (isset($question['randomize_answers']) && $question['randomize_answers'] == 'yes') {
+					$answers = array();
+					while (count($question['answers']) > 0) {
+						$key = array_rand($question['answers']);
+						$answers[$key] = $question['answers'][$key];
+						unset($question['answers'][$key]);
+					}
+					$question['answers'] = $answers;
 				}
-				$question['answers'] = $answers;
 			?>
 			<?php foreach ( $question['answers'] as $answerKey => $answer ){ ?>
 				<li>
