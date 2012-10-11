@@ -408,16 +408,18 @@ class Wpsqt_Shortcode {
 			do_action("wpsqt_".$this->_type."_step",$this->_step);
 			$this->showSection();
 
-			// Progress bar 
-			echo 'Page ' . ($this->_step + 1) .' out of '. (sizeof($_SESSION["wpsqt"][$quizName]["sections"]) + 1);
-			$percentage = ($this->_step + 1) / (sizeof($_SESSION["wpsqt"][$quizName]["sections"]) + 1) * 100;
-			?>
-			<div class="wpsqt-progress">
-				<div style="width: <?=$percentage;?>%;">
+			if (isset($_SESSION['wpsqt'][$quizName]['details']['show_progress_bar']) && $_SESSION['wpsqt'][$quizName]['details']['show_progress_bar'] == 'yes') {
+				// Progress bar 
+				echo 'Page ' . ($this->_step + 1) .' out of '. (sizeof($_SESSION["wpsqt"][$quizName]["sections"]));
+				$percentage = ($this->_step + 1) / (sizeof($_SESSION["wpsqt"][$quizName]["sections"])) * 100;
+				?>
+				<div class="wpsqt-progress">
+					<div style="width: <?=$percentage;?>%;">
+					</div>
 				</div>
-			</div>
 
-			<?php
+				<?php
+			}
 			return;
 		}
 

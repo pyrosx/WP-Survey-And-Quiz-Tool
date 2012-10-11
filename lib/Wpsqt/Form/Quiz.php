@@ -25,6 +25,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 							'limit_one_cookie' => false,
 							'timer' => '0',
 							'pass_mark' => '80', 
+							'show_progress_bar' => false,
 							'automark_whenfreetext' => 'no',
 							'finish_display' => false, 
 							'status' => false, 
@@ -48,6 +49,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 			 ->addOption("wpsqt_limit_one_cookie", "Limit to one submission per computer (using cookies)", "yesno", $options['limit_one_cookie'], "Limit the quiz to one submission per computer/browser")
 			 ->addOption("wpsqt_timer", "Timer value for the quiz","text", $options['timer'], "Enter the countdown timer value for the quiz. <b>Enter 0 for no timer</b>")
 			 ->addOption("wpsqt_pass_mark", "Pass mark", "text", $options['pass_mark'], "What is the pass mark of this quiz (percentage)?")
+			 ->addOption("wpsqt_show_progress_bar", "Show progress bar", "yesno", $options['show_progress_bar'], "Shows a progress bar based on which section the user is on")
 			 ->addOption("wpsqt_automark_whenfreetxt", "Auto mark when freetext questions", "select", $options['automark_whenfreetext'], "If the quiz contains free text questions then this option will have the behaviour:<br /><strong>No</strong> - Do not attempt to mark the quiz<br /><strong>Yes - include</strong> - Mark all questions except and mark free texts as incorrect<br /><strong>Yes - exclude</strong> - Mark all questions except free text questions and ignore them from the total count.",array('no','yes - include freetext', 'yes - exclude freetext') )
 			 ->addOption("wpsqt_finish_display", "Finish Display",'select', $options['finish_display'], "What should be displayed on the finishing of the quiz.", array("Finish message","Quiz Review"))
 			 ->addOption("wpsqt_status", "Status", "select", $options['status'], "Status of the quiz either enabled where users can take it or disabled where users can't.", array('enabled','disabled'))
