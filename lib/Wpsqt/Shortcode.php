@@ -407,6 +407,22 @@ class Wpsqt_Shortcode {
 			// Show section.
 			do_action("wpsqt_".$this->_type."_step",$this->_step);
 			$this->showSection();
+
+			// Progress bar 
+			echo 'Page ' . ($this->_step + 1) .' out of '. (sizeof($_SESSION["wpsqt"][$quizName]["sections"]) + 1);
+			$percentage = ($this->_step + 1) / (sizeof($_SESSION["wpsqt"][$quizName]["sections"]) + 1) * 100;
+			?>
+			<div class="wp-progress-div" style="      background-color: #BABABA;
+      border-radius: 13px; 
+      padding: 3px;">
+				<div class="wp-progress" style="       background-color: #707070;
+	  width: <?=$percentage;?>%; 
+       height: 10px;
+       border-radius: 10px;">
+				</div>
+			</div>
+
+			<?php
 			return;
 		}
 
