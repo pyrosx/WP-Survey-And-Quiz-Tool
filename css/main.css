@@ -12,3 +12,13 @@ div.wpsqt-survey-info {
 div.wpsqt-question-review {
 	margin-bottom: 75px;
 }
+div.wpsqt-progress {
+	background-color: #BABABA;
+	border-radius: 13px; 
+	padding: 3px;
+}
+div.wpsqt-progress div {
+	background-color: #707070;
+	height: 10px;
+	border-radius: 10px;
+}
