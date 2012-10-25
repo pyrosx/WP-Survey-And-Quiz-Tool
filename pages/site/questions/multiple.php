@@ -8,6 +8,9 @@
 						unset($question['answers'][$key]);
 					}
 					$question['answers'] = $answers;
+
+					// Store the order of the answers for review page
+					$_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'][$questionKey]['answers'] = $answers;
 				}
 			?>
 			<?php foreach ( $question['answers'] as $answerKey => $answer ){ ?>
