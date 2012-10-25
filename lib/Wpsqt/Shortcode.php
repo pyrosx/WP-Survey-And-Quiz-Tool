@@ -439,6 +439,10 @@ class Wpsqt_Shortcode {
 		$section = $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey];
 		$orderBy = ($section["order"] == "random") ? "RAND()" : "`order` ".strtoupper($section["order"]);
 		$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"] = array();
+		
+		// Test call
+		// TODO: Remove
+		Wpsqt_Core::saveCurrentState($sectionKey);
 
 		if ( !empty($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']) ){
 			$end = " LIMIT 0,".$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit'];

@@ -272,6 +272,32 @@ class Wpsqt_Core {
 	}
 
 	/**
+	 * Saves the state of the current quiz to the database
+	 *
+	 * @param integer $currentStep the key of the section currently on
+	 */
+	public static function saveCurrentState($currentStep) {
+		$quizName = $_SESSION["wpsqt"]["current_id"];
+
+		// Get all the given answers for all previous sections and stick in an array
+		$answersToSave = array();
+		foreach ($_SESSION['wpsqt'][$quizName]['sections'] as $key => $section) {
+			if (isset($section['answers'])) {
+				$answersToSave[$key] = $section['answers'];
+			}
+		}
+
+		// TODO: Get current section
+
+		$final = serialize(array('answers' => $answersToSave));
+
+		// TODO: Save to database with a unique identifier
+		// 	and stick that id in a cookie
+
+		return true;
+	}
+
+	/**
 	 * Adds the CatN's link to the footer if the
 	 * user agrees to it.
 	 *
