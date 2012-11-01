@@ -17,7 +17,6 @@ jQuery(document).ready( function() {
 		return false;
 	});
 	jQuery('.wpst_question input').click( function() {
-		console.log();
 		var explanationText = jQuery(this).parents('.wpst_question').children('.wpsqt-answer-explanation:hidden');
 
 		if (explanationText.length != 0) {
