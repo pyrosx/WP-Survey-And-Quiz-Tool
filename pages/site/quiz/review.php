@@ -43,7 +43,7 @@ foreach ( $_SESSION['wpsqt'][$quizName]['sections'] as $section ){ ?>
 						// replace the tokens
 						$explanation = $objTokens->doReplacement( $questionArray['explanation'] );
 						?>
-						<p class="wpsqt-answer-explanation"><?=$explanation?></p>
+						<p class="wpsqt-answer-explanation"><?php echo $explanation; ?></p>
 					<?php } ?>
 				<?php } else { 
 					?>				
@@ -53,7 +53,7 @@ foreach ( $_SESSION['wpsqt'][$quizName]['sections'] as $section ){ ?>
 						// replace the tokens
 						$explanation = $objTokens->doReplacement( $questionArray['explanation'] );
 						?>
-						<p class="wpsqt-answer-explanation"><?=$explanation?></p>
+						<p class="wpsqt-answer-explanation"><?php echo $explanation; ?></p>
 					<?php } ?>
 					<?php if ( isset($questionArray['hint']) && $questionArray['hint'] != "" ) { ?>- <a href="#" class="show_hide_hint"><?php _e('Show/Hide Hint', 'wp-survey-and-quiz-tool'); ?></a></p>
 					<div class="hint">

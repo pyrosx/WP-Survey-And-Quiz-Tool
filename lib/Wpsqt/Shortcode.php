@@ -285,7 +285,7 @@ class Wpsqt_Shortcode {
 				?>
 					<script type="text/javascript">
 						jQuery(document).ready( function(){
-							var timeSecs = <?= $timerVal; ?>;
+							var timeSecs = <?php echo $timerVal; ?>;
 							var refreshId = setInterval(function() {
 								if (timeSecs != 0) {
 									timeSecs = timeSecs - 1;
@@ -414,7 +414,7 @@ class Wpsqt_Shortcode {
 				$percentage = ($this->_step + 1) / (sizeof($_SESSION["wpsqt"][$quizName]["sections"])) * 100;
 				?>
 				<div class="wpsqt-progress">
-					<div style="width: <?=$percentage;?>%;">
+					<div style="width: <?php echo $percentage; ?>%;">
 					</div>
 				</div>
 
