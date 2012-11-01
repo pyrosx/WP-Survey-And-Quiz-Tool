@@ -73,6 +73,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed multiple choice survey questions only counting first option selected
 * Fixed 'other' graph showing for likert matrix questions when disallowed
 * Fixed timer not showing due to extra whitespace in javascript
+* Fixed W3C validation issues
 * Replace all PHP short tags with the longer tags to ensure compatibility with all PHP configurations
 * Added Spanish (es_ES) translation
 * Added Italian (it_IT) translation
