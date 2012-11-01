@@ -440,9 +440,6 @@ class Wpsqt_Shortcode {
 		$orderBy = ($section["order"] == "random") ? "RAND()" : "`order` ".strtoupper($section["order"]);
 		$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"] = array();
 		
-		// Test call
-		// TODO: Remove
-		Wpsqt_Core::saveCurrentState($sectionKey);
 
 		if ( !empty($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']) ){
 			$end = " LIMIT 0,".$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit'];
@@ -459,7 +456,13 @@ class Wpsqt_Shortcode {
 		foreach ( $rawQuestions as $rawQuestion ){
 			$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"][] = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
 		}
-		require Wpsqt_Core::pageView('site/'.$this->_type.'/section.php');
+
+		if (isset($_POST['wpsqt-save-state'])) {
+			Wpsqt_Core::saveCurrentState($sectionKey);
+			echo 'Saved the current state. You can resume by revisiting the quiz.';
+		} else {
+			require Wpsqt_Core::pageView('site/'.$this->_type.'/section.php');
+		}
 
 	}
 

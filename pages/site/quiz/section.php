@@ -14,6 +14,11 @@ if (isset($GLOBALS['q_config']) && isset($GLOBALS['q_config']['url_info']['url']
 }
 ?>
 <form method="post" action="<?php echo esc_url($url); ?>">
+	<input type="submit" name="wpsqt-save-state" value="Save" />
+	<input type="hidden" name="step" value="<?php echo ( $_SESSION['wpsqt']['current_step']+1); ?>">
+</form>
+
+<form method="post" action="<?php echo esc_url($url); ?>">
 	<input type="hidden" name="wpsqt_nonce" value="<?php echo WPSQT_NONCE_CURRENT; ?>" />
 	<input type="hidden" name="step" value="<?php echo ( $_SESSION['wpsqt']['current_step']+1); ?>">
 <?php
