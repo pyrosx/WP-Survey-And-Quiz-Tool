@@ -27,6 +27,7 @@ class Wpsqt_Form_Question extends Wpsqt_Form {
 							 'type' => false,
 							 'points' => false,
 							 'difficulty' => false,
+							 'randomize_answers' => false,
 							 'section' => false,
 							 'add_text' => false,
 							 'explanation' => false,
@@ -44,6 +45,7 @@ class Wpsqt_Form_Question extends Wpsqt_Form {
 		
 		$this->addOption("wpsqt_name", "Question", "textarea", $options['question'], "The text for the question (the actual question)." )
 			 ->addOption("wpsqt_type", "Type", "select", $options['type'], $typeHelpText, array_keys($questionTypes) )
+			 ->addOption("wpsqt_randomize_answers", "Randomize answers", "yesno", $options['randomize_answers'], "Sort the answers of this question randomly.")
 			 ->addOption("wpsqt_likertmatrixscale", "Likert Matrix Scale", "select", $options['likertmatrixscale'], "Scale 1-5 or Disagree/Agree", array("1-5", "Disagree/Agree"))
 			 ->addOption("wpsqt_likertscale", "Likert Scale", "select", $options['likertscale'], "What should the likert display to?", array('10', '5', '3', 'Agree/Disagree'))
 			 ->addOption("wpsqt_likertmatrixcustom", "Custom Answer", "yesno", $options['likertmatrixcustom'], "Would you like the user to be able to enter a custom answer?")
