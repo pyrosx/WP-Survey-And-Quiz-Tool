@@ -14,7 +14,7 @@ if (isset($GLOBALS['q_config']) && isset($GLOBALS['q_config']['url_info']['url']
 }
 ?>
 <?php if($_SESSION['wpsqt']['current_step'] != 0) { ?>
-	<form method="post" action="<?php echo esc_url($url); ?>">
+	<form method="post" action="<?php echo esc_url($url); ?>" class="wpsqt-save-form" style="float: right;">
 		<input type="submit" name="wpsqt-save-state" value="Save and quit" />
 		<input type="hidden" name="step" value="<?php echo ( $_SESSION['wpsqt']['current_step']+1); ?>">
 	</form>
