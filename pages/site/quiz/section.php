@@ -13,10 +13,12 @@ if (isset($GLOBALS['q_config']) && isset($GLOBALS['q_config']['url_info']['url']
 	$url = $_SERVER['REQUEST_URI'];
 }
 ?>
-<form method="post" action="<?php echo esc_url($url); ?>">
-	<input type="submit" name="wpsqt-save-state" value="Save" />
-	<input type="hidden" name="step" value="<?php echo ( $_SESSION['wpsqt']['current_step']+1); ?>">
-</form>
+<?php if($_SESSION['wpsqt']['current_step'] != 0) { ?>
+	<form method="post" action="<?php echo esc_url($url); ?>">
+		<input type="submit" name="wpsqt-save-state" value="Save and quit" />
+		<input type="hidden" name="step" value="<?php echo ( $_SESSION['wpsqt']['current_step']+1); ?>">
+	</form>
+<?php } ?>
 
 <form method="post" action="<?php echo esc_url($url); ?>">
 	<input type="hidden" name="wpsqt_nonce" value="<?php echo WPSQT_NONCE_CURRENT; ?>" />
