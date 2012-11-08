@@ -471,6 +471,7 @@ class Wpsqt_Shortcode {
 		if (isset($_POST['wpsqt-save-state'])) {
 			Wpsqt_Core::saveCurrentState($sectionKey);
 			echo 'Saved the current state. You can resume by revisiting the quiz.';
+			$sectionKey--;
 			$show = false;
 		} else {
 			$show = true;
