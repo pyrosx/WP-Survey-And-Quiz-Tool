@@ -279,9 +279,10 @@ class Wpsqt_Core {
 	public static function saveCurrentState($currentStep) {
 		global $wpdb;
 
+		
 		$quizName = $_SESSION["wpsqt"]["current_id"];
 		$quizId = $_SESSION['wpsqt'][$quizName]['details']['id'];
-
+		/*
 		// Get all the given answers for all previous sections and stick in an array
 		$answersToSave = array();
 		foreach ($_SESSION['wpsqt'][$quizName]['sections'] as $key => $section) {
@@ -289,16 +290,20 @@ class Wpsqt_Core {
 				$answersToSave[$key] = $section['answers'];
 			}
 		}
+		 */
 
 		// Generate uid
 		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		$uid = substr(str_shuffle($chars), 0, 20);
 
+		unset($_POST['wpsqt-save-state']);
+
 		$wpdb->insert(WPSQT_TABLE_QUIZ_STATE, array(
 			'uid' => $uid,
-			'answers' => serialize($answersToSave),
+			'answers' => serialize($_SESSION['wpsqt']),
+			'post' => serialize($_POST),
 			'quiz_id' => $quizId,
-			'current_section' => $currentStep
+			'current_section' => $currentStep - 1
 		));
 
 		// Use JS to store the cookie because headers are almost 100%
