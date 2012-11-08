@@ -468,7 +468,6 @@ class Wpsqt_Shortcode {
 		$quizName = $_SESSION["wpsqt"]["current_id"];
 		$sectionKey = $this->_key;
 
-		var_dump($_SESSION['wpsqt'][$quizName]);
 		if (isset($_POST['wpsqt-save-state'])) {
 			Wpsqt_Core::saveCurrentState($sectionKey);
 			echo 'Saved the current state. You can resume by revisiting the quiz.';
