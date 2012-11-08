@@ -416,7 +416,7 @@ class Wpsqt_Shortcode {
 
 		}
 
-		if ( isset($requiredQuestions) && $requiredQuestions['exist'] > sizeof($requiredQuestions['given']) ){
+		if ( isset($requiredQuestions) && $requiredQuestions['exist'] > sizeof($requiredQuestions['given']) && !$this->_restore ){
 			$_SESSION['wpsqt']['current_message'] = 'Not all the required questions were answered!';
 			$this->_step--;
 			$this->_key--;
