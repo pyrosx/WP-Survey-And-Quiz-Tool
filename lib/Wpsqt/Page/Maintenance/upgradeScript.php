@@ -92,7 +92,7 @@ if ($needUpdate == '1') {
 		$wpdb->query("ALTER TABLE `".WPSQT_TABLE_QUESTIONS."` ADD `order` INT(11) DEFAULT NULL AFTER `difficulty`");
 		case '2.12':
 		echo '<h4>Updating to 2.13</h4>';
-		$wpdb->query("CREATE TABLE `{$wpdb->get_blog_prefix()}_wpsqt_quiz_state` (
+		$wpdb->query("CREATE TABLE IF NOT EXISTS `{$wpdb->get_blog_prefix()}_wpsqt_quiz_state` (
 			  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 			    `uid` mediumtext,
 				  `answers` text,
