@@ -90,6 +90,17 @@ if ($needUpdate == '1') {
 		case '2.9':
 		echo '<h4>Updating to 2.9.1</h4>';
 		$wpdb->query("ALTER TABLE `".WPSQT_TABLE_QUESTIONS."` ADD `order` INT(11) DEFAULT NULL AFTER `difficulty`");
+		case '2.12':
+		echo '<h4>Updating to 2.13</h4>';
+		$wpdb->query("CREATE TABLE `{$wpdb->get_blog_prefix()}_wpsqt_quiz_state` (
+			  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+			    `uid` mediumtext,
+				  `answers` text,
+				    `post` text,
+					  `quiz_id` int(11) DEFAULT NULL,
+					    `current_section` int(11) DEFAULT NULL,
+						  PRIMARY KEY (`id`)
+					  ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;");
 	}
 	echo '<p><strong>Updated. Return to the <a href="'.WPSQT_URL_MAIN.'">main page</a> to ensure the notice disappears</strong></p>';
 	update_option('wpsqt_version',WPSQT_VERSION);
