@@ -404,8 +404,15 @@ class Wpsqt_Shortcode {
 					}// END if section type == multiple
 
 					if ( isset($questionData['required']) && $questionData['required'] == 'yes' ){
-						$requiredQuestions['given'][] = $questionId;
+						if ($questionData['type'] == 'Free Text') {
+							if ($givenAnswers[0] != '') {
+								$requiredQuestions['given'][] = $questionId;
+							}
+						} else {
+							$requiredQuestions['given'][] = $questionId;
+						}
 					}
+
 
 					$answerMarked["given"] = $givenAnswers;
 					$_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["answers"][$questionId] = $answerMarked;
