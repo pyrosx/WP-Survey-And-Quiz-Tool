@@ -63,6 +63,8 @@ class Wpsqt_Shortcode {
 
 	protected $_acceptableTypes = array('quiz','survey', 'poll');
 
+	protected $_restore = false;
+
 	/**
 	 * Starts the shortcode off firstly checks to see
 	 * if there is a wpsqt key item in the session
@@ -122,6 +124,32 @@ class Wpsqt_Shortcode {
 			}
 		}
 
+		if (isset($_COOKIE['wpsqt_'.$_SESSION['wpsqt']['item_id'].'_state'])) {
+			$uid = $_COOKIE['wpsqt_'.$_SESSION['wpsqt']['item_id'].'_state'];
+			if (!empty($uid)) {
+				$state = $wpdb->get_row("SELECT * FROM ".WPSQT_TABLE_QUIZ_STATE." WHERE uid = '{$uid}'", ARRAY_A);
+				$answers = unserialize($state['answers']);
+
+				$_SESSION['wpsqt'] = $answers;
+				$_POST = unserialize($state['post']);
+	?>
+	<script type="text/javascript">
+		function setCookie(c_name,value,exdays) {
+			var exdate=new Date();
+			exdate.setDate(exdate.getDate() + exdays);
+			var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+			document.cookie=c_name + "=" + c_value;
+		}
+		setCookie('wpsqt_<?php echo $_SESSION['wpsqt'][$identifier]['details']['id']; ?>_state', '', '-10');
+	</script>
+	<?php
+
+				$this->_key = $state['current_section'];
+				$this->_step = $state['current_section'];
+				$this->_restore = true;
+			}
+
+		}
 	}
 
 	/**
@@ -319,7 +347,9 @@ class Wpsqt_Shortcode {
 			$correct = 0;
 			$pastSectionKey = $this->_key - 1;
 
-			$_SESSION['wpsqt'][$quizName]['sections'][$pastSectionKey]['answers'] = array();
+			if (!$this->_restore) {
+				$_SESSION['wpsqt'][$quizName]['sections'][$pastSectionKey]['answers'] = array();
+			}
 			$canAutoMark = true;
 			if (isset($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"]) && is_array($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"])) { 
 				foreach ($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"] as $questionData ){
@@ -386,7 +416,7 @@ class Wpsqt_Shortcode {
 
 		}
 
-		if ( isset($requiredQuestions) && $requiredQuestions['exist'] > sizeof($requiredQuestions['given']) ){
+		if ( isset($requiredQuestions) && $requiredQuestions['exist'] > sizeof($requiredQuestions['given']) && !$this->_restore ){
 			$_SESSION['wpsqt']['current_message'] = 'Not all the required questions were answered!';
 			$this->_step--;
 			$this->_key--;
@@ -397,7 +427,8 @@ class Wpsqt_Shortcode {
 
 		// if equal or greater than so other
 		// plugins can add extra steps at the end.
-		if ( sizeof($_SESSION["wpsqt"][$quizName]["sections"]) <= $this->_key ){
+		if ( sizeof($_SESSION["wpsqt"][$quizName]["sections"]) <= $this->_key  &&
+			!isset($_POST['wpsqt-save-state'])){
 			// finished!
 			do_action("wpsqt_".$this->_type."_finished",$this->_step);
 			$this->finishQuiz();
@@ -436,9 +467,20 @@ class Wpsqt_Shortcode {
 
 		$quizName = $_SESSION["wpsqt"]["current_id"];
 		$sectionKey = $this->_key;
+
+		if (isset($_POST['wpsqt-save-state']) && isset($_SESSION['wpsqt'][$quizName]['details']['save_resume']) && $_SESSION['wpsqt'][$quizName]['details']['save_resume'] == 'yes') {
+			Wpsqt_Core::saveCurrentState($sectionKey);
+			echo 'Saved the current state. You can resume by revisiting the quiz.';
+			$sectionKey--;
+			$show = false;
+		} else {
+			$show = true;
+		}
+
 		$section = $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey];
 		$orderBy = ($section["order"] == "random") ? "RAND()" : "`order` ".strtoupper($section["order"]);
 		$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"] = array();
+		
 
 		if ( !empty($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']) ){
 			$end = " LIMIT 0,".$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit'];
@@ -455,7 +497,10 @@ class Wpsqt_Shortcode {
 		foreach ( $rawQuestions as $rawQuestion ){
 			$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"][] = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
 		}
-		require Wpsqt_Core::pageView('site/'.$this->_type.'/section.php');
+
+		if ($show) {
+			require Wpsqt_Core::pageView('site/'.$this->_type.'/section.php');
+		}
 
 	}
 

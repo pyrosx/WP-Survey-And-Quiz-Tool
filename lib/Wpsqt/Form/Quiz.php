@@ -23,6 +23,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 							'limit_one' => false,
 							'limit_one_wp' => false,
 							'limit_one_cookie' => false,
+							'save_resume' => false,
 							'timer' => '0',
 							'pass_mark' => '80', 
 							'show_progress_bar' => false,
@@ -47,6 +48,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 			 ->addOption("wpsqt_limit_one", "Limit to one submission per IP","yesno", $options['limit_one'], "Limit the quiz to one submission per IP.")
 			 ->addOption("wpsqt_limit_one_wp", "Limit to one submission per WP user","yesno", $options['limit_one_wp'], "Limit the quiz to one submission per WP user. You must have the Use WP Details option below set to yes.")
 			 ->addOption("wpsqt_limit_one_cookie", "Limit to one submission per computer (using cookies)", "yesno", $options['limit_one_cookie'], "Limit the quiz to one submission per computer/browser")
+			 ->addOption("wpsqt_save_resume", "Allow save/resume","yesno", $options['save_resume'], "Allow save and resume for this quiz?")
 			 ->addOption("wpsqt_timer", "Timer value for the quiz","text", $options['timer'], "Enter the countdown timer value for the quiz. <b>Enter 0 for no timer</b>")
 			 ->addOption("wpsqt_pass_mark", "Pass mark", "text", $options['pass_mark'], "What is the pass mark of this quiz (percentage)?")
 			 ->addOption("wpsqt_show_progress_bar", "Show progress bar", "yesno", $options['show_progress_bar'], "Shows a progress bar based on which section the user is on")

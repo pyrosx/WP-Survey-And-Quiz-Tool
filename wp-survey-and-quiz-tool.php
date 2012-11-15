@@ -45,6 +45,7 @@ define( 'WPSQT_TABLE_QUESTIONS'      , $wpdb->get_blog_prefix().'wpsqt_all_quest
 define( 'WPSQT_TABLE_FORMS'          , $wpdb->get_blog_prefix().'wpsqt_custom_forms' );
 define( 'WPSQT_TABLE_RESULTS'        , $wpdb->get_blog_prefix().'wpsqt_all_results' );
 define( 'WPSQT_TABLE_SURVEY_CACHE'   , $wpdb->get_blog_prefix().'wpsqt_survey_cache_results' );
+define( 'WPSQT_TABLE_QUIZ_STATE'   , $wpdb->get_blog_prefix().'wpsqt_quiz_state' );
 
 define( 'WPSQT_URL_MAIN'             , admin_url('admin.php?page='.WPSQT_PAGE_MAIN) );
 define( 'WPSQT_URL_MAINENTANCE'      , admin_url('admin.php?page='.WPSQT_PAGE_MAINTENANCE) );
