@@ -20,19 +20,17 @@ All documentation can be found on the <a href="https://github.com/fubralimited/W
 
 **Features**
 
-* Unlimited Quizzes.
-* Unlimited Surveys.
-* Unlimited Polls.
+* Unlimited quizzes, polls and surveys.
 * Unlimited number of sections for quizzes, surveys and polls.
 * Auto marking for quizzes with all multiple choice questions.
-* Ability to limit quizzes and surveys to one submission per IP address.
+* Ability to limit quizzes and surveys to one submission per IP address, WordPress user or computer (using cookies).
 * Ability to send customised notification emails.
 * Ability to send notification emails to a single email address, multiple email addresses or a group of WordPress users.
 * Ability to have notification emails only be sent if the user got a certain score.
 * Ability to have surveys and quizzes be taken by registered WordPress members only.
 * Ability to have quizzes and surveys with or without contact forms.
 * Ability to have custom contact forms.
-* Ability to export and import quizzes,surveys and questions.
+* Ability to export the results of quizzes.
 * Ability to have PDF certifications using <a href="http://www.docraptor.com">DocRaptor</a>
 
 **Requirements**
