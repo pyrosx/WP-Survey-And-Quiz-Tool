@@ -66,7 +66,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 
 == ChangeLog ==
 
-= 2.12.1 =
+= 2.13 =
 
 * Fixed several PHP notices
 * Fixed navigation bar on quiz/survey/poll delete page
@@ -74,6 +74,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed 'other' graph showing for likert matrix questions when disallowed
 * Fixed timer not showing due to extra whitespace in javascript
 * Fixed W3C validation issues
+* Fixed required free text questions not being checked for answer
 * Removed superfluous console.log() that was causing IE8 (and possibly other versions) to silently fail
 * Replace all PHP short tags with the longer tags to ensure compatibility with all PHP configurations
 * Added Spanish (es_ES) translation
