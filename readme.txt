@@ -82,6 +82,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Added option to hide/show survey results when survey is already taken and limiting is enabled
 * Added option to show a progress bar on a quiz/survey
 * Added option to randomise the order of the answers of a question
+* Added ability to save and resume quizzes
 
 = 2.12 =
 
