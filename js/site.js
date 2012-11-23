@@ -16,7 +16,7 @@ jQuery(document).ready( function() {
 		jQuery(this).hide();
 		return false;
 	});
-	jQuery('.wpst_question input').click( function() {
+	jQuery('.wpst_question input, .wpst_question textarea').click( function() {
 		var explanationText = jQuery(this).parents('.wpst_question').children('.wpsqt-answer-explanation:hidden');
 
 		if (explanationText.length != 0) {
