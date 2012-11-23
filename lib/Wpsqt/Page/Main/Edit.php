@@ -40,7 +40,7 @@ abstract class Wpsqt_Page_Main_Edit extends Wpsqt_Page {
 		$this->_pageVars = array('objForm' => $objForm,
 								 'objTokens' => Wpsqt_Tokens::getTokenObject() );
 		
-		if ( $_SERVER['REQUEST_METHOD'] == "POST" ){
+		if ( $_SERVER['REQUEST_METHOD'] == "POST" && !isset($_POST['new-page']) ){
 			
 			$errorMessages = $objForm->getMessages($_POST);
 			$details = $_POST;

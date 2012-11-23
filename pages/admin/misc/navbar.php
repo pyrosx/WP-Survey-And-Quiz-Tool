@@ -4,7 +4,6 @@ function wpsqt_is_section($section) {
 }
 
 if ( isset($_GET['id']) ){
-	
 	global $wpdb;
 	
 	$quizName = $wpdb->get_var(
@@ -13,6 +12,19 @@ if ( isset($_GET['id']) ){
 	$quizType = $wpdb->get_var(
 					$wpdb->prepare("SELECT type FROM `".WPSQT_TABLE_QUIZ_SURVEYS."` WHERE id = %s", array($_GET['id']))
 							 );
+
+	if (isset($_POST['new-page'])) {
+		$shortcode = '[wpsqt type="'.$quizType.'" name="'.$quizName.'"]';
+		$post = array(
+			'post_author' => get_current_user_id(),
+			'post_content' => $shortcode,
+			'post_name' => str_replace(' ', '-', strtolower($quizName)),
+			'post_title' => $_POST['quiz-name'],
+			'post_status' => 'publish',
+			'post_type' => 'page',
+		);
+		wp_insert_post($post);
+	}
 	
 	?>
 	<div>
@@ -25,6 +37,11 @@ if ( isset($_GET['id']) ){
 			<li><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=<?php esc_html_e($_GET["subsection"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($_GET["id"], 'wp-survey-and-quiz-tool'); ?>"<?php if ( wpsqt_is_section('results') ) { ?> class="current"<?php }?>>Results</a></li> 
 			<li style="padding-left: 30px;">Shortcode: <pre style="display: inline;">[wpsqt name="<?php echo $quizName; ?>" type="<?php echo $quizType; ?>"]</pre></li>
 		</ul>
+
+		<form action="<?php echo WPSQT_URL_MAIN; ?>&section=edit&subsection=<?php esc_html_e($_GET["subsection"], 'wp-survey-and-quiz-tool'); ?>&id=<?php echo $_GET['id']; ?>" method="post">
+			<input type="submit" name="new-page" value="Insert Into New Page" class="button-secondary" style="float:right;" />
+			<input type="hidden" name="quiz-name" value="<?php echo $quizName; ?>" />
+		</form>
 		<div style="clear:both;"></div>
 	</div>
 	<?php 						 
