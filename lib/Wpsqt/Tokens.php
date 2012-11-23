@@ -119,7 +119,7 @@ class Wpsqt_Tokens {
 			$this->setTokenValue($token,$_SESSION['wpsqt'][$quizName]['details']['name']);
 		}
 
-		if ($_SESSION['wpsqt']['current_type'] == 'quiz') {
+		if ($_SESSION['wpsqt']['current_type'] == 'quiz' && isset($_SESSION['wpsqt']['current_score'])) {
 			// Calculate percentage
 			preg_match('$(\d*)\scorrect\sout\sof\s(\d*)$', $_SESSION['wpsqt']['current_score'], $score);
 			if (isset($score) && is_array($score) && isset($score[2]) && $score[2] != 0) {
@@ -128,6 +128,8 @@ class Wpsqt_Tokens {
 			} else {
 				$percentage = '?%';
 			}
+		} else {
+			$percentage = '?%';
 		}
 		
 		$this->setTokenValue('DATE_EU'     , date('d-m-Y') );
