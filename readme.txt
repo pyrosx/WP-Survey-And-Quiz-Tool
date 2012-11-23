@@ -73,6 +73,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed timer not showing due to extra whitespace in javascript
 * Fixed W3C validation issues
 * Fixed required free text questions not being checked for answer
+* Fixed 'Answer Explanation' not displaying for free text questions
 * Removed superfluous console.log() that was causing IE8 (and possibly other versions) to silently fail
 * Replace all PHP short tags with the longer tags to ensure compatibility with all PHP configurations
 * Added Spanish (es_ES) translation
@@ -82,6 +83,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Added option to show a progress bar on a quiz/survey
 * Added option to randomise the order of the answers of a question
 * Added ability to save and resume quizzes
+* Added button to quickly insert a quiz/survey/poll into a new page
 
 = 2.12 =
 
