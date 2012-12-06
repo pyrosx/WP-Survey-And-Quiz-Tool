@@ -3,3 +3,4 @@ lang/po
 *.sh
 Vagrantfile
 .vagrant
+scripts/*
