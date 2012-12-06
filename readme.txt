@@ -79,6 +79,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Added Spanish (es_ES) translation
 * Added Italian (it_IT) translation
 * Added Swedish (sv_SE) translation
+* Added Romanian (ro_RO) translation
 * Added option to hide/show survey results when survey is already taken and limiting is enabled
 * Added option to show a progress bar on a quiz/survey
 * Added option to randomise the order of the answers of a question
