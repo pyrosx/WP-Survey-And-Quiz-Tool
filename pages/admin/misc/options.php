@@ -93,14 +93,14 @@
 				<th scope="row">Chart Text Abbreviations</th>
 				<td>
 					<input type="radio" name="wpsqt_chart_abbreviation" value="yes" id="wpsqt_abbreviation_yes" <?php if ($chartAbbreviation == 'yes') { echo 'checked="checked"'; } ?> /> <label for="wpsqt_abbreviation_yes">Yes</label>
-					<input type="radio" name="wpsqt_chart_abbreviation" value="no" id="wpsqt_abbreviation_no" <?php if ($chartAbbreviation == 'no') { echo 'checked="checked"'; } ?> /> <label for="wpsqt_abbreviation_no">No</label>
+					<input type="radio" name="wpsqt_chart_abbreviation" value="no" id="wpsqt_abbreviation_no" <?php if ($chartAbbreviation == 'no' || empty($chartAbbreviation) || !isset($chartAbbreviation)) { echo 'checked="checked"'; } ?> /> <label for="wpsqt_abbreviation_no">No</label>
 				</td>
 				<td>Apply the abbreviation <em>strngly</em> instead of <em>strongly</em>.</td>
 			</tr>
 			<tr>
 				<th scope="row">Support Us!</th>
-				<td><input type="radio" name="wpsqt_support_us" value="yes" id="support_yes" <?php if ( !isset($supportUs) || empty($supportUs) || $supportUs == 'yes' ){ ?> checked="yes"<?php }?>> <label for="support_yes"><strong>Yes!</strong></label>
-					<input type="radio" name="wpsqt_support_us" value="no" id="support_no" <?php if ($supportUs == 'no'){ ?> checked="yes"<?php }?>> <label for="support_no">No</label></td>
+				<td><input type="radio" name="wpsqt_support_us" value="yes" id="support_yes" <?php if ( $supportUs == 'yes' ){ ?> checked="yes"<?php }?>> <label for="support_yes"><strong>Yes!</strong></label>
+					<input type="radio" name="wpsqt_support_us" value="no" id="support_no" <?php if ($supportUs == 'no' || empty($supportUs) || !isset($supportUs)){ ?> checked="yes"<?php }?>> <label for="support_no">No</label></td>
 				<td valign="top">This will add a text link to the bottom of your pages.</td>
 			</tr>
 			<tr>
