@@ -56,8 +56,8 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 			<p><?php echo nl2br(stripslashes($question['add_text'])); ?></p>
 			<?php } ?>
 			
-			<?php if ( isset($question['image'])) { ?>
-			<p><?php echo stripslashes($question['image']); ?></p>
+			<?php if ( isset($question['image']) && !empty($question['image'])) { ?>
+				<p><?php echo stripslashes($question['image']); ?></p>
 			<?php } ?>
 			
 			<?php do_action('wpsqt_quiz_question_section',$question); ?>
