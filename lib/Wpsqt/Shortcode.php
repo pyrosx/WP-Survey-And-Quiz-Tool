@@ -269,7 +269,8 @@ class Wpsqt_Shortcode {
 
 					if ( !isset($_POST["Custom_".$fieldName]) || empty($_POST["Custom_".$fieldName]) ){
 						if ( $field['required'] == 'yes' ){
-							$errors[] = $field['name'].' is required';
+							/* translators: %s is the question name */
+							$errors[] = sprintf(__('%s is required', 'wp-survey-and-quiz-tool'), $field['name']);
 						}
 					} else {
 						$field['value'] = $_POST["Custom_".$fieldName];
@@ -310,6 +311,12 @@ class Wpsqt_Shortcode {
 			if (isset($_SESSION['wpsqt'][$quizName]['details']['timer']) && $_SESSION['wpsqt'][$quizName]['details']['timer'] != '0' && $_SESSION['wpsqt'][$quizName]['details']['timer'] != "") {
 				$timerVal = (((int) $_SESSION['wpsqt'][$quizName]['details']['timer']) * 60) - $timeTaken;
 				echo '<div class="timer" style="float: right;"></div>';
+				$timerStrings = array(
+					'timeleft' => __('Time Left:', 'wp-survey-and-quiz-tool'),
+					'mins' => __('minutes', 'wp-survey-and-quiz-tool'),
+					'secs' => __('seconds', 'wp-survey-and-quiz-tool'),
+					'outoftime' => __('Unfortunately you have run out of time for this quiz', 'wp-survey-and-quiz-tool'),
+				);
 				?>
 					<script type="text/javascript">
 						jQuery(document).ready( function(){
@@ -321,12 +328,12 @@ class Wpsqt_Shortcode {
 									timeMins = (timeMins<0?-1:+1)*Math.floor(Math.abs(timeMins)); // Gets rid of the decimal place
 									var timeSecsRem = timeSecs % 60;
 									if (timeMins > 0) {
-										jQuery(".timer").html("Time Left: " + timeMins + " mins and " + timeSecsRem + " seconds");
+										jQuery(".timer").html("<?php echo $timerStrings['timeleft']; ?> " + timeMins + " <?php echo $timerStrings['mins']; ?> and " + timeSecsRem + " <?php echo $timerStrings['secs']; ?>");
 									} else {
-										jQuery(".timer").html("Time Left: " + timeSecsRem + " seconds");
+										jQuery(".timer").html("<?php echo $timerStrings['timeleft']; ?>" + timeSecsRem + " <?php echo $timerStrings['secs']; ?>");
 									}
 								} else {
-									jQuery(".quiz").html("Unfortunately you have run out of time for this quiz.");
+									jQuery(".quiz").html("<?php echo $timerStrings['outoftime']; ?>");
 									jQuery(".timer").hide();
 								}
 							}, 1000);
@@ -391,13 +398,13 @@ class Wpsqt_Shortcode {
 
 						if ( $subCorrect === $subNumOfCorrect && $subIncorrect === 0 ){
 							$correct += $questionData["points"];
-							$answerMarked['mark'] = 'correct';
+							$answerMarked['mark'] = __('correct', 'wp-survey-and-quiz-tool');
 						}
 						else {
 							// TODO Insert ability to set point per answer scores
 
 							$incorrect += $questionData["points"];
-							$answerMarked['mark'] = "incorrect";
+							$answerMarked['mark'] = __('incorrect', 'wp-survey-and-quiz-tool');
 						}
 					} else {
 							$canAutoMark = false;
@@ -424,7 +431,7 @@ class Wpsqt_Shortcode {
 		}
 
 		if ( isset($requiredQuestions) && $requiredQuestions['exist'] > sizeof($requiredQuestions['given']) && !$this->_restore ){
-			$_SESSION['wpsqt']['current_message'] = 'Not all the required questions were answered!';
+			$_SESSION['wpsqt']['current_message'] = __('Not all the required questions were answered!', 'wp-survey-and-quiz-tool');
 			$this->_step--;
 			$this->_key--;
 		}
@@ -477,7 +484,7 @@ class Wpsqt_Shortcode {
 
 		if (isset($_POST['wpsqt-save-state']) && isset($_SESSION['wpsqt'][$quizName]['details']['save_resume']) && $_SESSION['wpsqt'][$quizName]['details']['save_resume'] == 'yes') {
 			Wpsqt_Core::saveCurrentState($sectionKey);
-			echo 'Saved the current state. You can resume by revisiting the quiz.';
+			_e('Saved the current state. You can resume by revisiting the quiz.', 'wp-survey-and-quiz-tool');
 			$sectionKey--;
 			$show = false;
 		} else {
@@ -595,7 +602,7 @@ class Wpsqt_Shortcode {
 		if ( $canAutoMark === true ){
 			$_SESSION['wpsqt']['current_score'] = $correctAnswers." correct out of ".$totalPoints;
 		} else {
-			$_SESSION['wpsqt']['current_score'] = "quiz can't be auto marked";
+			$_SESSION['wpsqt']['current_score'] = __('Quiz can\'t be auto marked', 'wp-survey-and-quiz-tool');
 		}
 
 		if ( $correctAnswers !== 0 ){

@@ -183,7 +183,7 @@
 			echo $givenAnswers;
 		}
 	} else {
-		echo '<div class="wpsqt-question-response-you">You didn\'t answer this question';
+		echo '<div class="wpsqt-question-response-you">' . __('You didn\'t answer this question', 'wp-survey-and-quiz-tool');
 	}
 ?>
 </div>
