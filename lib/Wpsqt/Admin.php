@@ -261,7 +261,7 @@ END;
 				header("Content-Disposition: attachment; filename=results-{$_GET['wpsqt-download']}.csv");
 				header("Pragma: no-cache");
 				header("Expires: 0");
-				echo implode("\r\n", $lines);
+				echo apply_filters('wpsqt-export-csv', implode("\r\n", $lines), $_GET['id']);
 				exit();
 			}
 		}
