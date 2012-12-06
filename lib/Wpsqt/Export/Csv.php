@@ -42,6 +42,8 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 			if (!empty($result['datetaken'])) { $csvline .= date('d-m-y G:i:s',$result['datetaken']); }; 
 			$this->csvLines[] = $csvline;
 		}
+
+		return $this->csvLines;
 	}
 
 	public function saveFile() {

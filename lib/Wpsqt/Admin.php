@@ -33,6 +33,8 @@ class Wpsqt_Admin extends Wpsqt_Core {
 		add_action( 'admin_init' , array($this,"adminFilter"));
 		add_action( 'admin_head-media-upload.php', array( $this, 'print_scripts_media_up' ), 11 );
 		add_action( 'admin_notices' , array($this, 'admin_notices') );
+
+		add_action('admin_init', array($this, 'download_csv'));
 		
 	}
 	
@@ -244,6 +246,25 @@ END;
 		wp_enqueue_script( 'thickbox' );
 		wp_enqueue_style( 'thickbox' );
 
+	}
+
+	public function download_csv() {
+		if (isset($_GET['wpsqt-download'])) {
+			if (current_user_can('manage_options')) {
+				require_once WPSQT_DIR.'lib/Wpsqt/Export/Csv.php';
+				$csvExporter = new Wpsqt_Export_Csv;
+
+				$csvExporter->quizId = $_GET['id'];
+				$lines = $csvExporter->generate($_GET['id']);
+
+				header("Content-type: application/x-msdownload",true,200);
+				header("Content-Disposition: attachment; filename=results-{$_GET['wpsqt-download']}.csv");
+				header("Pragma: no-cache");
+				header("Expires: 0");
+				echo implode("\r\n", $lines);
+				exit();
+			}
+		}
 	}
 	
 }
