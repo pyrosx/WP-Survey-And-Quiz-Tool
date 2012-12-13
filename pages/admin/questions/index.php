@@ -109,13 +109,13 @@ var saveOrder = function() {
                     //global $wpdb;
                     $correct_answer = 0;
                     
-                    $RESULTS_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM ".WPSQT_TABLE_RESULTS ) );
-                    $lastID = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM ".WPSQT_TABLE_RESULTS." ORDER BY `id` DESC LIMIT 0,1" ) );
+                    $RESULTS_count = $wpdb->get_var( "SELECT COUNT(*) FROM ".WPSQT_TABLE_RESULTS );
+                    $lastID = $wpdb->get_var( "SELECT id FROM ".WPSQT_TABLE_RESULTS." ORDER BY `id` DESC LIMIT 0,1" );
                     
                     for($i = 1; $i <= $lastID; $i++){
                     
                         $rawResult = $wpdb->get_row(
-                                        $wpdb->prepare("SELECT * FROM ".WPSQT_TABLE_RESULTS." WHERE id = $i"),ARRAY_A);
+                                        $wpdb->prepare("SELECT * FROM ".WPSQT_TABLE_RESULTS." WHERE id = %d", $i),ARRAY_A);
                                                         
                         $rawResult['sections'] = unserialize($rawResult['sections']);
                         
