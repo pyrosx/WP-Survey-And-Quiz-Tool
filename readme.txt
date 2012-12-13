@@ -74,6 +74,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed W3C validation issues
 * Fixed required free text questions not being checked for answer
 * Fixed 'Answer Explanation' not displaying for free text questions
+* Correctly sanitise various database queries
 * Removed superfluous console.log() that was causing IE8 (and possibly other versions) to silently fail
 * Replace all PHP short tags with the longer tags to ensure compatibility with all PHP configurations
 * Added Spanish (es_ES) translation
