@@ -5,7 +5,7 @@ Tags: Quiz,test,exam,survey,results,email,quizzes,charts,google charts,wpsqt,too
 Requires at least: 3.1
 Tested up to: 3.4.1
 Text Domain: wp-survey-and-quiz-tool
-Stable tag: 2.12
+Stable tag: 2.13
 A highly customisable Quiz, Survey and Poll plugin to which allows for unlimited questions and sections.
 
 == Description ==
