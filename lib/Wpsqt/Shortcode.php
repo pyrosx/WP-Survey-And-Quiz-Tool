@@ -246,9 +246,12 @@ class Wpsqt_Shortcode {
 			}
 		}
 
+		// Save whether we are using a contact form for the progress bar later
+		$display_contact_form = false;
 
 		// handle contact form and all the stuff that comes with it.
 		if ( isset($_SESSION['wpsqt'][$quizName]['details']['contact']) && $_SESSION['wpsqt'][$quizName]['details']['contact'] == "yes" && $this->_step <= 1 ){
+			$display_contact_form = true;
 			$fields = $wpdb->get_results(
 							$wpdb->prepare("SELECT * FROM `".WPSQT_TABLE_FORMS."` WHERE item_id = %d ORDER BY id ASC",
 							array($_SESSION['wpsqt'][$quizName]['details']['id'])),ARRAY_A
@@ -456,8 +459,11 @@ class Wpsqt_Shortcode {
 			if (isset($_SESSION['wpsqt'][$quizName]['details']['show_progress_bar']) && $_SESSION['wpsqt'][$quizName]['details']['show_progress_bar'] == 'yes') {
 				// Progress bar 
 				$current_step = $this->_step + 1;
+				if ($display_contact_form) {
+					$current_step--;
+				}
 				printf(__('Page %d out of %d', 'wp-survey-and-quiz-tool'), $current_step, (sizeof($_SESSION["wpsqt"][$quizName]["sections"])));
-				$percentage = ($this->_step + 1) / (sizeof($_SESSION["wpsqt"][$quizName]["sections"])) * 100;
+				$percentage = $current_step / (sizeof($_SESSION["wpsqt"][$quizName]["sections"])) * 100;
 				?>
 				<div class="wpsqt-progress">
 					<div style="width: <?php echo $percentage; ?>%;">
