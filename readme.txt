@@ -64,6 +64,11 @@ Any further issues then feel free to create a thread on the <a href="http://word
 
 == ChangeLog ==
 
+= 2.13.1 =
+
+* Added several more strings for translation
+* Fixed undefined variable notices
+
 = 2.13 =
 
 * Fixed several PHP notices
