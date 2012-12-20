@@ -67,9 +67,11 @@ Any further issues then feel free to create a thread on the <a href="http://word
 = 2.13.1 =
 
 * Added several more strings for translation
+* Added a link to the navbar for survey Total Results
 * Fixed undefined variable notices
 * Fixed progress bar displaying incorrectly when a contact form was enabled
 * Fixed contact form not occasionally not displaying
+* Fixed error when using the navbar after viewing a survey's Total Results
 
 = 2.13 =
 
