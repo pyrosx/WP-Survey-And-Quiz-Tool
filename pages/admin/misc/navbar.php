@@ -1,6 +1,12 @@
 <?php
 function wpsqt_is_section($section) {
-	return ( isset($_GET['section']) && $_GET['section'] == $section);
+	if ($section == 'results') {
+		return ( isset($_GET['section']) && $_GET['section'] == 'results' && $_GET['subsection'] != 'total');
+	} else if ($section == 'total') {
+		return ( isset($_GET['section']) && $_GET['section'] == 'results' && $_GET['subsection'] == 'total');
+	} else {
+		return ( isset($_GET['section']) && $_GET['section'] == $section);
+	}
 }
 
 if ( isset($_GET['id']) ){
@@ -25,6 +31,10 @@ if ( isset($_GET['id']) ){
 		);
 		wp_insert_post($post);
 	}
+
+	if ($quizType == 'survey' && $_GET['subsection'] == 'total'){
+		$subsection = 'survey';
+	}
 	
 	?>
 	<div>
@@ -36,6 +46,9 @@ if ( isset($_GET['id']) ){
 				<li><a href="<?php echo WPSQT_URL_MAIN; ?>&section=questions&subsection=<?php esc_html_e($_GET["subsection"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($_GET["id"], 'wp-survey-and-quiz-tool'); ?>"<?php if ( wpsqt_is_section('questions') ) { ?> class="current"<?php }?>>Questions</a> | </li>  
 				<li><a href="<?php echo WPSQT_URL_MAIN; ?>&section=form&subsection=<?php esc_html_e($_GET['subsection'], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($_GET["id"], 'wp-survey-and-quiz-tool'); ?>"<?php if ( wpsqt_is_section('form') ) { ?> class="current"<?php }?>>Form</a> | </li> 
 				<li><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=<?php esc_html_e($_GET["subsection"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($_GET["id"], 'wp-survey-and-quiz-tool'); ?>"<?php if ( wpsqt_is_section('results') ) { ?> class="current"<?php }?>>Results</a></li> 
+				<?php if ($quizType == 'survey') { ?>
+					| <li><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=total&id=<?php esc_html_e($_GET["id"], 'wp-survey-and-quiz-tool'); ?>"<?php if ( wpsqt_is_section('total') ) { ?> class="current"<?php }?>>Total Results</a></li> 
+				<?php } ?>
 			<?php } ?>
 			<li style="padding-left: 30px;">Shortcode: <pre style="display: inline;">[wpsqt name="<?php echo $quizName; ?>" type="<?php echo $quizType; ?>"]</pre></li>
 		</ul>
