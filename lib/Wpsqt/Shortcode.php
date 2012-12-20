@@ -283,13 +283,13 @@ class Wpsqt_Shortcode {
 
 				if ( !empty($errors) ) {
 					do_action("wpsqt_".$this->_type."_form","original");
-					require_once Wpsqt_Core::pageView('site/shared/custom-form.php');
+					require Wpsqt_Core::pageView('site/shared/custom-form.php');
 					return;
 				}
 
 			} else {
 				do_action("wpsqt_".$this->_type."_form","original");
-				require_once Wpsqt_Core::pageView('site/shared/custom-form.php');
+				require Wpsqt_Core::pageView('site/shared/custom-form.php');
 				return;
 			}
 

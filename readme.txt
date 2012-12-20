@@ -68,6 +68,8 @@ Any further issues then feel free to create a thread on the <a href="http://word
 
 * Added several more strings for translation
 * Fixed undefined variable notices
+* Fixed progress bar displaying incorrectly when a contact form was enabled
+* Fixed contact form not occasionally not displaying
 
 = 2.13 =
 
