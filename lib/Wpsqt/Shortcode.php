@@ -455,7 +455,8 @@ class Wpsqt_Shortcode {
 
 			if (isset($_SESSION['wpsqt'][$quizName]['details']['show_progress_bar']) && $_SESSION['wpsqt'][$quizName]['details']['show_progress_bar'] == 'yes') {
 				// Progress bar 
-				printf(__('Page %d out of %d', 'wp-survey-and-quiz-tool'), ($this->_step + 1), (sizeof($_SESSION["wpsqt"][$quizName]["sections"])));
+				$current_step = $this->_step + 1;
+				printf(__('Page %d out of %d', 'wp-survey-and-quiz-tool'), $current_step, (sizeof($_SESSION["wpsqt"][$quizName]["sections"])));
 				$percentage = ($this->_step + 1) / (sizeof($_SESSION["wpsqt"][$quizName]["sections"])) * 100;
 				?>
 				<div class="wpsqt-progress">
