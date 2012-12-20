@@ -313,7 +313,7 @@ class Wpsqt_Shortcode {
 				echo '<div class="timer" style="float: right;"></div>';
 				$timerStrings = array(
 					'timeleft' => __('Time Left:', 'wp-survey-and-quiz-tool'),
-					'mins' => __('minutes', 'wp-survey-and-quiz-tool'),
+					'mins' => __('minutes and', 'wp-survey-and-quiz-tool'),
 					'secs' => __('seconds', 'wp-survey-and-quiz-tool'),
 					'outoftime' => __('Unfortunately you have run out of time for this quiz', 'wp-survey-and-quiz-tool'),
 				);
@@ -328,7 +328,7 @@ class Wpsqt_Shortcode {
 									timeMins = (timeMins<0?-1:+1)*Math.floor(Math.abs(timeMins)); // Gets rid of the decimal place
 									var timeSecsRem = timeSecs % 60;
 									if (timeMins > 0) {
-										jQuery(".timer").html("<?php echo $timerStrings['timeleft']; ?> " + timeMins + " <?php echo $timerStrings['mins']; ?> and " + timeSecsRem + " <?php echo $timerStrings['secs']; ?>");
+										jQuery(".timer").html("<?php echo $timerStrings['timeleft']; ?> " + timeMins + " <?php echo $timerStrings['mins']; ?> " + timeSecsRem + " <?php echo $timerStrings['secs']; ?>");
 									} else {
 										jQuery(".timer").html("<?php echo $timerStrings['timeleft']; ?>" + timeSecsRem + " <?php echo $timerStrings['secs']; ?>");
 									}
@@ -455,7 +455,7 @@ class Wpsqt_Shortcode {
 
 			if (isset($_SESSION['wpsqt'][$quizName]['details']['show_progress_bar']) && $_SESSION['wpsqt'][$quizName]['details']['show_progress_bar'] == 'yes') {
 				// Progress bar 
-				echo 'Page ' . ($this->_step + 1) .' out of '. (sizeof($_SESSION["wpsqt"][$quizName]["sections"]));
+				printf(__('Page %d out of %d', 'wp-survey-and-quiz-tool'), ($this->_step + 1), (sizeof($_SESSION["wpsqt"][$quizName]["sections"])));
 				$percentage = ($this->_step + 1) / (sizeof($_SESSION["wpsqt"][$quizName]["sections"])) * 100;
 				?>
 				<div class="wpsqt-progress">
