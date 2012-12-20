@@ -170,8 +170,10 @@
 								$givenAnswerDetails = explode("_", $givenAnswer);
 							}
 							echo '<em>'.$givenAnswerDetails[0].'</em>: '.$givenAnswerDetails[1];
-						} else {
+						} else if(isset($question['answers'][$givenAnswer]['text'])) {
 							echo $question['answers'][$givenAnswer]['text'];
+						} else {
+							echo '<em>'.__('You didn\'t answer this question', 'wp-survey-and-quiz-tool').'</em>';
 						}
 						if ($i < count($givenAnswers)) 
 							echo ', ';
