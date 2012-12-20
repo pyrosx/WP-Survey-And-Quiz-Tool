@@ -297,14 +297,13 @@ class Wpsqt_Shortcode {
 		}
 
 		// Handles the timer if enabled
-		if ($this->_key == 0) {
-			$timeTaken = 0;
-		} else {
-			$timeTaken = round(microtime(true) - $_SESSION['wpsqt'][$quizName]['start_time'], 0);
+		$timerVal = ((int) $_SESSION['wpsqt'][$quizName]['details']['timer']) * 60;
+		if ($this->_key != 0) {
+			// Resume timer
+			$timerVal = $timerVal - $_POST['wpsqt_time_elapsed'];
 		}
 		if (is_page() || is_single()) {
 			if (isset($_SESSION['wpsqt'][$quizName]['details']['timer']) && $_SESSION['wpsqt'][$quizName]['details']['timer'] != '0' && $_SESSION['wpsqt'][$quizName]['details']['timer'] != "") {
-				$timerVal = (((int) $_SESSION['wpsqt'][$quizName]['details']['timer']) * 60) - $timeTaken;
 				echo '<div class="timer" style="float: right;"></div>';
 				$timerStrings = array(
 					'timeleft' => __('Time Left:', 'wp-survey-and-quiz-tool'),
@@ -327,6 +326,9 @@ class Wpsqt_Shortcode {
 									} else {
 										jQuery(".timer").html("<?php echo $timerStrings['timeleft']; ?>" + timeSecsRem + " <?php echo $timerStrings['secs']; ?>");
 									}
+
+									var timeElapsed = jQuery(".wpsqt_time_elapsed");
+									timeElapsed.attr('value', parseInt(timeElapsed.attr('value')) + 1);
 								} else {
 									jQuery(".quiz").html("<?php echo $timerStrings['outoftime']; ?>");
 									jQuery(".timer").hide();
