@@ -72,6 +72,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed progress bar displaying incorrectly when a contact form was enabled
 * Fixed contact form not occasionally not displaying
 * Fixed error when using the navbar after viewing a survey's Total Results
+* Changed timer to be client side, this fixes issues with loosing time due to page load
 
 = 2.13 =
 
