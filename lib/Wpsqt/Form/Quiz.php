@@ -49,7 +49,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 			 ->addOption("wpsqt_limit_one_wp", "Limit to one submission per WP user","yesno", $options['limit_one_wp'], "Limit the quiz to one submission per WP user. You must have the Use WP Details option below set to yes.")
 			 ->addOption("wpsqt_limit_one_cookie", "Limit to one submission per computer (using cookies)", "yesno", $options['limit_one_cookie'], "Limit the quiz to one submission per computer/browser")
 			 ->addOption("wpsqt_save_resume", "Allow save/resume","yesno", $options['save_resume'], "Allow save and resume for this quiz?")
-			 ->addOption("wpsqt_timer", "Timer value for the quiz","text", $options['timer'], "Enter the countdown timer value for the quiz. <b>Enter 0 for no timer</b>")
+			 ->addOption("wpsqt_timer", "Timer value for the quiz","text", $options['timer'], "Enter the countdown timer value in minutes for the quiz. <b>Enter 0 for no timer</b>")
 			 ->addOption("wpsqt_pass_mark", "Pass mark", "text", $options['pass_mark'], "What is the pass mark of this quiz (percentage)?")
 			 ->addOption("wpsqt_show_progress_bar", "Show progress bar", "yesno", $options['show_progress_bar'], "Shows a progress bar based on which section the user is on")
 			 ->addOption("wpsqt_automark_whenfreetxt", "Auto mark when freetext questions", "select", $options['automark_whenfreetext'], "If the quiz contains free text questions then this option will have the behaviour:<br /><strong>No</strong> - Do not attempt to mark the quiz<br /><strong>Yes - include</strong> - Mark all questions except and mark free texts as incorrect<br /><strong>Yes - exclude</strong> - Mark all questions except free text questions and ignore them from the total count.",array('no','yes - include freetext', 'yes - exclude freetext') )
