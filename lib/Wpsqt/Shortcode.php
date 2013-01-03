@@ -297,13 +297,13 @@ class Wpsqt_Shortcode {
 		}
 
 		// Handles the timer if enabled
-		$timerVal = ((int) $_SESSION['wpsqt'][$quizName]['details']['timer']) * 60;
-		if ($this->_key != 0) {
-			// Resume timer
-			$timerVal = $timerVal - $_POST['wpsqt_time_elapsed'];
-		}
 		if (is_page() || is_single()) {
 			if (isset($_SESSION['wpsqt'][$quizName]['details']['timer']) && $_SESSION['wpsqt'][$quizName]['details']['timer'] != '0' && $_SESSION['wpsqt'][$quizName]['details']['timer'] != "") {
+				$timerVal = ((int) $_SESSION['wpsqt'][$quizName]['details']['timer']) * 60;
+				if ($this->_key != 0) {
+					// Resume timer
+					$timerVal = $timerVal - $_POST['wpsqt_time_elapsed'];
+				}
 				echo '<div class="timer" style="float: right;"></div>';
 				$timerStrings = array(
 					'timeleft' => __('Time Left:', 'wp-survey-and-quiz-tool'),
