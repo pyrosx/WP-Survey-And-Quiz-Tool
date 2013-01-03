@@ -539,7 +539,18 @@ class Wpsqt_Shortcode {
 						});
 					</script>
 				<?php
+			$time_allowed = $_SESSION['wpsqt'][$quizName]['details']['timer'] * 60;
+			$start_time = $_SESSION['wpsqt'][$quizName]['start_time'];
+			// Allow an extra 5 seconds per section for loading
+			$loading_allowance = count($_SESSION['wpsqt'][$quizName]['sections']) * 5;
+
+			var_dump($start_time + $time_allowed + $loading_allowance);
+			var_dump(time());
+			if (($start_time + $time_allowed + $loading_allowance) < time()) {
+				_e('You have taken longer than the allowed time.', 'wp-survey-and-quiz-tool');
+				return;
 			}
+		}
 
 		if ( isset($_SESSION['wpsqt'][$quizName]['details']['use_wp']) && $_SESSION['wpsqt'][$quizName]['details']['use_wp'] == 'yes'){
 			$objUser = wp_get_current_user();
