@@ -798,7 +798,7 @@ class Wpsqt_Shortcode {
 				}
 				if ($cachedSections[$sectionKey]['questions'][$question['id']]['type'] == "Likert") {
 					if(isset($section['answers'][$question['id']])) {
-						$givenAnswer = (int) $section['answers'][$question['id']]['given'];
+						$givenAnswer = $section['answers'][$question['id']]['given'];
 					} else {
 						$givenAnswer = NULL;
 					}
@@ -838,6 +838,9 @@ class Wpsqt_Shortcode {
 							}
 						}
 					}
+				}
+				if ($cachedSections[$sectionKey]['questions'][$question['id']]['type'] == "Likert") {
+					$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer]['count']++;
 				}
 				if (isset($question['likertscale']) && $question['likertscale'] == 'Agree/Disagree') {
 				 	if(isset($section['answers'][$question['id']])) {
