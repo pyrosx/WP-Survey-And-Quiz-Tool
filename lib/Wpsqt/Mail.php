@@ -48,7 +48,7 @@ class Wpsqt_Mail {
 		$emailSubject = $type.' Notification From '.$blogname;
 		$headers = 'From: '.$blogname.' <'.$fromEmail.'>' . "\r\n";
 
-		mail($address,$emailSubject,$emailMessage,$headers);
+		wp_mail($address,$emailSubject,$emailMessage,$headers);
 	}
 
 	/**
@@ -139,7 +139,7 @@ class Wpsqt_Mail {
 		$headers = 'From: '.$blogname.' <'.$fromEmail.'>' . "\r\n";
 		if (isset($emailList) && is_array($emailList)) {
 			foreach( $emailList  as $emailAddress ){
-				mail($emailAddress,$emailSubject,$emailMessage,$headers);
+				wp_mail($emailAddress,$emailSubject,$emailMessage,$headers);
 			}	
 		}
 	}
