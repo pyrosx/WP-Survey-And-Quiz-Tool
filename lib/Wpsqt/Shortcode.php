@@ -850,7 +850,7 @@ class Wpsqt_Shortcode {
 					}
 				}
 				$type = $cachedSections[$sectionKey]['questions'][$question['id']]['type'];
-				if (isset($type) && $type != "Multiple" && $type != "Likert" && $type != "Likert Matrix") {
+				if (isset($type) && $type != "Multiple" && $type != "Likert" && $type != "Likert Matrix" && isset($givenAnswer)) {
 					if (is_array($givenAnswer)) {
 						foreach ($givenAnswer as $answer) {
 							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$answer]["count"]++;
