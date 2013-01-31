@@ -73,6 +73,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed contact form not occasionally not displaying
 * Fixed error when using the navbar after viewing a survey's Total Results
 * Fixed Likert answers in a survey not being cached correctly
+* Fixed empty poll results being allowed for the single question type
 * Changed timer to be client side, this fixes issues with loosing time due to page load
 * Updated the included jQuery UI library to fix issues with WordPress 3.5
 
