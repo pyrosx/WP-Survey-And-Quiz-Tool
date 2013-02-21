@@ -1,6 +1,6 @@
 === WP Survey And Quiz Tool ===
 Contributors: Fubra,Backie,olliea95
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=99WUGVV4HY5ZE&lc=GB&item_name=CATN%20Plugins&item_number=catn&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted 
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=99WUGVV4HY5ZE&lc=GB&item_name=CATN%20Plugins&item_number=catn&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: Quiz,test,exam,survey,results,email,quizzes,charts,google charts,wpsqt,tool,poll,polling,polls
 Requires at least: 3.1
 Tested up to: 3.4.1
@@ -42,7 +42,7 @@ All documentation can be found on the <a href="https://github.com/fubralimited/W
 
 **Developer Features**
 
-Currently 30+ filters and hooks to use throughout the plugin to help extend it without editing the plugin. 
+Currently 30+ filters and hooks to use throughout the plugin to help extend it without editing the plugin.
 
 Custom pages allows for the theming of the plugin pages without editing the plugin.
 
@@ -74,6 +74,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Fixed error when using the navbar after viewing a survey's Total Results
 * Fixed Likert answers in a survey not being cached correctly
 * Fixed empty poll results being allowed for the single question type
+* Fixed emails not being sent occasionally
 * Changed timer to be client side, this fixes issues with loosing time due to page load
 * Updated the included jQuery UI library to fix issues with WordPress 3.5
 
@@ -404,10 +405,10 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Many spelling/grammatical errors fixed
 * Some styling changes to the admin pages to make them look prettier
 
-= 2.0-beta2 = 
+= 2.0-beta2 =
 
 * Added scores and percentage columns to quiz result list#
-* Added ability to send notification email 
+* Added ability to send notification email
 * Added navbar linking system for easier navigation throughout the plugin.
 * Added image option for quizzes
 * Added action in display question.
@@ -424,7 +425,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Added PDF functionality
 * Added ability to have default answer choices on multiple choice questions
 * Fixed design flaws with custom forms.
-* Added image field for questions 
+* Added image field for questions
 * Added filters and improved extendibility
 * Whole bunch of other stuff
 
