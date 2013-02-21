@@ -207,7 +207,7 @@ class Wpsqt_Shortcode {
 				return;
 			}
 		}
-		
+
 		// Checks if limiting per WP user is enabled and if the user has already taken it
 		if (isset($_SESSION['wpsqt'][$quizName]['details']['limit_one_wp']) && $_SESSION['wpsqt'][$quizName]['details']['limit_one_wp'] == 'yes') {
 			global $user_login;
@@ -355,7 +355,7 @@ class Wpsqt_Shortcode {
 				$_SESSION['wpsqt'][$quizName]['sections'][$pastSectionKey]['answers'] = array();
 			}
 			$canAutoMark = true;
-			if (isset($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"]) && is_array($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"])) { 
+			if (isset($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"]) && is_array($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"])) {
 				foreach ($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"] as $questionData ){
 					if ( isset($questionData['required']) && $questionData['required'] == "yes") {
 						$requiredQuestions['exist']++;
@@ -451,7 +451,7 @@ class Wpsqt_Shortcode {
 			$this->showSection();
 
 			if (isset($_SESSION['wpsqt'][$quizName]['details']['show_progress_bar']) && $_SESSION['wpsqt'][$quizName]['details']['show_progress_bar'] == 'yes') {
-				// Progress bar 
+				// Progress bar
 				$current_step = $this->_step + 1;
 				// If there is a contact page then loose 1
 				if (isset($_SESSION['wpsqt'][$quizName]['details']['contact']) && $_SESSION['wpsqt'][$quizName]['details']['contact'] == "yes") {
@@ -496,7 +496,7 @@ class Wpsqt_Shortcode {
 		$section = $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey];
 		$orderBy = ($section["order"] == "random") ? "RAND()" : "`order` ".strtoupper($section["order"]);
 		$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"] = array();
-		
+
 
 		if ( !empty($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']) ){
 			$end = " LIMIT 0,".$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit'];
@@ -544,8 +544,6 @@ class Wpsqt_Shortcode {
 			// Allow an extra 5 seconds per section for loading
 			$loading_allowance = count($_SESSION['wpsqt'][$quizName]['sections']) * 5;
 
-			var_dump($start_time + $time_allowed + $loading_allowance);
-			var_dump(time());
 			if (($start_time + $time_allowed + $loading_allowance) < time()) {
 				_e('You have taken longer than the allowed time.', 'wp-survey-and-quiz-tool');
 				return;
@@ -595,7 +593,7 @@ class Wpsqt_Shortcode {
 			}
 
 			foreach ( $quizSection['questions'] as $key => $question ){
-				//  AutoMarkWhenFreetext: 'no' and 'include' will mark freetext questions as 'incorrect', 
+				//  AutoMarkWhenFreetext: 'no' and 'include' will mark freetext questions as 'incorrect',
 				// 'exclude will ignore the freetext questions' and not add them to the $totalPoints
 				if (  ! (  preg_match( "/exclude/" , $AutoMarkWhenFreetxt) == 1  && ($question['type'] == "Free Text"))   ){
 					$totalPoints += $question['points'];
@@ -679,7 +677,7 @@ class Wpsqt_Shortcode {
 		if ( $this->_type == "survey" || $this->_type == "poll" ){
 			$this->_cacheSurveys();
 		}
-		
+
 		if ( isset($_SESSION['wpsqt'][$quizName]['details']['limit_one_cookie']) && $_SESSION['wpsqt'][$quizName]['details']['limit_one_cookie'] == 'yes' ){
 			// Create the cookie
 			?>
@@ -739,8 +737,8 @@ class Wpsqt_Shortcode {
 					$cachedSections[$sectionKey]['questions'][$question['id']]['answers'] = array();
 				}
 				if ( $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == "Multiple Choice" ||
-					 $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == "Dropdown" || 
-					 $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == 'Single' || 
+					 $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == "Dropdown" ||
+					 $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == 'Single' ||
 					 $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == 'Multiple') {
 					if ( empty($cachedSections[$sectionKey]['questions'][$question['id']]['answers']) ) {
 						foreach ( $question['answers'] as $answerKey => $answers ){
@@ -886,7 +884,7 @@ class Wpsqt_Shortcode {
 	/**
 	 * Alias to the cache surveys function for polls
 	 * so it can be ran from upgrade script.
-	 * 
+	 *
 	 * @author Ollie Armstrong
 	 */
 	public function cachePoll() {
