@@ -77,7 +77,6 @@ class Wpsqt_Shortcode {
 	 * @since 2.0
 	 */
 	public function __construct($identifier,$type){
-
 		global $wpdb;
 
 		if ( !isset($_SESSION['wpsqt']) ){
@@ -132,17 +131,17 @@ class Wpsqt_Shortcode {
 
 				$_SESSION['wpsqt'] = $answers;
 				$_POST = unserialize($state['post']);
-	?>
-	<script type="text/javascript">
-		function setCookie(c_name,value,exdays) {
-			var exdate=new Date();
-			exdate.setDate(exdate.getDate() + exdays);
-			var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-			document.cookie=c_name + "=" + c_value;
-		}
-		setCookie('wpsqt_<?php echo $_SESSION['wpsqt'][$identifier]['details']['id']; ?>_state', '', '-10');
-	</script>
-	<?php
+				?>
+				<script type="text/javascript">
+					function setCookie(c_name,value,exdays) {
+						var exdate=new Date();
+						exdate.setDate(exdate.getDate() + exdays);
+						var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+						document.cookie=c_name + "=" + c_value;
+					}
+					setCookie('wpsqt_<?php echo $_SESSION['wpsqt'][$identifier]['details']['id']; ?>_state', '', '-10');
+				</script>
+				<?php
 
 				$this->_key = $state['current_section'];
 				$this->_step = $state['current_section'];

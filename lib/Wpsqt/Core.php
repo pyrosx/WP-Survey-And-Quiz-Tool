@@ -434,6 +434,13 @@ class Wpsqt_Core {
 	 * @since 2.2.2
 	 */
 	protected function _shortcode($identifer,$type)	{
+
+		if (isset($_POST['wpsqt_name']) && $_POST['wpsqt_name'] != $identifer) {
+			/* translators: %1$s will be replaced with the quiz name, please leave the HTML in tact */
+			printf(__('Another quiz on this page has been started and two quizzes cannot in progress at the same time. In order to start %1$s please <a href="%2$s">click here</a>.'), $identifer, $_SERVER['PHP_SELF']);
+			return;
+		}
+
 		ob_start();
 		
 		require_once WPSQT_DIR.'lib/Wpsqt/Shortcode.php';

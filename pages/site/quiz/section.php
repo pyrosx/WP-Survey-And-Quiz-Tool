@@ -30,6 +30,7 @@ if (isset($_POST['wpsqt_time_elapsed'])) {
 <form method="post" action="<?php echo esc_url($url); ?>">
 	<input type="hidden" name="wpsqt_nonce" value="<?php echo WPSQT_NONCE_CURRENT; ?>" />
 	<input type="hidden" name="step" value="<?php echo ( $_SESSION['wpsqt']['current_step']+1); ?>" />
+	<input type="hidden" name="wpsqt_name" value="<?php echo $quizName; ?>" />
 	<input type="hidden" name="wpsqt_time_elapsed" value="<?php echo $time_elapsed; ?>" class="wpsqt_time_elapsed" />
 <?php
 		$answers = ( isset($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["answers"]) ) ? $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["answers"] : array();

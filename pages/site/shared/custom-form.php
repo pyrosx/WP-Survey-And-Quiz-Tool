@@ -9,10 +9,11 @@
 <?php }?>
 <form method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>">
 
-	<input type="hidden" name="step" value="1" />	
+	<input type="hidden" name="step" value="1" />
 	<input type="hidden" name="wpsqt_nonce" value="<?php echo WPSQT_NONCE_CURRENT; ?>" />
+	<input type="hidden" name="wpsqt_name" value="<?php echo $quizName; ?>" />
 	<table cellpadding="0" cellspacing="0" border="0" width="100%">
-	<?php foreach($fields as $field){			
+	<?php foreach($fields as $field){
 			$fieldName = preg_replace('~[^a-z0-9]~i','',$field['name']);
 		?>
 		<tr>
@@ -24,7 +25,7 @@
 			<textarea name="Custom_<?php echo $fieldName; ?>" rows="4" cols="40"><?php if ( isset($field['value'])) { echo $field['value']; } ?></textarea>
 		<?php } ?>
 			</td>
-		</tr>	
+		</tr>
 	<?php } ?>
 	</table>
 	<p><input type='submit' value='Next &raquo;' class='button-secondary' /></p>
