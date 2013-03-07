@@ -5,7 +5,7 @@ Tags: Quiz,test,exam,survey,results,email,quizzes,charts,google charts,wpsqt,too
 Requires at least: 3.1
 Tested up to: 3.4.1
 Text Domain: wp-survey-and-quiz-tool
-Stable tag: 2.13
+Stable tag: 2.13.1
 A highly customisable Quiz, Survey and Poll plugin to which allows for unlimited questions and sections.
 
 == Description ==
@@ -70,7 +70,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Added a link to the navbar for survey Total Results
 * Fixed undefined variable notices
 * Fixed progress bar displaying incorrectly when a contact form was enabled
-* Fixed contact form not occasionally not displaying
+* Fixed contact form occasionally not displaying
 * Fixed error when using the navbar after viewing a survey's Total Results
 * Fixed Likert answers in a survey not being cached correctly
 * Fixed empty poll results being allowed for the single question type
