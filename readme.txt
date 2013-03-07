@@ -64,6 +64,10 @@ Any further issues then feel free to create a thread on the <a href="http://word
 
 == ChangeLog ==
 
+= 2.13.2 =
+
+* Inserted a class to the "Exam Finished" text to allow removing this message
+
 = 2.13.1 =
 
 * Added several more strings for translation
