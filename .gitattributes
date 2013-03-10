@@ -1,0 +1,6 @@
+lang/po/ export-ignore
+*.po export-ignore
+*.sh export-ignore
+Vagrantfile export-ignore
+.vagrant export-ignore
+scripts/ export-ignore
