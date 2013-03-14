@@ -66,6 +66,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 
 = 2.13.2 =
 
+* Added the option to display question numbers for quizzes
 * Inserted a class to the "Exam Finished" text to allow removing this message
 * Only allow one quiz to be running at a time - helps when quizzes are in posts and multiple posts are displayed at once
 

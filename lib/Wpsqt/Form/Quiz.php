@@ -4,35 +4,36 @@ require_once WPSQT_DIR.'lib/Wpsqt/Tokens.php';
 
 	/**
 	 * Handles building the create/edit quiz form.
-	 * 
+	 *
 	 * @author Iain Cambridge
 	 * @copyright Fubra Limited 2010-2011, All rights reserved.
-  	 * @license http://www.gnu.org/licenses/gpl.html GPL v3 
+  	 * @license http://www.gnu.org/licenses/gpl.html GPL v3
   	 * @package WPSQT
 	 */
 
 class Wpsqt_Form_Quiz extends Wpsqt_Form {
 
 	public function __construct( array $options = array() ){
-		
+
 		global $blog_id;
-		
+
 		if ( empty($options) ){
 			$options = array('name' => false,
-							'notificaton_type' => false, 
+							'notificaton_type' => false,
 							'limit_one' => false,
 							'limit_one_wp' => false,
 							'limit_one_cookie' => false,
 							'save_resume' => false,
+							'question_numbers' => false,
 							'timer' => '0',
-							'pass_mark' => '80', 
+							'pass_mark' => '80',
 							'show_progress_bar' => false,
 							'automark_whenfreetext' => 'no',
-							'finish_display' => false, 
-							'status' => false, 
-							'contact' => false, 
-							'use_wp' => false, 
-							'email_template' => false, 
+							'finish_display' => false,
+							'status' => false,
+							'contact' => false,
+							'use_wp' => false,
+							'email_template' => false,
 							'pdf_template' => false,
 							'use_pdf' => 'yes',
 							'store_results' => 'yes',
@@ -43,12 +44,13 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 							'pass_finish_message' => false,
 							'fail_review' => false);
 		}
-		
+
 		$this->addOption("wpsqt_name", "Name", "text", $options['name'], "What you would like the quiz to be called." )
 			 ->addOption("wpsqt_limit_one", "Limit to one submission per IP","yesno", $options['limit_one'], "Limit the quiz to one submission per IP.")
 			 ->addOption("wpsqt_limit_one_wp", "Limit to one submission per WP user","yesno", $options['limit_one_wp'], "Limit the quiz to one submission per WP user. You must have the Use WP Details option below set to yes.")
 			 ->addOption("wpsqt_limit_one_cookie", "Limit to one submission per computer (using cookies)", "yesno", $options['limit_one_cookie'], "Limit the quiz to one submission per computer/browser")
 			 ->addOption("wpsqt_save_resume", "Allow save/resume","yesno", $options['save_resume'], "Allow save and resume for this quiz?")
+			 ->addOption("wpsqt_question_numbers", "Display question numbers?","yesno", $options['question_numbers'], "Select whether you want the numerical question numbers to be displayed next to the text of the question.")
 			 ->addOption("wpsqt_timer", "Timer value for the quiz","text", $options['timer'], "Enter the countdown timer value in minutes for the quiz. <b>Enter 0 for no timer</b>")
 			 ->addOption("wpsqt_pass_mark", "Pass mark", "text", $options['pass_mark'], "What is the pass mark of this quiz (percentage)?")
 			 ->addOption("wpsqt_show_progress_bar", "Show progress bar", "yesno", $options['show_progress_bar'], "Shows a progress bar based on which section the user is on")
@@ -68,14 +70,14 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 			 ->addOption("wpsqt_pass_finish", "Different finish message for pass", "yesno", $options['pass_finish'], "Display a different finish message if the user passes?")
 			 ->addOption("wpsqt_pass_finish_message", "Finish message for pass", "textarea", $options['pass_finish_message'], "The message to display when the user has passed the quiz. <a href=\"#template_tokens\">Click Here</a> to see the tokens that can be used.", array(), false)
 			 ->addOption("wpsqt_fail_review", "Quiz review on fail", "yesno", $options['fail_review'], "Do you want to show quiz review page if the taker fails?");
-		
+
 		if ( array_key_exists('id', $options) ){
-			$this->addOption("wpsqt_custom_directory", "Custom Directory Location", "static",  WPSQT_DIR."/pages/custom/".$blog_id."/quiz-".$options['id'] ,false,array(),false);		
+			$this->addOption("wpsqt_custom_directory", "Custom Directory Location", "static",  WPSQT_DIR."/pages/custom/".$blog_id."/quiz-".$options['id'] ,false,array(),false);
 		}
 
 		$this->options = $options;
 		apply_filters("wpsqt_form_quiz",$this);
 
 	}
-	
+
 }

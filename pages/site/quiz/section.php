@@ -6,12 +6,22 @@
 	<p><?php echo $_SESSION['wpsqt']['current_message']; ?></p>
 <?php } ?>
 
-<?php 
+<?php
 if (isset($GLOBALS['q_config']) && isset($GLOBALS['q_config']['url_info']['url'])) {
 	$url = $GLOBALS['q_config']['url_info']['url'];
 } else {
 	$url = $_SERVER['REQUEST_URI'];
 }
+
+if ($sectionKey == 0) {
+	$_SESSION['wpsqt'][$quizName]['question_number'] = 1;
+	$q_number = 1;
+} else if (isset($_SESSION['wpsqt'][$quizName]['question_number'])) {
+	$q_number = $_SESSION['wpsqt'][$quizName]['question_number'];
+} else {
+	$q_number = 1;
+}
+
 ?>
 <?php if($_SESSION['wpsqt']['current_step'] != 0 && isset($_SESSION['wpsqt'][$quizName]['details']['save_resume']) && $_SESSION['wpsqt'][$quizName]['details']['save_resume'] == 'yes') { ?>
 	<form method="post" action="<?php echo esc_url($url); ?>" class="wpsqt-save-form" style="float: right;">
@@ -37,40 +47,43 @@ if (isset($_POST['wpsqt_time_elapsed'])) {
 foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as $questionKey => $question) { ?>
 
 	<div class="wpst_question">
-		<?php 
-		
-			$questionId = $question['id'];		
+		<?php
+
+			$questionId = $question['id'];
 			$givenAnswer = isset($answers[$questionId]['given']) ? $answers[$questionId]['given'] : array();
-			
-			if ( isset($question["required"]) &&  $question["required"] == "yes" ){ 
+
+			if ( isset($question["required"]) &&  $question["required"] == "yes" ){
 				?>
 				<font color="#FF0000"><strong>*
-				
-			<?php			
+
+			<?php
 				// See if the question has been missed and this a replay if not end the red text here.
 				if ( empty($_SESSION['wpsqt']['current_message']) || in_array($questionId,$_SESSION['wpsqt']['required']['given']) ){
-					?></strong></font><?php 
+					?></strong></font><?php
 				}
-			}			
-						
+			}
+
+			if (isset($_SESSION['wpsqt'][$quizName]['details']['question_numbers']) && $_SESSION['wpsqt'][$quizName]['details']['question_numbers'] == 'yes') {
+				echo $q_number.'. ';
+			}
 			echo stripslashes($question['name']);
-			
+
 			// See if the question has been missed and this is a replay
 			if ( !empty($_SESSION['wpsqt']['current_message']) && !in_array($questionId,$_SESSION['wpsqt']['required']['given']) ){
-				?></strong></font><?php 
-			}	
-		
+				?></strong></font><?php
+			}
+
 			if ( !empty($question['add_text']) ){
 			?>
 			<p><?php echo nl2br(stripslashes($question['add_text'])); ?></p>
 			<?php } ?>
-			
+
 			<?php if ( isset($question['image']) && !empty($question['image'])) { ?>
 				<p><?php echo stripslashes($question['image']); ?></p>
 			<?php } ?>
-			
+
 			<?php do_action('wpsqt_quiz_question_section',$question); ?>
-			
+
 			<?php require Wpsqt_Question::getDisplayView($question); ?>
 
 			<?php if (isset($question['explanation']) && !empty($question['explanation'])) {
@@ -81,14 +94,21 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 				$objTokens->setDefaultValues();
 				//	- replace the tokens
 				$explanation = $objTokens->doReplacement( $question['explanation'] );
-				if (!isset($question['explanation_onlyatfinish']) || $question['explanation_onlyatfinish'] !== "yes" ) { 
+				if (!isset($question['explanation_onlyatfinish']) || $question['explanation_onlyatfinish'] !== "yes" ) {
 					echo '<a href="#" class="wpsqt-show-answer" style="display: none;">'; _e('Show answer', 'wp-survey-and-quiz-tool'); echo '</a>';
 					echo '<div class="wpsqt-answer-explanation" style="display: none;">'.nl2br(stripslashes($explanation)).'</div>';
 				}
 			} ?>
-			
+
 	</div>
+
+	<?php $q_number++; ?>
 <?php } ?>
+
+<?php
+	$_SESSION['wpsqt'][$quizName]['question_number'] = $q_number;
+?>
+
 <?php
 if ($sectionKey == (count($_SESSION['wpsqt'][$quizName]['sections']) - 1)) {
 	?><p><input type='submit' value='<?php _e('Submit', 'wp-survey-and-quiz-tool'); ?>' class='button-secondary' /></p><?php
@@ -96,7 +116,7 @@ if ($sectionKey == (count($_SESSION['wpsqt'][$quizName]['sections']) - 1)) {
 	?><p><input type='submit' value='<?php _e('Next', 'wp-survey-and-quiz-tool'); ?> &raquo;' class='button-secondary' /></p><?php
 }
 ?>
-	
+
 </form>
 </div>
 <div class="post-content"></div>
