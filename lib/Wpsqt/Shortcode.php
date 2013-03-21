@@ -815,6 +815,12 @@ class Wpsqt_Shortcode {
 					if(isset($section['answers'][$question['id']])) {
 						$givenAnswer = array();
 						foreach( $section['answers'][$question['id']]['given'] as $gAnswer) {
+							if (!isset($cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$gAnswer])) {
+								$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$gAnswer] = array(
+									'text' => $question['answers'][$gAnswer]['text'],
+									'count' => 0,
+								);
+							}
 							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$gAnswer]["count"]++;
 						}
 					} else {
@@ -853,6 +859,12 @@ class Wpsqt_Shortcode {
 							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$answer]["count"]++;
 						}
 					} else {
+						if (!isset($cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer])) {
+							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer] = array(
+								'text' => $question['answers'][$givenAnswer]['text'],
+								'count' => 0,
+							);
+						}
 						$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer]["count"]++;
 					}
 				}

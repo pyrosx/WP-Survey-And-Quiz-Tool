@@ -67,6 +67,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 = 2.13.2 =
 
 * Added the option to display question numbers for quizzes
+* Fixed new answers added to polls while active not displaying in the results row correctly
 * Inserted a class to the "Exam Finished" text to allow removing this message
 * Inserted the option for polls to use WP details so that limiting by WP user works
 * Only allow one quiz to be running at a time - helps when quizzes are in posts and multiple posts are displayed at once
