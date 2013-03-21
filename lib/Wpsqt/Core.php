@@ -5,7 +5,7 @@
  *
  * @author Iain Cambridge
  * @copyright Fubra Limited 2010-2011 (c)
- * @license http://www.gnu.org/licenses/gpl.html GPL v3 
+ * @license http://www.gnu.org/licenses/gpl.html GPL v3
  */
 
 class Wpsqt_Core {
@@ -18,7 +18,7 @@ class Wpsqt_Core {
 	 *
 	 * @since 2.0
 	 */
-	
+
 	public function __construct(){
 
 		$this->_addPage(WPSQT_PAGE_MAIN, "WPSQT", "WPSQT", "wpsqt-manage", "Main")
@@ -30,19 +30,18 @@ class Wpsqt_Core {
 		->_addPage(WPSQT_PAGE_HELP, "Help", "Help", "wpsqt-manage", "Help",WPSQT_PAGE_MAIN);
 
 		add_action("init",array($this, "create_nonce" ) );
-		add_action("wp_footer",array($this,"show_footer"));
 
 		add_shortcode( 'wpsqt_quiz' , array($this, 'shortcode_quiz') );
 		add_shortcode( 'wpsqt_survey' , array($this, 'shortcode_survey') );
 		add_shortcode( 'wpsqt' , array($this, 'shortcode') );
 		add_shortcode( 'wpsqt_results', array($this, 'shortcode_results') );
 		add_shortcode( 'wpsqt_survey_results', array($this, 'shortcode_survey_results') );
-		
+
 		add_action('init', array($this,"init"));
 		add_action('admin_bar_menu', array($this,"adminbar"),999);
 		add_action( 'init' , array($this,"enqueue_files"));
 
-		
+
 		// Register the top scores widget
 		require_once WPSQT_DIR.'lib/Wpsqt/Widget.php';
 		add_action( 'widgets_init', create_function('', 'return register_widget("Wpsqt_Top_Widget");') );
@@ -63,7 +62,7 @@ class Wpsqt_Core {
 	 * @since 2.0
 	 * @return Wpsqt_Core
 	 */
-	
+
 	protected function _addPage($id,$title,$pageTitle,$cap,$module,$parent = null){
 
 		$this->_pages[$id] = array("title" => $title,
@@ -86,7 +85,7 @@ class Wpsqt_Core {
 	public function init(){
 
 		apply_filters("wpsqt_init",$this);
-		
+
 		if ( isset($_SESSION['wpsqt']) ) {
 			unset($_SESSION['wpsqt']['current_message']);
 		}
@@ -100,7 +99,7 @@ class Wpsqt_Core {
 	 *
 	 * @param WP_Admin_bar $wp_admin_bar
 	 */
-	
+
 	public function adminbar( $wp_admin_bar) {
 
 		if ( current_user_can("manage_options") ) {
@@ -137,7 +136,7 @@ class Wpsqt_Core {
 	 *
 	 * @since 2.0
 	 */
-	
+
 	public static function validNonce(){
 
 		if ( WPSQT_NONCE_VALID != true ){
@@ -168,7 +167,7 @@ class Wpsqt_Core {
 		$quizPath = ( isset($_SESSION['wpsqt']['item_id'])
 			&& ctype_digit($_SESSION['wpsqt']['item_id']) ) ?
 			$blog_id.'/'.$_SESSION['wpsqt']['current_type'].'-'.$_SESSION['wpsqt']['item_id'].'/' : '';
-			
+
 		if ( file_exists(WPSQT_DIR.'pages/custom/'.$quizPath.$file) ){
 			return WPSQT_DIR.'pages/custom/'.$quizPath.$file;
 		} elseif (file_exists(WPSQT_DIR.'pages/custom/'.$blog_id.'/shared/'.$file)) {
@@ -257,7 +256,7 @@ class Wpsqt_Core {
 	 *
 	 * @since 2.0
 	 */
-	
+
 	public static function getCurrentPageNumber(){
 
 		if ( isset($_GET['pageno']) && ctype_digit($_GET['pageno']) ){
@@ -279,7 +278,7 @@ class Wpsqt_Core {
 	public static function saveCurrentState($currentStep) {
 		global $wpdb;
 
-		
+
 		$quizName = $_SESSION["wpsqt"]["current_id"];
 		$quizId = $_SESSION['wpsqt'][$quizName]['details']['id'];
 		/*
@@ -321,23 +320,6 @@ class Wpsqt_Core {
 <?php
 
 		return true;
-	}
-
-	/**
-	 * Adds the CatN's link to the footer if the
-	 * user agrees to it.
-	 *
-	 * @since 2.0
-	 */
-
-	public function show_footer(){
-
-		echo '<!-- Survey and Quizzes Powered by WP Survey And Quiz Tool '.WPSQT_VERSION.' iain.cambridge at fubra.com -->';
-
-		if ( get_option('wpsqt_support_us') == 'yes'){
-			echo '<p style="text-align: center;"><a href="http://catn.com/">Get Cloud PHP Hosting on CatN</a></p>';
-		}
-
 	}
 
 	/**
@@ -383,33 +365,33 @@ class Wpsqt_Core {
 		if ( empty($atts) ){
 			return;
 		}
-		
+
 		extract( shortcode_atts( array(
 					'name' => false
 				), $atts) );
-				
+
 		return $this->_shortcode($name, 'survey');
 
 	}
 
 	public function shortcode_quiz( $atts ) {
-	
+
 		if ( empty($atts) ){
 			return;
 		}
-		
+
 		extract( shortcode_atts( array(
 					'name' => false
 				), $atts) );
-				
+
 		return $this->_shortcode($name, 'quiz');
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Method for new shortcode that will allow for type handler option.
-	 * 
+	 *
 	 * @param array $atts
 	 * @since 2.2.2
 	 */
@@ -417,18 +399,18 @@ class Wpsqt_Core {
 		if (empty($atts)) {
 			return;
 		}
-		
+
 		extract( shortcode_atts( array(
 					'name' => false,
 					'type' => false
 				), $atts) );
-				
-		return $this->_shortcode($name, $type);		
+
+		return $this->_shortcode($name, $type);
 	}
-	
+
 	/**
 	 * DRY method to show return the quizzes and surveys in the correct location.
-	 * 
+	 *
 	 * @param string $identifer The name or numerical id of the quiz/survey
 	 * @param string $type If it is a quiz or a survey.
 	 * @since 2.2.2
@@ -442,17 +424,17 @@ class Wpsqt_Core {
 		}
 
 		ob_start();
-		
+
 		require_once WPSQT_DIR.'lib/Wpsqt/Shortcode.php';
 		$objShortcode = new Wpsqt_Shortcode($identifer, $type);
 		$objShortcode->display();
-		
+
 		$content = ob_get_contents();
 		ob_end_clean();
-		
+
 		return $content;
 	}
-	
+
 	public function shortcode_results( $atts ) {
 		global $wpdb;
 		extract( shortcode_atts( array(

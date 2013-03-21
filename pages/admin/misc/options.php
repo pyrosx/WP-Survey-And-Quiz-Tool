@@ -1,12 +1,12 @@
 <div class="wrap">
-	
+
 	<div id="icon-tools" class="icon32"></div>
-	<h2>WP Survey And Quiz Tool - Options</h2>	
-	
+	<h2>WP Survey And Quiz Tool - Options</h2>
+
 	<?php if ( isset($successMessage) ){ ?>
 		<div class="updated" id="question_added"><?php echo $successMessage; ?></div>
 	<?php } ?>
-	
+
 	<?php if ( isset($errorArray) && !empty($errorArray) ) { ?>
 		<ul class="error">
 			<?php foreach($errorArray as $error ){ ?>
@@ -14,9 +14,9 @@
 			<?php } ?>
 		</ul>
 	<?php } ?>
-	
+
 	<form method="post" action="<?php echo esc_url($_SERVER["REQUEST_URI"]); ?>">
-		
+
 		<input type="hidden" name="wpsqt_nonce" value="<?php echo WPSQT_NONCE_CURRENT; ?>" />
 		<table class="form-table">
 			<tr>
@@ -98,12 +98,6 @@
 				<td>Apply the abbreviation <em>strngly</em> instead of <em>strongly</em>.</td>
 			</tr>
 			<tr>
-				<th scope="row">Support Us!</th>
-				<td><input type="radio" name="wpsqt_support_us" value="yes" id="support_yes" <?php if ( $supportUs == 'yes' ){ ?> checked="yes"<?php }?>> <label for="support_yes"><strong>Yes!</strong></label>
-					<input type="radio" name="wpsqt_support_us" value="no" id="support_no" <?php if ($supportUs == 'no' || empty($supportUs) || !isset($supportUs)){ ?> checked="yes"<?php }?>> <label for="support_no">No</label></td>
-				<td valign="top">This will add a text link to the bottom of your pages.</td>
-			</tr>
-			<tr>
 				<th scope="row">DocRaptor API</th>
 				<td><input type="text" name="wpsqt_docraptor_api" value="<?php echo $docraptorApi; ?>" size="30" /></td>
 				<td valign="top">The API key for <a href="http://www.docraptor.com/?ref=wpsqt">DocRaptor</a> which is used for generation of PDFs.</td>
@@ -114,15 +108,15 @@
 				<td valign="top">The template of the PDF sent on notification. <Strong>If empty default one will be used.</Strong> <a href="#template_tokens">Click here</a> to see the tokens for replacement.</td>
 			</tr>
 		</table>
-	
+
 		<p class="submit">
 			<input class="button-primary" type="submit" name="Save" value="Save Options" id="submitbutton" />
 		</p>
-		
+
 		<h3 id="template_tokens">Replacement Token</h3>
-		<?php echo $objTokens->getDescriptions(); ?>	
-		
+		<?php echo $objTokens->getDescriptions(); ?>
+
 	</form>
-	
-</div>	
+
+</div>
 <?php require_once WPSQT_DIR."/pages/admin/shared/image.php"; ?>
