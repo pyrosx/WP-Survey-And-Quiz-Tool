@@ -46,15 +46,6 @@ class Wpsqt_Admin extends Wpsqt_Core {
 	}
 
 	public function admin_notices() {
-
-
-		if ( get_option('wpsqt_update_required') ){
-			echo '<div class="error">';
-			echo 'An upgrade is required for WPSQT. <a href="'.WPSQT_URL_MAINENTANCE.'&section=upgrade">Click here</a> to proceed to upgrade.';
-			echo '</div>';
-		}
-
-
 	}
 
 

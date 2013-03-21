@@ -72,6 +72,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Inserted the option for polls to use WP details so that limiting by WP user works
 * Only allow one quiz to be running at a time - helps when quizzes are in posts and multiple posts are displayed at once
 * Remove advertising links to CatN
+* Remove the upgrade notice and proceed to perform upgrades automtically when required
 
 = 2.13.1 =
 

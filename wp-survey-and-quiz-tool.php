@@ -67,8 +67,7 @@ if ( !get_option('wpsqt_number_of_items') ){
 }
 // Simple way of checking if an it's an update or not.
 if ( !empty($oldVersion) && (version_compare($oldVersion, WPSQT_VERSION) < 0) ){
-	update_option('wpsqt_update_required',true);
-	update_option('wpsqt_old_version',$oldVersion);
+	require_once WPSQT_DIR.'lib/Wpsqt/Page/Maintenance/upgradeScript.php';
 }
 
 // Make sure admin has the capability
