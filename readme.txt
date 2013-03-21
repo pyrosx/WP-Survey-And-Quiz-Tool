@@ -1,5 +1,5 @@
 === WP Survey And Quiz Tool ===
-Contributors: Fubra,Backie,olliea95
+Contributors: Fubra,olliea95
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=99WUGVV4HY5ZE&lc=GB&item_name=CATN%20Plugins&item_number=catn&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: Quiz,test,exam,survey,results,email,quizzes,charts,google charts,wpsqt,tool,poll,polling,polls
 Requires at least: 3.1
