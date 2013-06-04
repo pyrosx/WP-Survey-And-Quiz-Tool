@@ -77,6 +77,7 @@ class Wpsqt_Shortcode {
 	 * @since 2.0
 	 */
 	public function __construct($identifier,$type){
+
 		global $wpdb;
 
 		if ( !isset($_SESSION['wpsqt']) ){
@@ -131,17 +132,17 @@ class Wpsqt_Shortcode {
 
 				$_SESSION['wpsqt'] = $answers;
 				$_POST = unserialize($state['post']);
-				?>
-				<script type="text/javascript">
-					function setCookie(c_name,value,exdays) {
-						var exdate=new Date();
-						exdate.setDate(exdate.getDate() + exdays);
-						var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-						document.cookie=c_name + "=" + c_value;
-					}
-					setCookie('wpsqt_<?php echo $_SESSION['wpsqt'][$identifier]['details']['id']; ?>_state', '', '-10');
-				</script>
-				<?php
+	?>
+	<script type="text/javascript">
+		function setCookie(c_name,value,exdays) {
+			var exdate=new Date();
+			exdate.setDate(exdate.getDate() + exdays);
+			var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+			document.cookie=c_name + "=" + c_value;
+		}
+		setCookie('wpsqt_<?php echo $_SESSION['wpsqt'][$identifier]['details']['id']; ?>_state', '', '-10');
+	</script>
+	<?php
 
 				$this->_key = $state['current_section'];
 				$this->_step = $state['current_section'];
@@ -497,21 +498,48 @@ class Wpsqt_Shortcode {
 		$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"] = array();
 
 
-		if ( !empty($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']) ){
-			$end = " LIMIT 0,".$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit'];
-		} else {
-			$end = '';
-		}
 
 		$rawQuestions = $wpdb->get_results(
 							$wpdb->prepare("SELECT * FROM `".WPSQT_TABLE_QUESTIONS.
-										   "` WHERE section_id = %d ORDER BY ".$orderBy.$end,
+										   "` WHERE section_id = %d ORDER BY ".$orderBy,
 										  array($section["id"])),ARRAY_A
 								);
+								
+								
+		if ( !empty($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']) ){
+			// questions limit set
+			$totalQuestions = $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit'];
 
-		foreach ( $rawQuestions as $rawQuestion ){
-			$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"][] = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
+
+			// get all required questions
+			foreach ( $rawQuestions as $rawQuestion ){
+				$currentQ = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
+				if ($currentQ['required'] == 'yes') {
+					$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"][] = $currentQ;
+				}
+			}
+			
+			// then fill up to required amount with remaining questions
+			$remainingQuestions = $totalQuestions - count($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"]);
+			foreach ( $rawQuestions as $rawQuestion ){
+				if ($remainingQuestions<=0) {
+					break;
+				}
+				$currentQ = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
+				if ($currentQ['required'] == 'no') {
+					$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"][] = $currentQ;
+					$remainingQuestions--;
+				}
+			}
+			
+		} else {
+
+			// no limit, use all questions
+			foreach ( $rawQuestions as $rawQuestion ){
+				$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"][] = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
+			}
 		}
+
 
 		if ($show) {
 			require Wpsqt_Core::pageView('site/'.$this->_type.'/section.php');
@@ -815,12 +843,6 @@ class Wpsqt_Shortcode {
 					if(isset($section['answers'][$question['id']])) {
 						$givenAnswer = array();
 						foreach( $section['answers'][$question['id']]['given'] as $gAnswer) {
-							if (!isset($cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$gAnswer])) {
-								$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$gAnswer] = array(
-									'text' => $question['answers'][$gAnswer]['text'],
-									'count' => 0,
-								);
-							}
 							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$gAnswer]["count"]++;
 						}
 					} else {
@@ -859,12 +881,6 @@ class Wpsqt_Shortcode {
 							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$answer]["count"]++;
 						}
 					} else {
-						if (!isset($cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer])) {
-							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer] = array(
-								'text' => $question['answers'][$givenAnswer]['text'],
-								'count' => 0,
-							);
-						}
 						$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer]["count"]++;
 					}
 				}

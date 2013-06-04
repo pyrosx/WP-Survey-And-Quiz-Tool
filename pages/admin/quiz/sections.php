@@ -82,7 +82,8 @@
 	
 	<p>The number of questions that will be shown in the section, if left blank it will default to zero. If the number of questions is zero then it will just return all the questions in the section.</p> 
 	<p>This field was designed to be used in conjunction with the random order to give random questions per quiz.</p>
-	
+	<p>Note that if there are more questions marked as "required" than the limit set here, this setting will be overruled.</p>
+
 	<a name="difficutly_def"></a>
 	<h4>Difficulty Meanings</h4>
 	

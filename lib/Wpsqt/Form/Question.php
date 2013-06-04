@@ -52,7 +52,7 @@ class Wpsqt_Form_Question extends Wpsqt_Form {
 			 ->addOption("wpsqt_points", "Points", "select", $options['points'], "How many points the question is worth.", range(1,10))
 			 ->addOption("wpsqt_difficulty", "Difficulty", "select", $options['difficulty'], "The difficulty of the question.", array('Easy','Medium','Hard'))
 			 ->addOption("wpsqt_section", "Section", "select", $options['section'], "The section/page this question should be in/on.", $sections)
-			 ->addOption("wpsqt_required", "Required", "yesno", $options['required'], "Should the user be forced to answer the question to progress to the next step?")
+			 ->addOption("wpsqt_required", "Required", "yesno", $options['required'], "Will this question ALWAYS be asked in this section?")
 			 ->addOption("wpsqt_explanation", "Answer Explanation", "textarea", $options['explanation'], "What shall be shown when 'show answer' is pressed. <b>Leave blank for no answer explanation to be available.</b>\nWill also display on quiz review page.", array(), false)
 			 ->addOption("wpsqt_explanation_onlyatfinish", "Answer Explanation only at finish", "yesno", $options['explanation_onlyatfinish'], "Only show the explanation of an answer after the quiz is taken and &quot;Finish Display&quot; is set to &quot;Review&quot; .", array(), false)
 			 ->addOption("wpsqt_add_text", "Additional Text", "textarea", $options['add_text'], "Additional text/html for questions, good for using html to display images.",array(),false)
