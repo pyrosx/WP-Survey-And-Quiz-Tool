@@ -52,6 +52,8 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 			$questionId = $question['id'];
 			$givenAnswer = isset($answers[$questionId]['given']) ? $answers[$questionId]['given'] : array();
 
+
+/*
 			if ( isset($question["required"]) &&  $question["required"] == "yes" ){
 				?>
 				<font color="#FF0000"><strong>*
@@ -62,7 +64,7 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 					?></strong></font><?php
 				}
 			}
-
+*/
 			if (isset($_SESSION['wpsqt'][$quizName]['details']['question_numbers']) && $_SESSION['wpsqt'][$quizName]['details']['question_numbers'] == 'yes') {
 				echo $q_number.'. ';
 			}
