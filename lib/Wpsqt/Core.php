@@ -459,7 +459,38 @@ class Wpsqt_Core {
 						"<br /><br />";
 			}
 		} else {
-			return 'No username was supplied for this results page. The shortcode should look like [wpsqt_results username="admin"]';
+			//No username supplied, try for logged in user
+			if ( is_user_logged_in() ) {
+				// for each quiz
+				$output = "<table><tr><td>Section</td><td>Completion</td></tr>";
+				
+				$sql = "SELECT id, name FROM ".WPSQT_TABLE_QUIZ_SURVEYS;
+				$quizzes = $wpdb->get_results($sql, 'ARRAY_A');
+				
+				foreach($quizzes as $quiz) {
+					$output .= "<tr><td>".$quiz['name']."</td><td>";
+					
+					$sql = "SELECT percentage FROM ".WPSQT_TABLE_RESULTS." WHERE item_id = '".$quiz['id']."' AND user_id = '".wp_get_current_user()->ID."' ORDER BY percentage DESC";
+					$results = $wpdb->get_results($sql, 'ARRAY_A');
+					if (count($results)) {
+						if ($results[0]['percentage'] == 100 ) {
+							$output .= "Completed";
+						} else {
+							$output .= "Not Completed";
+						}
+					} else {
+						$output .= "Not attempted";
+					}
+					$output .= "</td>";
+		
+					
+				}
+				$output .= "</table>";
+				return $output;	
+					
+			} else {
+			 	// results not really applicable for non-logged in user... yet?
+			}
 		}
 	}
 
