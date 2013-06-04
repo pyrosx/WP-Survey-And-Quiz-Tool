@@ -101,6 +101,7 @@ function wpsqt_main_install(){
 				  `item_id` int(11) NOT NULL,
 				  `datetaken` varchar(255) NOT NULL,
 				  `timetaken` int(11) NOT NULL,
+				  `user_id` int(11) NOT NULL,
 				  `person` longtext NOT NULL,
 				  `sections` longtext NOT NULL,
 				  `person_name` varchar(255) NOT NULL,

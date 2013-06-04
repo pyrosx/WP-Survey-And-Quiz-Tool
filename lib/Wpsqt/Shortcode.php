@@ -245,6 +245,17 @@ class Wpsqt_Shortcode {
 				return;
 			}
 		}
+		
+		
+		// Checks if the user has taken the exam, AND PASSED it already
+		$id = (int) $_SESSION['wpsqt']['item_id'];
+		$result = $wpdb->get_row("SELECT * FROM `".WPSQT_TABLE_RESULTS."` WHERE user_id = '".wp_get_current_user()->ID."' AND item_id = '".$id."' AND percentage = '100'", ARRAY_A);
+		if (count($result)) {
+			echo("You have already passed this exam!");
+			require_once WPSQT_DIR.'/lib/Wpsqt/Page.php';
+			return;
+		}
+		
 
 		// handle contact form and all the stuff that comes with it.
 		if ( isset($_SESSION['wpsqt'][$quizName]['details']['contact']) && $_SESSION['wpsqt'][$quizName]['details']['contact'] == "yes" && $this->_step <= 1 ){
@@ -666,10 +677,13 @@ class Wpsqt_Shortcode {
 
 		if ( !isset($_SESSION['wpsqt'][$quizName]['details']['store_results']) ||  $_SESSION['wpsqt'][$quizName]['details']['store_results'] !== "no" ){
 			$wpdb->query(
-				$wpdb->prepare("INSERT INTO `".WPSQT_TABLE_RESULTS."` (datetaken,timetaken,person,sections,item_id,person_name,ipaddress,score,total,percentage,status,pass)
-								VALUES (%s,%d,%s,%s,%d,%s,%s,%d,%d,%d,%s,%d)",
+				$wpdb->prepare("INSERT INTO `".WPSQT_TABLE_RESULTS."` (datetaken,timetaken,user_id,person,sections,item_id,person_name,ipaddress,score,total,percentage,status,pass)
+								VALUES (%s,%d,%s,%s,%s,%d,%s,%s,%d,%d,%d,%s,%d)",
 								   array($_SESSION['wpsqt'][$quizName]['start_time'],
 							   		 $timeTaken,
+							   		 
+							   		 wp_get_current_user()->ID,
+							   		 
 							   		 serialize($_SESSION['wpsqt'][$quizName]['person']),
 							   		 serialize($_SESSION['wpsqt'][$quizName]['sections']),
 							   		 $_SESSION['wpsqt'][$quizName]['details']['id'],
