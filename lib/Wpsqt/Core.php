@@ -35,6 +35,7 @@ class Wpsqt_Core {
 		add_shortcode( 'wpsqt' , array($this, 'shortcode') );
 		add_shortcode( 'wpsqt_results', array($this, 'shortcode_results') );
 		add_shortcode( 'wpsqt_survey_results', array($this, 'shortcode_survey_results') );
+		add_shortcode( 'wpsqt_info' , array($this, 'shortcode_info') );
 
 		add_action('init', array($this,"init"));
 		add_action('admin_bar_menu', array($this,"adminbar"),999);
@@ -459,38 +460,49 @@ class Wpsqt_Core {
 						"<br /><br />";
 			}
 		} else {
-			//No username supplied, try for logged in user
-			if ( is_user_logged_in() ) {
-				// for each quiz
-				$output = "<table><tr><td>Section</td><td>Completion</td></tr>";
-				
-				$sql = "SELECT id, name FROM ".WPSQT_TABLE_QUIZ_SURVEYS;
-				$quizzes = $wpdb->get_results($sql, 'ARRAY_A');
-				
-				foreach($quizzes as $quiz) {
-					$output .= "<tr><td>".$quiz['name']."</td><td>";
-					
-					$sql = "SELECT percentage FROM ".WPSQT_TABLE_RESULTS." WHERE item_id = '".$quiz['id']."' AND user_id = '".wp_get_current_user()->ID."' ORDER BY percentage DESC";
-					$results = $wpdb->get_results($sql, 'ARRAY_A');
-					if (count($results)) {
-						if ($results[0]['percentage'] == 100 ) {
-							$output .= "Completed";
-						} else {
-							$output .= "Not Completed";
-						}
-					} else {
-						$output .= "Not attempted";
-					}
-					$output .= "</td>";
+			return 'No username was supplied for this results page. The shortcode should look like [wpsqt_results username="admin"]';
+		}
+	}
+	public function shortcode_info( $atts ) {
+		global $wpdb;
 		
-					
+		// don't care about attributes.... yet?
+/*		extract( shortcode_atts( array(
+					'username' => false,
+					'accepted' => false
+		), $atts) );
+*/
+		//No username supplied, try for logged in user
+		if ( is_user_logged_in() ) {
+			// for each quiz
+			$output = "<table><tr><td>Section</td><td>Completion</td></tr>";
+			
+			$sql = "SELECT id FROM ".WPSQT_TABLE_QUIZ_SURVEYS;
+			$quizzes = $wpdb->get_results($sql, 'ARRAY_A');
+			
+			foreach($quizzes as $q) {
+				$id = $q['id'];
+				$quiz = Wpsqt_System::getItemDetails($id,'quiz');
+				
+				$output .= '<tr><td><a href="'.$quiz['permalink'].'">'.$quiz['name']."</a></td><td>";
+				
+				$sql = "SELECT percentage FROM ".WPSQT_TABLE_RESULTS." WHERE item_id = '".$quiz['id']."' AND user_id = '".wp_get_current_user()->ID."' ORDER BY percentage DESC";
+				$results = $wpdb->get_results($sql, 'ARRAY_A');
+				if (count($results)) {
+					if ($results[0]['percentage'] == 100 ) {
+						$output .= "Completed";
+					} else {
+						$output .= "Best Mark - ".$results[0]['percentage'];
+					}
+				} else {
+					$output .= "Not Yet Attempted";
 				}
-				$output .= "</table>";
-				return $output;	
+				$output .= "</td>";
 					
-			} else {
-			 	// results not really applicable for non-logged in user... yet?
 			}
+			$output .= "</table>";
+			return $output;	
+				
 		}
 	}
 
