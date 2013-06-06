@@ -661,14 +661,14 @@ class Wpsqt_Shortcode {
 		}
 
 		$status = 'unviewed';
-		$pass = '0';
+		$_SESSION['wpsqt']['pass'] = '0';
 
 		if ($_SESSION['wpsqt'][$quizName]['details']['type'] == 'quiz') {
 			// Check if pass
 			if ($percentRight >= $passMark)
-				$pass = '1';
+				$_SESSION['wpsqt']['pass'] = '1';
 
-			if ($pass == '1') {
+			if ($_SESSION['wpsqt']['pass'] == '1') {
 				$status = 'Accepted';
 			} else {
 				$status = 'unviewed';
@@ -687,7 +687,7 @@ class Wpsqt_Shortcode {
 							   		 serialize($_SESSION['wpsqt'][$quizName]['person']),
 							   		 serialize($_SESSION['wpsqt'][$quizName]['sections']),
 							   		 $_SESSION['wpsqt'][$quizName]['details']['id'],
-							   		 $personName,$_SERVER['REMOTE_ADDR'],$correctAnswers,$totalPoints,$percentRight,$status,$pass ) )
+							   		 $personName,$_SERVER['REMOTE_ADDR'],$correctAnswers,$totalPoints,$percentRight,$status,$_SESSION['wpsqt']['pass'] ) )
 					);
 
 			$_SESSION['wpsqt']['result_id'] = $wpdb->insert_id;
