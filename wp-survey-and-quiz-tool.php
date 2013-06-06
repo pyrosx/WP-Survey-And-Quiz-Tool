@@ -38,6 +38,7 @@ define( 'WPSQT_PAGE_HELP'            , 'wpsqt-menu-help'    );
 define( 'WPSQT_PAGE_SURVEY'          , 'wpsqt-menu-survey'  );
 define( 'WPSQT_PAGE_CATN'            , 'wpsqt-menu-catn' );
 define( 'WPSQT_PAGE_MAINTENANCE'     , 'wpsqt-menu-maintenance' );
+define( 'WPSQT_PAGE_FRANCHISE'       , 'wpsqt-menu-franchisees' );
 
 define( 'WPSQT_TABLE_QUIZ_SURVEYS'   , $wpdb->get_blog_prefix().'wpsqt_quiz_surveys' );
 define( 'WPSQT_TABLE_SECTIONS'       , $wpdb->get_blog_prefix().'wpsqt_sections' );
