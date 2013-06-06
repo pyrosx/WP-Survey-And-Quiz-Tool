@@ -35,10 +35,26 @@ abstract class Wpsqt_Page_Main_Addnew extends Wpsqt_Page {
 			
 			if ( empty($errorMessages) ){
 				
+				// before DB insert, create new wordpress page
+				$quizName=$details['wpsqt_name'];
+				$shortcode = '[wpsqt type="quiz" name="'.$quizName.'"]';
+				$post = array(
+					'post_author' => get_current_user_id(),
+					'post_content' => $shortcode,
+					'post_name' => str_replace(' ', '-', strtolower($quizName)),
+					'post_title' => $quizName,
+					'post_status' => 'publish',
+					'post_type' => 'page',
+				);
+				// store the ID of the created page
+				$details['wpsqt_permalink'] = wp_insert_post($post);
+
+				
 				$details = Wpsqt_Form::getSavableArray($details);
 				
 				$this->_pageVars['id'] = Wpsqt_System::insertItemDetails($details, strtolower($this->_subsection));
 				do_action('wpsqt_'.strtolower($this->_subsection).'_addnew');
+				
 				$this->_pageView ="admin/misc/redirect.php";	
 				
 				$this->_pageVars['redirectLocation'] = WPSQT_URL_MAIN."&section=sections&subsection=".

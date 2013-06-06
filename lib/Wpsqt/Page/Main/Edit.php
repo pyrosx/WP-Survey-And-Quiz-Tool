@@ -47,7 +47,25 @@ abstract class Wpsqt_Page_Main_Edit extends Wpsqt_Page {
 			$details['wpsqt_id'] = $_GET['id'];
 			unset($details['wpsqt_nonce']);
 			
-			if ( empty($errorMessages) ){
+			if ( empty($errorMessages) ) {
+			
+				// check to see if quiz name has changed
+				$newName = $details['wpsqt_name'];
+				global $wpdb;
+				$oldName = $wpdb->get_row( 
+								$wpdb->prepare("SELECT name FROM ".WPSQT_TABLE_QUIZ_SURVEYS." WHERE id = %d", array($details['wpsqt_id']) ), ARRAY_A
+								);
+			
+				if ($newName != $oldName['name']) {
+					//WP page title will need updating
+					$post = array(
+						'ID' => $details['wpsqt_permalink'],
+						'post_title' => $newName,
+					);
+					wp_update_post($post);
+					
+				}
+			
 				Wpsqt_System::updateItemDetails(
 									Wpsqt_Form::getSavableArray($details),$_GET['subsection']
 								);

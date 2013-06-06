@@ -19,7 +19,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 
 		if ( empty($options) ){
 			$options = array('name' => false,
-							'permalink' => false,
+							'permalink' => 0,
 							'notificaton_type' => false,
 							'limit_one' => false,
 							'limit_one_wp' => false,
@@ -47,7 +47,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 		}
 
 		$this->addOption("wpsqt_name", "Name", "text", $options['name'], "What you would like the quiz to be called." )
-			 ->addOption("wpsqt_permalink", "Permalink", "text", $options['permalink'], "Permalink to quizzes Page" )
+			 ->addOption("wpsqt_permalink", "Permalink", "text", $options['permalink'], "ID of the linked WP Page" )
 			 ->addOption("wpsqt_limit_one", "Limit to one submission per IP","yesno", $options['limit_one'], "Limit the quiz to one submission per IP.")
 			 ->addOption("wpsqt_limit_one_wp", "Limit to one submission per WP user","yesno", $options['limit_one_wp'], "Limit the quiz to one submission per WP user. You must have the Use WP Details option below set to yes.")
 			 ->addOption("wpsqt_limit_one_cookie", "Limit to one submission per computer (using cookies)", "yesno", $options['limit_one_cookie'], "Limit the quiz to one submission per computer/browser")
