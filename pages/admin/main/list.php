@@ -2,10 +2,11 @@
 
 	<div id="icon-tools" class="icon32"></div>
 	<h2>
-		WP Survey And Quiz Tool - Survey/Quizzes
+		Online Training - Quizzes
 		<a href="<?php echo WPSQT_URL_MAIN; ?>&section=addnew&subsection=quiz" class="button add-new-h2">Add New Quiz</a>
-		<a href="<?php echo WPSQT_URL_MAIN; ?>&section=addnew&subsection=survey" class="button add-new-h2">Add New Survey</a>
+<!--		<a href="<?php echo WPSQT_URL_MAIN; ?>&section=addnew&subsection=survey" class="button add-new-h2">Add New Survey</a>
 		<a href="<?php echo WPSQT_URL_MAIN; ?>&section=addnew&subsection=poll" class="button add-new-h2">Add New Poll</a>
+-->
 	</h2>
 
 	<?php if ( isset($_GET['delete']) && $_GET['delete'] == "true" ){
@@ -19,7 +20,7 @@
 	<form method="post" action="">
 
 		<div class="tablenav">
-
+<!--
 			<ul class="subsubsub">
 				<li>
 					<a href="<?php echo WPSQT_URL_MAIN; ?>" <?php if ($type == "") { ?>  class="current"<?php } ?> id="all_link">All <span class="count">(<?php echo $totalNo; ?>)</span></a> |
@@ -34,6 +35,7 @@
 					<a href="<?php echo WPSQT_URL_MAIN; ?>&type=poll" <?php if ($type == "poll") { ?>  class="current"<?php } ?>  id="survey_link">Polls <span class="count">(<?php echo $pollNo; ?>)</span></a>
 				</li>
 			</ul>
+-->
 			<div class="tablenav-pages">
 		   		<?php echo Wpsqt_Core::getPaginationLinks($currentPage, $numberOfPages); ?>
 		   	</div>
@@ -97,4 +99,3 @@
 </div>
 
 
-<?php require_once WPSQT_DIR.'/pages/admin/shared/image.php'; ?>

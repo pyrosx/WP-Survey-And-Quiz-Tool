@@ -2,7 +2,7 @@
 
 	<div id="icon-tools" class="icon32"></div>
 	<h2>
-		WP Survey And Quiz Tool - Quizes
+		Online Training - Quizes
 	</h2>
 		
 	<?php require WPSQT_DIR.'pages/admin/misc/navbar.php'; ?>
@@ -83,4 +83,3 @@
 		</div>
 	</div>
 </div>
-<?php require_once WPSQT_DIR.'/pages/admin/shared/image.php'; ?>

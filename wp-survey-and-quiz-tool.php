@@ -35,7 +35,7 @@ define( 'WPSQT_PAGE_QUESTIONS'       , 'wpsqt-menu-question' );
 define( 'WPSQT_PAGE_QUIZ_RESULTS'    , 'wpsqt-menu-quiz-results' );
 define( 'WPSQT_PAGE_OPTIONS'         , 'wpsqt-menu-options' ) ;
 define( 'WPSQT_PAGE_HELP'            , 'wpsqt-menu-help'    );
-define( 'WPSQT_PAGE_SURVEY'          , 'wpsqt-menu-survey'  );
+//define( 'WPSQT_PAGE_SURVEY'          , 'wpsqt-menu-survey'  );
 define( 'WPSQT_PAGE_CATN'            , 'wpsqt-menu-catn' );
 define( 'WPSQT_PAGE_MAINTENANCE'     , 'wpsqt-menu-maintenance' );
 define( 'WPSQT_PAGE_FRANCHISE'       , 'wpsqt-menu-franchisees' );

@@ -19,7 +19,7 @@ var saveOrder = function() {
 <div class="wrap">
 
 	<div id="icon-tools" class="icon32"></div>
-	<h2>WP Survey And Quiz Tool - Questions</h2>
+	<h2>Online Training - Questions</h2>
 		
 	<?php require WPSQT_DIR.'pages/admin/misc/navbar.php'; ?>
 	
@@ -154,4 +154,3 @@ var saveOrder = function() {
 	</div>
 
 </div>
-<?php require_once WPSQT_DIR.'/pages/admin/shared/image.php'; ?>

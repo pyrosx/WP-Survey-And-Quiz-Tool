@@ -7,7 +7,7 @@
 	<?php } ?>
 	<div id="icon-tools" class="icon32"></div>
 	<h2>
-		WP Survey And Quiz Tool - Create Quiz
+		Online Training - Create Quiz
 	</h2>
 			
 	<?php require WPSQT_DIR.'pages/admin/misc/navbar.php'; ?>
@@ -32,10 +32,5 @@
 		
 	</form>
 	
-	<a name="template_tokens"></a>
-	<h3>Replacement Token</h3>
-		
-	<?php echo $objTokens->getDescriptions(); ?>	
 	
 </div>	
-<?php require_once WPSQT_DIR.'/pages/admin/shared/image.php'; ?>

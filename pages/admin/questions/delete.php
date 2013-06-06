@@ -1,7 +1,7 @@
 <div class="wrap">
 
 	<div id="icon-tools" class="icon32"></div>
-	<h2>PHP Test - Questions</h2>
+	<h2>Online Training - Questions</h2>
 		
 	<?php require WPSQT_DIR.'pages/admin/misc/navbar.php'; ?>
 	
@@ -14,4 +14,3 @@
 	</form>
 	
 </div>
-<?php require_once WPSQT_DIR.'/pages/admin/shared/image.php'; ?>

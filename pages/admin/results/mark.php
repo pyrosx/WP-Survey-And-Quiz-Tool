@@ -7,7 +7,7 @@ $hardPoints = 0;
 
 	
 	<div id="icon-tools" class="icon32"></div>
-	<h2>WP Survey And Quiz Tool - Mark</h2>	
+	<h2>Online Training - Mark</h2>	
 		
 	<?php require WPSQT_DIR.'pages/admin/misc/navbar.php'; ?>
 	
@@ -132,4 +132,3 @@ $hardPoints = 0;
 	<p><input class="button-primary" type="submit" value="Submit"></p>
 </div>
 </form>
-<?php require_once WPSQT_DIR.'/pages/admin/shared/image.php'; ?>

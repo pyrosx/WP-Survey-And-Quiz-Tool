@@ -1,7 +1,13 @@
+<style>
+.advanced_setting {
+	display: none;
+}
+</style>
+
 	<table class="form-table" id="question_form">
 		<tbody>
 			<?php foreach($options as $name => $option ){ ?>
-			<tr>
+			<tr <?php if ($option["advanced"]) {echo(' class="advanced_setting"');}?>>
 				<th scope="row"><?php echo $option["display"]; ?></th>
 				<td valign="top">
 				<?php switch ($option["type"]) {
@@ -56,3 +62,12 @@
 			<?php }?>
 		</tbody>
 	</table>
+	
+	<a href="#" id="toggleAdvanced">Toggle Advanced Settings</a>
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<script type="text/javascript">
+	$("#toggleAdvanced").click( function() {
+		$(".advanced_setting").toggle();
+	});
+	</script>

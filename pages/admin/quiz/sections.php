@@ -7,7 +7,7 @@
 	<?php } ?>
 	<div id="icon-tools" class="icon32"></div>
 	<h2>
-		WP Survey And Quiz Tool - Quiz Sections
+		Online Training - Quiz Sections
 	</h2>
 		
 	<?php require WPSQT_DIR.'pages/admin/misc/navbar.php'; ?>
@@ -101,4 +101,3 @@
 		<li><strong>Text Input</strong>  - Displays questions that require text input by the user. <strong>No auto marking.</strong></li>
 	</ul>
 </div>
-<?php require_once WPSQT_DIR.'/pages/admin/shared/image.php'; ?>

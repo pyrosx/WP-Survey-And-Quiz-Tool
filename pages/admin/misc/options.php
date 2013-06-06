@@ -1,7 +1,7 @@
 <div class="wrap">
 
 	<div id="icon-tools" class="icon32"></div>
-	<h2>WP Survey And Quiz Tool - Options</h2>
+	<h2>Online Training - Options</h2>
 
 	<?php if ( isset($successMessage) ){ ?>
 		<div class="updated" id="question_added"><?php echo $successMessage; ?></div>
@@ -97,6 +97,7 @@
 				</td>
 				<td>Apply the abbreviation <em>strngly</em> instead of <em>strongly</em>.</td>
 			</tr>
+<!--
 			<tr>
 				<th scope="row">DocRaptor API</th>
 				<td><input type="text" name="wpsqt_docraptor_api" value="<?php echo $docraptorApi; ?>" size="30" /></td>
@@ -107,16 +108,14 @@
 				<td><textarea rows="8" name="wpsqt_pdf_template" cols="40"><?php echo $pdfTemplate; ?></textarea></td>
 				<td valign="top">The template of the PDF sent on notification. <Strong>If empty default one will be used.</Strong> <a href="#template_tokens">Click here</a> to see the tokens for replacement.</td>
 			</tr>
+-->
 		</table>
 
 		<p class="submit">
 			<input class="button-primary" type="submit" name="Save" value="Save Options" id="submitbutton" />
 		</p>
 
-		<h3 id="template_tokens">Replacement Token</h3>
-		<?php echo $objTokens->getDescriptions(); ?>
 
 	</form>
 
 </div>
-<?php require_once WPSQT_DIR."/pages/admin/shared/image.php"; ?>

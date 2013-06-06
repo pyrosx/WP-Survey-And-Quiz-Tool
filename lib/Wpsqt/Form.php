@@ -37,9 +37,9 @@ class Wpsqt_Form {
 	 * @param array $args
 	 * @since 2.0
 	 */
-	public function addOption($name,$displayName,$type,$value = false,$helpMessage = false, $args = array(), $required = true){
+	public function addOption($name,$displayName,$type,$advanced,$value = false,$helpMessage = false, $args = array(), $required = true){
 		
-		$this->_options[$name] = array('type' => $type,'display' => $displayName,'value' => $value,'help' => $helpMessage, 'args' =>$args, "required" => $required );
+		$this->_options[$name] = array('type' => $type,'advanced' => $advanced,'display' => $displayName,'value' => $value,'help' => $helpMessage, 'args' =>$args, "required" => $required );
 		
 		return $this;
 		

@@ -1,6 +1,6 @@
 <div class="wrap">
 	<div id="icon-tools" class="icon32"></div>
-	<h2>WP Survey And Quiz Tool - Results</h2>
+	<h2>Online Training - Results</h2>
 		
 	<?php require WPSQT_DIR.'pages/admin/misc/navbar.php'; ?>	
 	
@@ -108,4 +108,3 @@
 		<input type="checkbox" name="hideanon" value="hide" id="wpsqt-hideanon" /><label for="wpsqt-hideanon">Hide results with username Anonymous</label>
 	</form>
 </div>
-<?php require_once WPSQT_DIR.'/pages/admin/shared/image.php'; ?>
