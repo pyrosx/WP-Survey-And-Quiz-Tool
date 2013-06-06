@@ -494,7 +494,7 @@ class Wpsqt_Core {
 					if ($results[0]['percentage'] == 100 ) {
 						$output .= "Completed";
 					} else {
-						$output .= "Best Mark - ".$results[0]['percentage'];
+						$output .= "Not Complete - Best Mark - ".$results[0]['percentage']."%";
 					}
 				} else {
 					$output .= "Not Yet Attempted";

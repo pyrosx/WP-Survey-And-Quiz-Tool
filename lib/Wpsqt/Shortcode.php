@@ -366,6 +366,7 @@ class Wpsqt_Shortcode {
 				$_SESSION['wpsqt'][$quizName]['sections'][$pastSectionKey]['answers'] = array();
 			}
 			$canAutoMark = true;
+/* required doesn't mean this anymore... this is unnecessary
 			if (isset($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"]) && is_array($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"])) {
 				foreach ($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"] as $questionData ){
 					if ( isset($questionData['required']) && $questionData['required'] == "yes") {
@@ -373,6 +374,16 @@ class Wpsqt_Shortcode {
 					}
 				}
 			}
+*/
+			// Check that all questions have been answered
+			//number of questions = count($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]['questions']));
+			//number of answers count($_POST['answers']));
+			if ( !isset($_POST['answers']) ||  count($_POST['answers']) < count($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]['questions'])) {
+				$_SESSION['wpsqt']['current_message'] = __('Not all the required questions were answered!', 'wp-survey-and-quiz-tool');
+				$this->_step--;
+				$this->_key--;
+			}
+
 
 			if ( isset($_POST['answers']) ){
 
@@ -438,11 +449,14 @@ class Wpsqt_Shortcode {
 
 		}
 
+		// removed this - ALL questions are now "required" to be answered
+		/*
 		if ( isset($requiredQuestions) && $requiredQuestions['exist'] > sizeof($requiredQuestions['given']) && !$this->_restore ){
 			$_SESSION['wpsqt']['current_message'] = __('Not all the required questions were answered!', 'wp-survey-and-quiz-tool');
 			$this->_step--;
 			$this->_key--;
 		}
+		*/
 
 		$_SESSION['wpsqt']['current_step'] = $this->_step;
 		$_SESSION['wpsqt']['required'] = $requiredQuestions;
