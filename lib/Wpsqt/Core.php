@@ -403,11 +403,11 @@ class Wpsqt_Core {
 		}
 
 		extract( shortcode_atts( array(
-					'name' => false,
+					'id' => false,
 					'type' => false
 				), $atts) );
 
-		return $this->_shortcode($name, $type);
+		return $this->_shortcode($id, $type);
 	}
 
 	/**
@@ -417,7 +417,7 @@ class Wpsqt_Core {
 	 * @param string $type If it is a quiz or a survey.
 	 * @since 2.2.2
 	 */
-	protected function _shortcode($identifer,$type)	{
+	protected function _shortcode($id,$type)	{
 
 		if (isset($_POST['wpsqt_name']) && $_POST['wpsqt_name'] != $identifer) {
 			/* translators: %1$s will be replaced with the quiz name, please leave the HTML in tact */
@@ -428,7 +428,7 @@ class Wpsqt_Core {
 		ob_start();
 
 		require_once WPSQT_DIR.'lib/Wpsqt/Shortcode.php';
-		$objShortcode = new Wpsqt_Shortcode($identifer, $type);
+		$objShortcode = new Wpsqt_Shortcode($id, $type);
 		$objShortcode->display();
 
 		$content = ob_get_contents();
@@ -465,6 +465,9 @@ class Wpsqt_Core {
 			return 'No username was supplied for this results page. The shortcode should look like [wpsqt_results username="admin"]';
 		}
 	}
+	
+	
+	
 	public function shortcode_info( $atts ) {
 		global $wpdb;
 		
@@ -485,8 +488,8 @@ class Wpsqt_Core {
 			foreach($quizzes as $q) {
 				$id = $q['id'];
 				$quiz = Wpsqt_System::getItemDetails($id,'quiz');
-				
-				$output .= '<tr><td><a href="'.$quiz['permalink'].'">'.$quiz['name']."</a></td><td>";
+				$link = Wpsqt_System::format_post_name($quiz['name']);
+				$output .= '<tr><td><a href="'.$link.'">'.$quiz['name']."</a></td><td>";
 				
 				$sql = "SELECT percentage FROM ".WPSQT_TABLE_RESULTS." WHERE item_id = '".$quiz['id']."' AND user_id = '".wp_get_current_user()->ID."' ORDER BY percentage DESC";
 				$results = $wpdb->get_results($sql, 'ARRAY_A');

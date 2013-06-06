@@ -50,7 +50,7 @@ abstract class Wpsqt_Page_Main_Edit extends Wpsqt_Page {
 			if ( empty($errorMessages) ) {
 			
 				// check to see if quiz name has changed
-				$newName = $details['wpsqt_name'];
+				$newName = wp_strip_all_tags($details['wpsqt_name']);
 				global $wpdb;
 				$oldName = $wpdb->get_row( 
 								$wpdb->prepare("SELECT name FROM ".WPSQT_TABLE_QUIZ_SURVEYS." WHERE id = %d", array($details['wpsqt_id']) ), ARRAY_A
@@ -61,6 +61,7 @@ abstract class Wpsqt_Page_Main_Edit extends Wpsqt_Page {
 					$post = array(
 						'ID' => $details['wpsqt_permalink'],
 						'post_title' => $newName,
+						'post_name' => Wpsqt_System::format_post_name($newName),
 					);
 					wp_update_post($post);
 					

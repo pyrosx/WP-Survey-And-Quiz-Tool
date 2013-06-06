@@ -35,24 +35,32 @@ abstract class Wpsqt_Page_Main_Addnew extends Wpsqt_Page {
 			
 			if ( empty($errorMessages) ){
 				
-				// before DB insert, create new wordpress page
+				// before DB insert, create new wordpress page (content is blank because we don't know quiz ID yet
 				$quizName=$details['wpsqt_name'];
-				$shortcode = '[wpsqt type="quiz" name="'.$quizName.'"]';
 				$post = array(
 					'post_author' => get_current_user_id(),
-					'post_content' => $shortcode,
-					'post_name' => str_replace(' ', '-', strtolower($quizName)),
+					'post_content' => "",
+					'post_name' => Wpsqt_System::format_post_name($quizName),
 					'post_title' => $quizName,
 					'post_status' => 'publish',
 					'post_type' => 'page',
 				);
 				// store the ID of the created page
 				$details['wpsqt_permalink'] = wp_insert_post($post);
-
+				$permalink = $details['wpsqt_permalink'];
 				
 				$details = Wpsqt_Form::getSavableArray($details);
 				
 				$this->_pageVars['id'] = Wpsqt_System::insertItemDetails($details, strtolower($this->_subsection));
+				
+				// update wordpress page now that we know ID
+				$shortcode = '[wpsqt type="quiz" id="'.$this->_pageVars['id'].'"]';
+				$post = array(
+					'ID' => $permalink,
+					'post_content' => $shortcode,
+				);
+				wp_update_post($post);				
+
 				do_action('wpsqt_'.strtolower($this->_subsection).'_addnew');
 				
 				$this->_pageView ="admin/misc/redirect.php";	

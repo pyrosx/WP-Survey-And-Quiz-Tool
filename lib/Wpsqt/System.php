@@ -474,5 +474,12 @@ class Wpsqt_System {
 		$wpdb->query($wpdb->prepare("DELETE FROM `".WPSQT_TABLE_RESULTS."` WHERE item_id = %d",
 							array($id)));
 	}
+
+	/**
+	  *  Formats a quiz name into a usable form for a WP permalink slug
+	  */
+	public static function format_post_name($name) {
+		return preg_replace('/[^a-z0-9]+/i', '_', $name);
+	}
 	
 }
