@@ -482,4 +482,100 @@ class Wpsqt_System {
 		return preg_replace('/[^a-z0-9]+/i', '_', $name);
 	}
 	
+	/**
+	  *  Returns a standard "state" drop down box, with $name included
+	  */
+	public static function getStateDropdown($name, $selected = "") {
+		$out = '<select name="'.$name.'">';
+	
+		$out .= Wpsqt_System::addOption("","",$selected);
+		$out .= Wpsqt_System::addOption("ACT","ACT",$selected);
+		$out .= Wpsqt_System::addOption("New South Wales","New South Wales",$selected);
+		$out .= Wpsqt_System::addOption("Northern Territory","Northern Territory",$selected);
+		$out .= Wpsqt_System::addOption("Queensland","Queensland",$selected);
+		$out .= Wpsqt_System::addOption("South Australia","South Australia",$selected);
+		$out .= Wpsqt_System::addOption("Tasmania","Tasmania",$selected);
+		$out .= Wpsqt_System::addOption("Victoria","Victoria",$selected);
+		$out .= Wpsqt_System::addOption("Western Australia","Western Australia",$selected);
+		
+		$out .= '</select>';
+
+		return $out;
+	}
+
+	public static function addOption($id,$val,$selected = "") {
+		$out = '<option value="'.$id.'" ';
+		if (strval($id) == strval($selected)) { $out .='selected ';}
+		$out .= '>'.$val.'</option>';
+		return $out;
+	}
+
+	/** Adds a new Franchisee to the employees table
+		Returns the id of the added entry
+	*/
+	public static function add_franchisee($id_user, $id_store) {
+		global $wpdb;	
+		
+		//check we're not duplicating
+		$sql = $wpdb->prepare("SELECT id FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d AND id_store=%d AND franchisee=TRUE",
+		array($id_user,$id_store));
+		$id = $wpdb->get_var($sql);
+		if ($id != 0) {
+			// dupe detected
+			return $id;
+		}
+		
+		$sql = $wpdb->prepare(
+			"INSERT INTO `".WPSQT_TABLE_EMPLOYEES."` (id_user,id_store,franchisee) VALUES (%d,%d,TRUE)",
+			array($id_user,$id_store)
+			);
+		
+		return $wpdb->get_var($sql);
+	}
+	
+	// can be used for Employees too
+	public static function edit_franchisee($id,$id_user, $id_store) {
+		global $wpdb;	
+		$sql = $wpdb->prepare(
+			"UPDATE `".WPSQT_TABLE_EMPLOYEES."` SET id_user=%d, id_store=%d WHERE id=%d",
+			array($id_user,$id_store,$id)
+			);
+		
+		return $wpdb->get_results($sql, ARRAY_A);
+	}
+	
+	/** Adds a new Employee to the employees table
+		Returns the id of the added entry
+	*/
+	public static function add_employee($id_user, $id_store) {
+		global $wpdb;	
+		
+		//check we're not duplicating
+		$sql = $wpdb->prepare("SELECT id FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d AND id_store=%d AND franchisee=FALSE",
+		array($id_user,$id_store));
+		$id = $wpdb->get_var($sql);
+		if ($id != 0) {
+			// dupe detected
+			return $id;
+		}
+		
+		$sql = $wpdb->prepare(
+			"INSERT INTO `".WPSQT_TABLE_EMPLOYEES."` (id_user,id_store,franchisee) VALUES (%d,%d,FALSE)",
+			array($id_user,$id_store)
+			);
+		
+		return $wpdb->get_var($sql);
+	}
+
+	public static function add_store($store, $state) {
+		global $wpdb;	
+		$sql = $wpdb->prepare(
+			"INSERT INTO `".WPSQT_TABLE_STORES."` (location,state) VALUES (%s,%s)",
+			array($store,$state)
+			);
+		
+		return $wpdb->get_results($sql, ARRAY_A);
+	}
+
 }
+

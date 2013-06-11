@@ -38,7 +38,9 @@ define( 'WPSQT_PAGE_HELP'            , 'wpsqt-menu-help'    );
 define( 'WPSQT_PAGE_SURVEY'          , 'wpsqt-menu-survey'  );
 define( 'WPSQT_PAGE_CATN'            , 'wpsqt-menu-catn' );
 define( 'WPSQT_PAGE_MAINTENANCE'     , 'wpsqt-menu-maintenance' );
-define( 'WPSQT_PAGE_FRANCHISE'       , 'wpsqt-menu-franchisees' );
+define( 'WPSQT_PAGE_STORES'          , 'wpsqt-menu-stores' );
+define( 'WPSQT_PAGE_FRANCHISEES'     , 'wpsqt-menu-franchisees' );
+define( 'WPSQT_PAGE_EMPLOYEES'       , 'wpsqt-menu-employees' );
 
 define( 'WPSQT_TABLE_QUIZ_SURVEYS'   , $wpdb->get_blog_prefix().'wpsqt_quiz_surveys' );
 define( 'WPSQT_TABLE_SECTIONS'       , $wpdb->get_blog_prefix().'wpsqt_sections' );
@@ -48,8 +50,19 @@ define( 'WPSQT_TABLE_RESULTS'        , $wpdb->get_blog_prefix().'wpsqt_all_resul
 define( 'WPSQT_TABLE_SURVEY_CACHE'   , $wpdb->get_blog_prefix().'wpsqt_survey_cache_results' );
 define( 'WPSQT_TABLE_QUIZ_STATE'     , $wpdb->get_blog_prefix().'wpsqt_quiz_state' );
 
+define( 'WPSQT_TABLE_STORES'     	 , $wpdb->get_blog_prefix().'wpsqt_stores' );
+define( 'WPSQT_TABLE_EMPLOYEES'      , $wpdb->get_blog_prefix().'wpsqt_employees' );
+
+
+define( 'WP_TABLE_USERS'		     , $wpdb->get_blog_prefix().'users' );
+define( 'WP_TABLE_USERSMETA'	     , $wpdb->get_blog_prefix().'usermeta' );
+
+
 define( 'WPSQT_URL_MAIN'             , admin_url('admin.php?page='.WPSQT_PAGE_MAIN) );
 define( 'WPSQT_URL_MAINENTANCE'      , admin_url('admin.php?page='.WPSQT_PAGE_MAINTENANCE) );
+define( 'WPSQT_URL_STORES'           , admin_url('admin.php?page='.WPSQT_PAGE_STORES) );
+define( 'WPSQT_URL_FRANCHISEES'      , admin_url('admin.php?page='.WPSQT_PAGE_FRANCHISEES) );
+define( 'WPSQT_URL_EMPLOYEES'        , admin_url('admin.php?page='.WPSQT_PAGE_EMPLOYEES) );
 define( 'WPSQT_CONTACT_EMAIL'        , 'support@catn.com' );
 define( 'WPSQT_VERSION'              , '2.13.1' );
 define( 'WPSQT_DIR'                  , realpath(dirname(__FILE__)).'/') ;
@@ -156,6 +169,24 @@ function wpsqt_main_install(){
 				  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
+
+
+	$wpdb->query("CREATE TABLE IF NOT EXISTS `".WPSQT_TABLE_STORES."` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `location` varchar(255) CHARACTER SET utf8 NOT NULL,
+				  `state` varchar(255) CHARACTER SET utf8 NOT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1") ;
+
+
+	$wpdb->query("CREATE TABLE IF NOT EXISTS `".WPSQT_TABLE_EMPLOYEES."` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `id_user` int(11) NOT NULL,
+				  `id_store` int(11) NOT NULL,
+				  `franchisee` bool NOT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1") ;
+
 }
 if (is_admin()){
 	if (is_multisite() && get_option('wpsqt_manual') != 1) {

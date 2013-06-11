@@ -21,14 +21,16 @@ class Wpsqt_Core {
 
 	public function __construct(){
 
-		$this->_addPage(WPSQT_PAGE_MAIN, "Online Training", "Online Training", "wpsqt-manage", "Main")
+		$this->_addPage(WPSQT_PAGE_MAIN, "Online Training", "Questions", "wpsqt-manage", "Main")
 //		->_addPage(WPSQT_PAGE_MAIN.'&type=quiz', "Quizzes", "Quizzes", "wpsqt-manage", "Quizzes", WPSQT_PAGE_MAIN)
 //		->_addPage(WPSQT_PAGE_MAIN.'&type=survey', "Surveys", "Surveys", "wpsqt-manage", "Surveys", WPSQT_PAGE_MAIN)
 //		->_addPage(WPSQT_PAGE_MAIN.'&type=poll', "Polls", "Polls", "wpsqt-manage", "Polls", WPSQT_PAGE_MAIN)
+		->_addPage(WPSQT_PAGE_STORES, 'Stores', 'Stores', 'wpsqt-manage', 'Stores', WPSQT_PAGE_MAIN)
+		->_addPage(WPSQT_PAGE_FRANCHISEES, 'Franchisees', 'Franchisees', 'wpsqt-manage', 'Franchisees', WPSQT_PAGE_MAIN)
+		->_addPage(WPSQT_PAGE_EMPLOYEES, 'Employees', 'Employees', 'wpsqt-manage', 'Employees', WPSQT_PAGE_MAIN)
 		->_addPage(WPSQT_PAGE_OPTIONS, "Options", "Options", "wpsqt-manage", "Options", WPSQT_PAGE_MAIN)
 		->_addPage(WPSQT_PAGE_MAINTENANCE, 'Maintenance', 'Maintenance', 'wpsqt-manage', 'Maintenance', WPSQT_PAGE_MAIN)
-		->_addPage(WPSQT_PAGE_FRANCHISE, 'Franchise Management', 'Franchise Management', 'wpsqt-manage', 'Franchise', WPSQT_PAGE_MAIN);
-
+;
 
 		add_action("init",array($this, "create_nonce" ) );
 

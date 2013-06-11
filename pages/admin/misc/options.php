@@ -114,7 +114,9 @@
 		<p class="submit">
 			<input class="button-primary" type="submit" name="Save" value="Save Options" id="submitbutton" />
 		</p>
-
+		
+		<h3 id="template_tokens">Replacement Token</h3>
+		<?php echo $objTokens->getDescriptions(); ?>
 
 	</form>
 
