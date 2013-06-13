@@ -68,7 +68,7 @@
 					<?php echo $franchisee['name']; ?>
 					<div class="row-actions">
 						<span class="edit"><a href="<?php echo WPSQT_URL_FRANCHISEES; ?>&section=edit&id=<?php echo $franchisee['id']; ?>">Edit</a> | </span>
-						<span class="edit"><a href="<?php echo WPSQT_URL_FRANCHISEES; ?>&section=edit&action=delete&id=<?php echo $franchisee['id']; ?>">Delete</a></span>
+						<span class="delete"><a href="<?php echo WPSQT_URL_FRANCHISEES; ?>&section=edit&action=delete&id=<?php echo $franchisee['id']; ?>">Delete</a></span>
 					</div>
 				</td>
 				<td><a href="<?php echo WPSQT_URL_FRANCHISEES; ?>&location=<?php echo $franchisee['location']; ?>"><?php echo $franchisee['location']; ?></a></td>

@@ -21,7 +21,7 @@ class Wpsqt_Core {
 
 	public function __construct(){
 
-		$this->_addPage(WPSQT_PAGE_MAIN, "Online Training", "Questions", "wpsqt-manage", "Main")
+		$this->_addPage(WPSQT_PAGE_MAIN, "Online Training", "Online Training", "wpsqt-manage", "Main")
 		->_addPage(WPSQT_PAGE_QUESTIONS, "Questions", "Questions", "wpsqt-manage", "Main",WPSQT_PAGE_MAIN)
 //		->_addPage(WPSQT_PAGE_MAIN.'&type=quiz', "Quizzes", "Quizzes", "wpsqt-manage", "Quizzes", WPSQT_PAGE_MAIN)
 //		->_addPage(WPSQT_PAGE_MAIN.'&type=survey', "Surveys", "Surveys", "wpsqt-manage", "Surveys", WPSQT_PAGE_MAIN)

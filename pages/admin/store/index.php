@@ -56,7 +56,7 @@
 						<span class="edit"><a href="<?php echo WPSQT_URL_FRANCHISEES; ?>&section=addnew&id_store=<?php echo $store['id']; ?>">Add Franchisee</a> | </span>
 						<span class="edit"><a href="<?php echo WPSQT_URL_EMPLOYEES; ?>&section=addnew&id_store=<?php echo $store['id']; ?>">Add Users</a> | </span>
 						<span class="edit"><a href="<?php echo WPSQT_URL_EMPLOYEES; ?>&location=<?php echo $store['location']; ?>">Show Users</a> | </span>
-						<span class="edit"><a href="<?php echo WPSQT_URL_STORES; ?>&section=edit&action=delete&id=<?php echo $store['id']; ?>">Delete</a></span>
+						<span class="delete"><a href="<?php echo WPSQT_URL_STORES; ?>&section=edit&action=delete&id=<?php echo $store['id']; ?>">Delete</a></span>
 					</div>
 				</td>
 				<td><a href="<?php echo WPSQT_URL_STORES; ?>&state=<?php echo $store['state']; ?>"><?php echo $store['state']; ?></a></td>
