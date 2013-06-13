@@ -22,6 +22,7 @@ class Wpsqt_Core {
 	public function __construct(){
 
 		$this->_addPage(WPSQT_PAGE_MAIN, "Online Training", "Questions", "wpsqt-manage", "Main")
+		->_addPage(WPSQT_PAGE_QUESTIONS, "Questions", "Questions", "wpsqt-manage", "Main",WPSQT_PAGE_MAIN)
 //		->_addPage(WPSQT_PAGE_MAIN.'&type=quiz', "Quizzes", "Quizzes", "wpsqt-manage", "Quizzes", WPSQT_PAGE_MAIN)
 //		->_addPage(WPSQT_PAGE_MAIN.'&type=survey', "Surveys", "Surveys", "wpsqt-manage", "Surveys", WPSQT_PAGE_MAIN)
 //		->_addPage(WPSQT_PAGE_MAIN.'&type=poll', "Polls", "Polls", "wpsqt-manage", "Polls", WPSQT_PAGE_MAIN)
@@ -108,7 +109,11 @@ class Wpsqt_Core {
 
 		if ( current_user_can("manage_options") ) {
 			foreach ( $this->_pages as $pagevar => $page ){
-				$wp_admin_bar->add_menu( array( 'title' => $page['title'], 'href' => admin_url('admin.php?page='.$pagevar), 'id' => $pagevar, 'parent' => $page['parent']));
+				$wp_admin_bar->add_menu( array( 
+					'title' => $page['title'],
+					'href' => admin_url('admin.php?page='.$pagevar), 
+					'id' => $pagevar, 
+					'parent' => $page['parent']));
 			}
 
 		}

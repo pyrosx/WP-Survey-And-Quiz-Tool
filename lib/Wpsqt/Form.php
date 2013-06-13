@@ -37,9 +37,27 @@ class Wpsqt_Form {
 	 * @param array $args
 	 * @since 2.0
 	 */
-	public function addOption($name,$displayName,$type,$advanced,$value = false,$helpMessage = false, $args = array(), $required = true){
+	public function addOption($name,$displayName,$type,$value = false,$helpMessage = false, $args = array(), $required = true){
 		
-		$this->_options[$name] = array('type' => $type,'advanced' => $advanced,'display' => $displayName,'value' => $value,'help' => $helpMessage, 'args' =>$args, "required" => $required );
+		$this->_options[$name] = array('type' => $type,'advanced' => false,'display' => $displayName,'value' => $value,'help' => $helpMessage, 'args' =>$args, "required" => $required );
+		
+		return $this;
+		
+	}
+	/**
+	 * Allows the adding of an Advanced option, which will be hidden until the "Toggle Advanced settings" link is clicked
+	 * 
+	 * @param string $name
+	 * @param string $displayName
+	 * @param string $type
+	 * @param string $value
+	 * @param string $helpMessage
+	 * @param array $args
+	 * @since 2.0
+	 */
+	public function addOptionA($name,$displayName,$type,$value = false,$helpMessage = false, $args = array(), $required = true){
+		
+		$this->_options[$name] = array('type' => $type,'advanced' => true,'display' => $displayName,'value' => $value,'help' => $helpMessage, 'args' =>$args, "required" => $required );
 		
 		return $this;
 		
