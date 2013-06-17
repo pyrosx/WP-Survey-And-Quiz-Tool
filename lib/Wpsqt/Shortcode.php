@@ -529,13 +529,22 @@ class Wpsqt_Shortcode {
 										   "` WHERE section_id = %d ORDER BY ".$orderBy,
 										  array($section["id"])),ARRAY_A
 								);
-								
-								
-		if ( !empty($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']) ){
-			// questions limit set
-			$totalQuestions = $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit'];
-
-
+		
+		$rawUserStates = $wpdb->get_results(
+							$wpdb->prepare("SELECT state FROM `".WPSQT_TABLE_EMPLOYEES.
+										   "` emp INNER JOIN `".WPSQT_TABLE_STORES."` store ON emp.id_store = store.id
+										   WHERE emp.id_user = %d",	
+										  array(wp_get_current_user()->ID)),ARRAY_A
+								);				
+					
+//		var_dump($rawUserStates);
+		$userStates = array();
+		foreach($rawUserStates as $state) {
+			$userStates[] = $state['state'];
+		}
+//		var_dump($userStates);
+										
+/*
 			// get all required questions
 			foreach ( $rawQuestions as $rawQuestion ){
 				$currentQ = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
@@ -556,13 +565,48 @@ class Wpsqt_Shortcode {
 					$remainingQuestions--;
 				}
 			}
+*/
+		// Need to do this all in one "rawQuestions" loop
+		foreach ( $rawQuestions as $rawQuestion ){
+			$currentQ = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
+			// if questions is excluded
+				
+			$excluded = false;
 			
-		} else {
-
-			// no limit, use all questions
-			foreach ( $rawQuestions as $rawQuestion ){
-				$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"][] = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
+			// state check
+			if (isset($currentQ['exclude_states']) && count($currentQ['exclude_states']) > 0) {
+				// if no state is set for user (shouldn't happen, but might), and there are state exclusions on the question
+				if (count($userStates) <= 0) {
+					// we'll exclude the question just to be safe
+					$excluded = true;
+				} else {
+					foreach($userStates as $userState) {
+						if (in_array($userState,$currentQ['exclude_states'])) {
+							$excluded = true;
+						}
+					}
+				}	
 			}
+			
+			if (!$excluded) {
+				if ($currentQ['required'] == 'yes') {
+					// required questions are added to the front
+					array_unshift($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"],$currentQ);
+				} else {
+					$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"][] = $currentQ;
+				}
+			}
+			
+			// truncate end of questions array to match required number
+			if ( !empty($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']) ){
+				array_splice($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"], $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']);			
+			}
+
+			// shuffle if set to random
+			if ($section["order"] == "random") {
+				shuffle($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"]);
+			}
+			
 		}
 
 

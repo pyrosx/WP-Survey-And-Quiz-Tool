@@ -25,8 +25,15 @@ class Wpsqt_Page_Stores extends Wpsqt_Page {
 			".$where."
 			ORDER BY state, location";
 
-		$this->_pageVars['storeList'] = $wpdb->get_results( $sql,ARRAY_A);
+		$res = $wpdb->get_results( $sql,ARRAY_A);
 		
+		// need to convert state numbers to names here
+		for($i=0;$i<count($res);$i++) {
+			$res[$i]['state'] = Wpsqt_System::getStateName($res[$i]['state']);
+		}
+		
+		$this->_pageVars['storeList'] = $res;
+				
 		$this->_pageView = "admin/store/index.php";
 			
 	}

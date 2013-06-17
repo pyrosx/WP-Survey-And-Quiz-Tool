@@ -20,7 +20,8 @@ class Wpsqt_Page_Employees extends Wpsqt_Page {
 		if (isset($_GET["location"])) {
 			$extraWhere = " AND store.location = '".$wpdb->escape($_GET["location"])."'";
 		} else if (isset($_GET["state"])) {
-			$extraWhere = " AND store.state = '".$wpdb->escape($_GET["state"])."'";
+			$stateId = Wpsqt_System::getStateId($_GET["state"]);
+			$extraWhere = " AND store.state = '".$stateId."'";
 		} 
 		
 
@@ -31,10 +32,15 @@ class Wpsqt_Page_Employees extends Wpsqt_Page {
 			WHERE emp.franchisee = FALSE
 			".$extraWhere."
 			ORDER BY store.state, store.location";
-			
-		
-		$this->_pageVars['franchiseeList'] = $wpdb->get_results( $sql,ARRAY_A);
-		
+
+		$res = $wpdb->get_results( $sql,ARRAY_A);
+
+		// need to convert state numbers to names here
+		for($i=0;$i<count($res);$i++) {
+			$res[$i]['state'] = Wpsqt_System::getStateName($res[$i]['state']);
+		}
+		$this->_pageVars['franchiseeList'] = $res;
+
 		$this->_pageView = "admin/employees/index.php";
 			
 	}

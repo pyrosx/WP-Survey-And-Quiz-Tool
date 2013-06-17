@@ -1,13 +1,7 @@
-<style>
-.advanced_setting {
-	display: none;
-}
-</style>
-
 	<table class="form-table" id="question_form">
 		<tbody>
 			<?php foreach($options as $name => $option ){ ?>
-			<tr <?php if ($option["advanced"]) {echo(' class="advanced_setting"');}?>>
+			<tr <?php if ($option["advanced"]) {echo(' class="wpsqt_advanced_setting"');}?>>
 				<th scope="row"><?php echo $option["display"]; ?></th>
 				<td valign="top">
 				<?php switch ($option["type"]) {
@@ -23,6 +17,12 @@
 							<?php } ?>
 						</select>
 						<?php
+						break;
+					case "checks" :
+//						<input type="checkbox" name="vehicle" value="Bike">I have a bike<br>
+						foreach ( $option["args"] as $key => $val) {
+							?> <input type="checkbox" name="<?php echo $name; ?>[]" <?php if (in_array($key,$option["value"])) { echo "checked"; }?> value="<?php echo $key; ?>"> <?php echo $val; ?> <br/> <?php
+						}
 						break;
 					case "yesno":
 						?>
@@ -62,12 +62,6 @@
 			<?php }?>
 		</tbody>
 	</table>
-	
-	<a href="#" id="toggleAdvanced">Toggle Advanced Settings</a>
-
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-	<script type="text/javascript">
-	$("#toggleAdvanced").click( function() {
-		$(".advanced_setting").toggle();
-	});
-	</script>
+	<p>&nbsp;</p>
+	<a href="#" class="button-secondary" title="Toggle Advanced Settings" id="wpsqt_toggleAdvanced">Toggle Advanced Settings</a>	
+	<p>&nbsp;</p>

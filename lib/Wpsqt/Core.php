@@ -426,7 +426,7 @@ class Wpsqt_Core {
 	 */
 	protected function _shortcode($id,$type)	{
 
-		if (isset($_POST['wpsqt_name']) && $_POST['wpsqt_name'] != $identifer) {
+		if (isset($_POST['wpsqt_name']) && $_POST['wpsqt_name'] != $id) {
 			/* translators: %1$s will be replaced with the quiz name, please leave the HTML in tact */
 			printf(__('Another quiz on this page has been started and two quizzes cannot in progress at the same time. In order to start %1$s please <a href="%2$s">click here</a>.'), $identifer, $_SERVER['PHP_SELF']);
 			return;
@@ -487,7 +487,7 @@ class Wpsqt_Core {
 		//No username supplied, try for logged in user
 		if ( is_user_logged_in() ) {
 			// for each quiz
-			$output = "<table><tr><td>Section</td><td>Completion</td></tr>";
+			$output = '<table id="wpsqt_info"><tr><th>Section</th><th>Completion</th></tr>';
 			
 			$sql = "SELECT id FROM ".WPSQT_TABLE_QUIZ_SURVEYS;
 			$quizzes = $wpdb->get_results($sql, 'ARRAY_A');
@@ -513,9 +513,12 @@ class Wpsqt_Core {
 					
 			}
 			$output .= "</table>";
-			return $output;	
 				
+		} else {
+			$output = "<p>Please login to access training materials. If you do not have login details, please contact your Manager or Franchise Owner</p>";
 		}
+		return $output;	
+			
 	}
 
 	public function shortcode_survey_results( $atts ) {

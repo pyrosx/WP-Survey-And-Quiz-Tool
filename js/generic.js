@@ -1,5 +1,12 @@
 jQuery(document).ready( function(){
 
+	jQuery('.wpsqt_advanced_setting').hide();
+
+	jQuery('#wpsqt_toggleAdvanced').click( function() {
+		jQuery('.wpsqt_advanced_setting').toggle();
+		return false;
+	});
+
 	jQuery('.wpsqt-selectall').click( function() {
 		if (jQuery(this).attr('checked') == 'checked') {
 			jQuery('.wpsqt-delete').attr('checked', 'checked');

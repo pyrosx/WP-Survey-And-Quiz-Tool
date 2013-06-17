@@ -482,13 +482,38 @@ class Wpsqt_System {
 		return preg_replace('/[^a-z0-9]+/i', '_', $name);
 	}
 	
+	
+	/**
+	State setup: We need the state name -> value to be used in common in multiple places
+	
+	One Array_A will rule them all!
+	*/
+	
+	private static $StateValueArray = array(
+		1 => 'ACT',
+		2 => 'New South Wales',
+		4 => 'Northern Territory',
+		8 => 'Queensland',
+		16 => 'South Australia',
+		32 => 'Tasmania',
+		64 => 'Victoria',
+		128 => 'Western Australia'
+	);
+	private static $StateFlipArray;
+
+	public static function getStateArray() {
+		$arr = self::$StateValueArray; // this should copy the array so it won't be modified accidentally?
+		return $arr;
+	}
 	/**
 	  *  Returns a standard "state" drop down box, with $name included
 	  */
-	public static function getStateDropdown($name, $selected = "") {
+	public static function getStateDropdown($name, $selected = 0) {
 		$out = '<select name="'.$name.'">';
 	
 		$out .= Wpsqt_System::addOption("","",$selected);
+
+/*
 		$out .= Wpsqt_System::addOption("ACT","ACT",$selected);
 		$out .= Wpsqt_System::addOption("New South Wales","New South Wales",$selected);
 		$out .= Wpsqt_System::addOption("Northern Territory","Northern Territory",$selected);
@@ -497,10 +522,26 @@ class Wpsqt_System {
 		$out .= Wpsqt_System::addOption("Tasmania","Tasmania",$selected);
 		$out .= Wpsqt_System::addOption("Victoria","Victoria",$selected);
 		$out .= Wpsqt_System::addOption("Western Australia","Western Australia",$selected);
+*/
+		
+		foreach ( self::$StateValueArray as $id => $val ) {
+			$out .= Wpsqt_System::addOption($id,$val,$selected);
+		}
 		
 		$out .= '</select>';
 
 		return $out;
+	}
+	public static function getStateName($id) {
+		return self::$StateValueArray[$id];
+	}
+
+
+	public static function getStateId($name) {		
+	 	if (self::$StateFlipArray == null) {
+	 		self::$StateFlipArray = array_flip(self::$StateValueArray);
+	 	}
+		return self::$StateFlipArray[$name];
 	}
 
 	public static function addOption($id,$val,$selected = "") {

@@ -42,7 +42,7 @@ class Wpsqt_Page_Stores_Addnew extends Wpsqt_Page {
 			
 			
 //				$this->_pageView ="admin/misc/redirect.php";	
-				$this->_pageVars['successMessage'] = "New Store (".$_POST['wpsqt_store_location'].", ".$_POST['wpsqt_store_state'].") added successfully";
+				$this->_pageVars['successMessage'] = "New Store ".$_POST['wpsqt_store_location']." added successfully";
 //				$this->_pageVars['redirectLocation'] = WPSQT_URL_STORES."&section=addnew";			
 			}
 		

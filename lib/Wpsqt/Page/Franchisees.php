@@ -33,7 +33,13 @@ class Wpsqt_Page_Franchisees extends Wpsqt_Page {
 			ORDER BY store.state, store.location";
 			
 		
-		$this->_pageVars['franchiseeList'] = $wpdb->get_results( $sql,ARRAY_A);
+		$res = $wpdb->get_results( $sql,ARRAY_A);
+
+		// need to convert state numbers to names here
+		for($i=0;$i<count($res);$i++) {
+			$res[$i]['state'] = Wpsqt_System::getStateName($res[$i]['state']);
+		}
+		$this->_pageVars['franchiseeList'] = $res;
 		
 		$this->_pageView = "admin/franchisees/index.php";
 			

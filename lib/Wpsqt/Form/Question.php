@@ -24,19 +24,20 @@ class Wpsqt_Form_Question extends Wpsqt_Form {
 	public function __construct( $questionTypes, $sections, $options = array() ){
 		if ( empty($options) ) {
 			$options = array('question' => false,
-							 'type' => false,
+							 'type' => "Single",
 							 'points' => "1",
 							 'difficulty' => false,
 							 'randomize_answers' => true,
+							 'exclude_states' => 0,
 							 'section' => false,
 							 'add_text' => false,
 							 'explanation' => false,
 							 'explanation_onlyatfinish' => false,
 							 'required' => false,
-					 		 'image' => false,
-					 		 'likertscale' => false,
-					 		 'likertmatrixscale' => false,
-					 		 'likertmatrixcustom' => false);
+					 		 'image' => false);
+//					 		 'likertscale' => false,
+//					 		 'likertmatrixscale' => false,
+//					 		 'likertmatrixcustom' => false);
 		}
 		$typeHelpText = "";
 		foreach ( $questionTypes as $type => $text ){
@@ -46,9 +47,10 @@ class Wpsqt_Form_Question extends Wpsqt_Form {
 		$this->addOption("wpsqt_name", "Question", "textarea", $options['question'], "The text for the question (the actual question)." )
 			 ->addOptionA("wpsqt_type", "Type", "select", $options['type'], $typeHelpText, array_keys($questionTypes) )
 			 ->addOptionA("wpsqt_randomize_answers", "Randomize answers", "yesno", $options['randomize_answers'], "Sort the answers of this question randomly.")
-			 ->addOptionA("wpsqt_likertmatrixscale", "Likert Matrix Scale", "select", $options['likertmatrixscale'], "Scale 1-5 or Disagree/Agree", array("1-5", "Disagree/Agree"))
-			 ->addOptionA("wpsqt_likertscale", "Likert Scale", "select", $options['likertscale'], "What should the likert display to?", array('10', '5', '3', 'Agree/Disagree'))
-			 ->addOptionA("wpsqt_likertmatrixcustom", "Custom Answer", "yesno", $options['likertmatrixcustom'], "Would you like the user to be able to enter a custom answer?")
+			 ->addOptionA("wpsqt_exclude_states", "Exclude State(s)", "checks", $options['exclude_states'], "States that this question will NOT be shown to", Wpsqt_System::getStateArray(),false)
+//			 ->addOptionA("wpsqt_likertmatrixscale", "Likert Matrix Scale", "select", $options['likertmatrixscale'], "Scale 1-5 or Disagree/Agree", array("1-5", "Disagree/Agree"))
+//			 ->addOptionA("wpsqt_likertscale", "Likert Scale", "select", $options['likertscale'], "What should the likert display to?", array('10', '5', '3', 'Agree/Disagree'))
+//			 ->addOptionA("wpsqt_likertmatrixcustom", "Custom Answer", "yesno", $options['likertmatrixcustom'], "Would you like the user to be able to enter a custom answer?")
 			 ->addOptionA("wpsqt_points", "Points", "select", $options['points'], "How many points the question is worth.", range(1,10))
 			 ->addOptionA("wpsqt_difficulty", "Difficulty", "select", $options['difficulty'], "The difficulty of the question.", array('Easy','Medium','Hard'))
 			 ->addOptionA("wpsqt_section", "Section", "select", $options['section'], "The section/page this question should be in/on.", $sections)
