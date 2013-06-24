@@ -6,7 +6,7 @@ $objTokens->setDefaultValues();
 
 ?>
 
-<h2 class="wpsqt-exam-finished-title"><?php _e('Exam Finished', 'wp-survey-and-quiz-tool'); ?></h2>
+<h3 class="wpsqt-exam-finished-title"><?php _e('Exam Finished', 'wp-survey-and-quiz-tool'); ?></h3>
 
 <?php if ($_SESSION['wpsqt'][$quizName]['details']['finish_display'] == 'Finish message' || $_SESSION['wpsqt'][$quizName]['details']['finish_display'] == 'Both'  ) { ?>
 	<?php if (isset($_SESSION['wpsqt'][$quizName]['details']['pass_finish']) &&
@@ -33,10 +33,5 @@ $objTokens->setDefaultValues();
 	require_once Wpsqt_Core::pageView('site/quiz/review.php');
 }
 
-	if ( $_SESSION['wpsqt'][$quizName]['details']['use_pdf'] == "yes" ){
-		?>
-		<a href="<?php echo plugins_url('pdf.php?quizid='.$_SESSION['wpsqt'][$quizName]['details']['id'].'&id='.$_SESSION['wpsqt']['result_id'],WPSQT_FILE); ?>"><?php _e('Download certification', 'wp-survey-and-quiz-tool'); ?></a>
-		<?php
-	}
 ?>
 

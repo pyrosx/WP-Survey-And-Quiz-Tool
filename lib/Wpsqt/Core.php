@@ -492,27 +492,54 @@ class Wpsqt_Core {
 			$sql = "SELECT id FROM ".WPSQT_TABLE_QUIZ_SURVEYS;
 			$quizzes = $wpdb->get_results($sql, 'ARRAY_A');
 			
+			$completed = true;
+			$completed_date = "";
+			
 			foreach($quizzes as $q) {
 				$id = $q['id'];
 				$quiz = Wpsqt_System::getItemDetails($id,'quiz');
 				$link = Wpsqt_System::format_post_name($quiz['name']);
 				$output .= '<tr><td><a href="'.$link.'">'.$quiz['name']."</a></td><td>";
 				
-				$sql = "SELECT percentage FROM ".WPSQT_TABLE_RESULTS." WHERE item_id = '".$quiz['id']."' AND user_id = '".wp_get_current_user()->ID."' ORDER BY percentage DESC";
+				$sql = "SELECT pass,percentage,datetaken FROM ".WPSQT_TABLE_RESULTS." WHERE item_id = '".$quiz['id']."' AND user_id = '".wp_get_current_user()->ID."' ORDER BY percentage DESC LIMIT 1";
 				$results = $wpdb->get_results($sql, 'ARRAY_A');
 				if (count($results)) {
-					if ($results[0]['percentage'] == 100 ) {
+					if ($results[0]['pass'] == 1 ) {
 						$output .= "Completed";
+						if ($completed_date < $results[0]['datetaken']) {
+							$completed_date = $results[0]['datetaken'];
+						}
 					} else {
-						$output .= "Not Complete - Best Mark - ".$results[0]['percentage']."%";
+						$output .= "Best Mark - ".$results[0]['percentage']."%";
+						$completed = false;
 					}
 				} else {
-					$output .= "Not Yet Attempted";
+					$output .= "Not Attempted";
+					$completed = false;
 				}
 				$output .= "</td>";
 					
 			}
 			$output .= "</table>";
+				
+			
+			if ($completed) {
+
+			// pdf certificate
+			// if 100% completed
+
+				$display_name = wp_get_current_user()->user_firstname .' '.wp_get_current_user()->user_lastname;
+				if ($display_name == '') {
+					$display_name = wp_get_current_user()->display_name;
+				}
+
+				$output .= '<form method="POST" action="'.plugins_url('pdf.php',WPSQT_FILE).'">';
+				$output .= '<input type="hidden" name="completed_date" value="'.$completed_date.'"/>';
+				$output .= '<input type="hidden" name="display_name" value="'.$display_name.'"/>';
+				$output .= '<input type="submit" value="Download Your Certificate"/>';
+				$output .= '</form>';
+											
+			}
 				
 		} else {
 			$output = "<p>Please login to access training materials. If you do not have login details, please contact your Manager or Franchise Owner</p>";
