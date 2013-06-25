@@ -14,11 +14,8 @@ class Wpsqt_Page_Franchisees_Addnew extends Wpsqt_Page {
 		global $wpdb;
 		
 		// get data for select boxes
-		$sql = "SELECT id, display_name FROM `".WP_TABLE_USERS."`";
-		$this->_pageVars['users'] = $wpdb->get_results($sql,ARRAY_A);			
-
-		$sql = "SELECT id, location, state FROM `".WPSQT_TABLE_STORES."`";		
-		$this->_pageVars['stores'] = $wpdb->get_results($sql,ARRAY_A);
+		$this->_pageVars['users'] = Wpsqt_System::getUsersForSelect();
+		$this->_pageVars['stores'] = Wpsqt_System::getStoresForSelect();
 
 		if (isset($_GET['id_store'])){
 			$this->_pageVars['id_user'] = "";
@@ -57,6 +54,9 @@ class Wpsqt_Page_Franchisees_Addnew extends Wpsqt_Page {
 				// flag chosen user as Franchisee by adding user meta data			
 				Wpsqt_System::add_franchisee($_POST['wpqst_franchisee_user'],$_POST['wpqst_franchisee_store']);
 			
+				// change user's role to "editor" for access to employee management
+				$wp_user_object = new WP_User($_POST['wpqst_franchisee_user']);
+				$wp_user_object->set_role('editor');
 			
 				$this->_pageVars['successMessage'] = "New Franchisee added successfully";
 			}

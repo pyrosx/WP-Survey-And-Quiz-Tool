@@ -1,4 +1,7 @@
 jQuery(document).ready( function(){
+	
+	///////////////////
+	// Advanced settings hidden until button pressed
 
 	jQuery('.wpsqt_advanced_setting').hide();
 
@@ -6,6 +9,7 @@ jQuery(document).ready( function(){
 		jQuery('.wpsqt_advanced_setting').toggle();
 		return false;
 	});
+
 
 	jQuery('.wpsqt-selectall').click( function() {
 		if (jQuery(this).attr('checked') == 'checked') {

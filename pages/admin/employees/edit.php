@@ -44,7 +44,7 @@
 					echo Wpsqt_System::addOption("",""); 
 					<?php 
 					foreach($stores as $store) {
-						echo Wpsqt_System::addOption($store['id'],$store['location'].", ".$store['state'],$id_store);
+						echo Wpsqt_System::addOption($store['id'],$store['location'].", ".Wpsqt_System::getStateName($store['state']),$id_store);
 					}?>
 				</select>
 			</td>

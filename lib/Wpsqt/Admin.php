@@ -179,7 +179,7 @@ END;
 		foreach ( $this->_pages as $pagevar => $page ){
 			if ( is_null($page['parent']) ){
 				$pageId = add_menu_page( $page['page_title'], $page['title'], $page['capability'], $pagevar, array($this,"show_page") ) ;
-				add_submenu_page($pagevar , '', '', $page['capability'], $pagevar, array($this,"show_page") ); // removes duplicate first submenu
+//				add_submenu_page($pagevar , '', '', $page['capability'], $pagevar, array($this,"show_page") ); // removes duplicate first submenu
 
 				add_action( 'admin_head-'.$pageId , array( & $this, 'print_scripts_edit_cat' ), 11 );
 

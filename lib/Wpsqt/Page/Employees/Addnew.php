@@ -14,11 +14,8 @@ class Wpsqt_Page_Employees_Addnew extends Wpsqt_Page {
 		global $wpdb;
 		
 		// get data for select boxes
-		$sql = "SELECT id, display_name FROM `".WP_TABLE_USERS."`";
-		$this->_pageVars['users'] = $wpdb->get_results($sql,ARRAY_A);			
-
-		$sql = "SELECT id, location, state FROM `".WPSQT_TABLE_STORES."`";		
-		$this->_pageVars['stores'] = $wpdb->get_results($sql,ARRAY_A);
+		$this->_pageVars['users'] = Wpsqt_System::getUsersForSelect();
+		$this->_pageVars['stores'] = Wpsqt_System::getStoresForSelect();
 
 		if (isset($_GET['id_store'])){
 			$this->_pageVars['id_user'] = "";

@@ -2,7 +2,7 @@
 
 	<div id="icon-tools" class="icon32"></div>
 	<h2>
-		Online Training - Quizzes
+		Online Training - Modules
 		<a href="<?php echo WPSQT_URL_MAIN; ?>&section=addnew&subsection=quiz" class="button add-new-h2">Add New Quiz</a>
 <!--		<a href="<?php echo WPSQT_URL_MAIN; ?>&section=addnew&subsection=survey" class="button add-new-h2">Add New Survey</a>
 		<a href="<?php echo WPSQT_URL_MAIN; ?>&section=addnew&subsection=poll" class="button add-new-h2">Add New Poll</a>

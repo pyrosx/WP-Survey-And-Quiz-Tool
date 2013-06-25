@@ -21,16 +21,13 @@ class Wpsqt_Core {
 
 	public function __construct(){
 
-		$this->_addPage(WPSQT_PAGE_MAIN, "Online Training", "Online Training", "wpsqt-manage", "Main")
-		->_addPage(WPSQT_PAGE_QUESTIONS, "Questions", "Questions", "wpsqt-manage", "Main",WPSQT_PAGE_MAIN)
-//		->_addPage(WPSQT_PAGE_MAIN.'&type=quiz', "Quizzes", "Quizzes", "wpsqt-manage", "Quizzes", WPSQT_PAGE_MAIN)
-//		->_addPage(WPSQT_PAGE_MAIN.'&type=survey', "Surveys", "Surveys", "wpsqt-manage", "Surveys", WPSQT_PAGE_MAIN)
-//		->_addPage(WPSQT_PAGE_MAIN.'&type=poll', "Polls", "Polls", "wpsqt-manage", "Polls", WPSQT_PAGE_MAIN)
-		->_addPage(WPSQT_PAGE_STORES, 'Stores', 'Stores', 'wpsqt-manage', 'Stores', WPSQT_PAGE_MAIN)
-		->_addPage(WPSQT_PAGE_FRANCHISEES, 'Franchisees', 'Franchisees', 'wpsqt-manage', 'Franchisees', WPSQT_PAGE_MAIN)
-		->_addPage(WPSQT_PAGE_EMPLOYEES, 'Employees', 'Employees', 'wpsqt-manage', 'Employees', WPSQT_PAGE_MAIN)
-		->_addPage(WPSQT_PAGE_OPTIONS, "Options", "Options", "wpsqt-manage", "Options", WPSQT_PAGE_MAIN)
-		->_addPage(WPSQT_PAGE_MAINTENANCE, 'Maintenance', 'Maintenance', 'wpsqt-manage', 'Maintenance', WPSQT_PAGE_MAIN)
+		$this->_addPage(WPSQT_PAGE_DASHBOARD, "Online Training", "Online Training", "wpsqt-manage", "Dashboard")
+		->_addPage(WPSQT_PAGE_MAIN, "Modules", "Modules", "wpsqt-manage", "Main", WPSQT_PAGE_DASHBOARD)
+		->_addPage(WPSQT_PAGE_STORES, 'Stores', 'Stores', 'wpsqt-manage', 'Stores', WPSQT_PAGE_DASHBOARD)
+		->_addPage(WPSQT_PAGE_FRANCHISEES, 'Franchisees', 'Franchisees', 'wpsqt-manage', 'Franchisees', WPSQT_PAGE_DASHBOARD)
+		->_addPage(WPSQT_PAGE_EMPLOYEES, 'Employees', 'Employees', 'wpsqt-manage', 'Employees', WPSQT_PAGE_DASHBOARD)
+		->_addPage(WPSQT_PAGE_OPTIONS, "Options", "Options", "wpsqt-manage", "Options", WPSQT_PAGE_DASHBOARD)
+		->_addPage(WPSQT_PAGE_MAINTENANCE, 'Maintenance', 'Maintenance', 'wpsqt-manage', 'Maintenance', WPSQT_PAGE_DASHBOARD)
 ;
 
 		add_action("init",array($this, "create_nonce" ) );
@@ -41,6 +38,7 @@ class Wpsqt_Core {
 		add_shortcode( 'wpsqt_results', array($this, 'shortcode_results') );
 		add_shortcode( 'wpsqt_survey_results', array($this, 'shortcode_survey_results') );
 		add_shortcode( 'wpsqt_info' , array($this, 'shortcode_info') );
+		add_shortcode( 'wpsqt_franchisee_tools' , array($this, 'shortcode_franchisee') );
 
 		add_action('init', array($this,"init"));
 		add_action('admin_bar_menu', array($this,"adminbar"),999);
@@ -474,20 +472,20 @@ class Wpsqt_Core {
 	}
 	
 	
-	
+	/*
+	Gives an info panel about current module status, with links to quizzes.
+	Also shows Certificate link if training has been completed 
+	*/
 	public function shortcode_info( $atts ) {
 		global $wpdb;
 		
-		// don't care about attributes.... yet?
-/*		extract( shortcode_atts( array(
-					'username' => false,
-					'accepted' => false
-		), $atts) );
-*/
+		$output = "";
+		
 		//No username supplied, try for logged in user
 		if ( is_user_logged_in() ) {
 			// for each quiz
-			$output = '<table id="wpsqt_info"><tr><th>Section</th><th>Completion</th></tr>';
+			$output .= "<h4>Training Modules</h4>";
+			$output .= '<table id="wpsqt_info"><tr><th>Section</th><th>Completion</th></tr>';
 			
 			$sql = "SELECT id FROM ".WPSQT_TABLE_QUIZ_SURVEYS;
 			$quizzes = $wpdb->get_results($sql, 'ARRAY_A');
@@ -572,6 +570,102 @@ class Wpsqt_Core {
 		$contents = ob_get_contents();
 		ob_end_clean();
 		return $contents;
+	}
+	
+	
+	/*
+	Checks to see if a User is assigned as a Franchisee for any stores
+		if so, Displays helpful info and tools 
+	*/
+	public function shortcode_franchisee() {
+		global $wpdb;
+		
+		//is user Franchisee?
+		if ( is_user_logged_in() ) {
+			$id_user = wp_get_current_user()->ID;
+
+			// check if user is a franchisee
+			$sql = "SELECT count(id) FROM `".WPSQT_TABLE_EMPLOYEES."` 
+					WHERE id_user = ".$id_user." AND franchisee = 1";			
+			if ($wpdb->get_var($sql) > 0) {
+
+				$output = ""; // start output string
+
+	
+				// Stores that user is assigned as "franchisee" to
+				$stores = array();
+				$sql = "SELECT store.id, store.location, store.state 
+						FROM `".WPSQT_TABLE_EMPLOYEES."` emp
+						INNER JOIN `".WPSQT_TABLE_STORES."` store ON store.id = emp.id_store
+						WHERE emp.id_user = ".$id_user." AND emp.franchisee = 1
+						ORDER BY store.state, store.location";
+				$stores = $wpdb->get_results($sql, 'ARRAY_A');
+		
+				$output .= "<h4>Franchise Management</h4>";
+			
+				$output .= '<table id="franchises"><tr><th>Store</th><th>Employees</th><th>Completion Rate</th><th></th></tr>';
+				// yep, franchisee
+
+				foreach($stores as $store) {
+				
+					$output .= "<tr>";
+					$output .= "<td>".$store['location'].", ".Wpsqt_System::getStateName($store['state'])."</td>";
+					$output .= "<td>".Wpsqt_System::getEmployeeCount($store['id'])."</td>";
+					$output .= "<td>".Wpsqt_System::getCompletionRate($store['id'])."</td>";
+					$output .= '<td><input type="submit" value="Manage" class="display_user_table" id="store_'.$store['id'].'"/></td>';
+				
+					$output .= "</tr>";						
+					
+					
+					// list employees
+					$sql = "SELECT user.id, user.display_name, user.user_email
+							FROM `".WP_TABLE_USERS."` user
+							INNER JOIN `".WPSQT_TABLE_EMPLOYEES."` emp on user.id = emp.id_user
+							WHERE emp.id_store = ".$store['id']."
+							ORDER BY user.display_name";
+		
+					$users = $wpdb->get_results($sql, 'ARRAY_A');
+					if (count($users) > 0) {
+
+						// extra column to maintain alternate colouring and have users in matching colour...
+						$output .= '<tr class="franchise_users_extra"><td colspan=4></td></tr>';
+						
+						$output .= '<tr class="franchise_users" id="rowstore_'.$store['id'].'"><td colspan=4>
+									<table>';
+						$output .= "<tr><th>Name</th><th>Email</th><th></th></tr>"; 
+						foreach($users as $user) {
+							$output .= "<tr><td>".$user['display_name']."</td>";
+							$output .= "<td>".$user['user_email']."</td>";
+							$output .= '<td>
+										<form action="'.$_SERVER["REQUEST_URI"].'" method="POST">
+										<input type="hidden" name="id_store" value="'.$store['id'].'"/>
+										<input type="hidden" name="id_user" value="'.$user['id'].'"/>	
+										<input type="hidden" name="operation" value="edit"/>	
+										<input type="submit" value="Edit"/>
+										</form>';
+							$output .= '<form action="'.$_SERVER["REQUEST_URI"].'" method="POST">
+										<input type="hidden" name="id_store" value="'.$store['id'].'"/>
+										<input type="hidden" name="id_user" value="'.$user['id'].'"/>	
+										<input type="hidden" name="operation" value="delete"/>	
+										<input type="submit" value="Delete"/>
+										</form>';
+							$output .= "</td></tr>";
+					
+						}
+						$output .= "</table></td></tr>"; 
+					}
+
+				}
+				$output .="</table>";	
+
+
+				
+				return $output;		
+								
+				
+			// no output if not a franchisee....
+			}
+		}
 	}
 
 	public function enqueue_files() {

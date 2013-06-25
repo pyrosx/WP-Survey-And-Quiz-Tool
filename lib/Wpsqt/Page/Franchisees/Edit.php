@@ -35,11 +35,8 @@ class Wpsqt_Page_Franchisees_Edit extends Wpsqt_Page {
 
 		} else { // EDIT
 			// get data for select boxes
-			$sql = "SELECT id, display_name FROM `".WP_TABLE_USERS."`";
-			$this->_pageVars['users'] = $wpdb->get_results($sql,ARRAY_A);			
-
-			$sql = "SELECT id, location, state FROM `".WPSQT_TABLE_STORES."`";		
-			$this->_pageVars['stores'] = $wpdb->get_results($sql,ARRAY_A);
+			$this->_pageVars['users'] = Wpsqt_System::getUsersForSelect();
+			$this->_pageVars['stores'] = Wpsqt_System::getStoresForSelect();
 
 			$id = $_GET['id'];
 			// get details for this franchisee link, so selected keyword can be added in the right place

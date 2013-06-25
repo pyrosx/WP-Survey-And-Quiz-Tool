@@ -29,8 +29,8 @@ global $wpdb;
 if ( !session_id() )
 	session_start();
 
+define( 'WPSQT_PAGE_DASHBOARD'       , 'wpsqt-menu-dashboard' );
 define( 'WPSQT_PAGE_MAIN'            , 'wpsqt-menu' );
-define( 'WPSQT_PAGE_QUIZ'            , 'wpsqt-menu-quiz' );
 define( 'WPSQT_PAGE_QUESTIONS'       , 'wpsqt-menu-question' );
 define( 'WPSQT_PAGE_QUIZ_RESULTS'    , 'wpsqt-menu-quiz-results' );
 define( 'WPSQT_PAGE_OPTIONS'         , 'wpsqt-menu-options' ) ;

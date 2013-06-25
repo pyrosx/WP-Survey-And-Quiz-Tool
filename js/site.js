@@ -1,4 +1,16 @@
 jQuery(document).ready( function() {
+
+	///////////////////
+	// Franchise user table (tr.franchise_users) hidden until button (.display_user_table) pressed
+	
+	jQuery('.display_user_table').click( function() {
+		var user_table_id = '#row'+jQuery(this).attr('id');
+		
+		jQuery(user_table_id).slideToggle(2000);
+	});
+
+
+
 	jQuery('.wpsqt-show-answer').click( function() {
 		jQuery(this).siblings('.wpsqt-answer-explanation').show();
 		jQuery(this).hide();

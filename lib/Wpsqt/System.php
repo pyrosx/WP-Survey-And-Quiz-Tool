@@ -618,5 +618,42 @@ class Wpsqt_System {
 		return $wpdb->get_results($sql, ARRAY_A);
 	}
 
+
+	public static function getUsersForSelect() {
+		global $wpdb;	
+		$sql = "SELECT id, display_name FROM `".WP_TABLE_USERS."` ORDER BY display_name";
+		return $wpdb->get_results($sql,ARRAY_A);
+	}
+
+	public static function getStoresForSelect() {
+		global $wpdb;	
+		$sql = "SELECT id, location, state FROM `".WPSQT_TABLE_STORES."` ORDER BY state, location";		
+		return $wpdb->get_results($sql,ARRAY_A);
+	}
+	
+	public static function getQuizCount() {
+		global $wpdb;
+		$sql = "SELECT count(id) FROM `".WPSQT_TABLE_QUIZ_SURVEYS."`";
+		return $wpdb->get_var($sql);
+	}
+	
+	public static function getEmployeeCount($id_store) {
+		global $wpdb;	
+		$sql = "SELECT count(id) FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_store=".$id_store." AND franchisee = 0";
+		return $wpdb->get_var($sql);
+	}
+	
+
+	public static function getCompletionRate($id_store) {
+		global $wpdb;			
+		$sql = "SELECT count(emp.id) FROM `".WPSQT_TABLE_EMPLOYEES."` emp 
+				INNER JOIN `".WPSQT_TABLE_RESULTS."` res ON emp.id_user = res.user_id
+				WHERE emp.id_store=".$id_store." AND emp.franchisee = 0 AND res.pass = 1";
+		$completions = $wpdb->get_var($sql);
+		
+		$emp_count = intval(self::getEmployeeCount($id_store));
+		if ($emp_count <= 0) return "n/a";
+		return ( (intval($completions) / intval(self::getQuizCount())) / $emp_count *100 )."%";
+	}
 }
 

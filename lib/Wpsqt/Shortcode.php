@@ -537,35 +537,12 @@ class Wpsqt_Shortcode {
 										  array(wp_get_current_user()->ID)),ARRAY_A
 								);				
 					
-//		var_dump($rawUserStates);
+
 		$userStates = array();
 		foreach($rawUserStates as $state) {
 			$userStates[] = $state['state'];
 		}
-//		var_dump($userStates);
-										
-/*
-			// get all required questions
-			foreach ( $rawQuestions as $rawQuestion ){
-				$currentQ = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
-				if ($currentQ['required'] == 'yes') {
-					$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"][] = $currentQ;
-				}
-			}
-			
-			// then fill up to required amount with remaining questions
-			$remainingQuestions = $totalQuestions - count($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"]);
-			foreach ( $rawQuestions as $rawQuestion ){
-				if ($remainingQuestions<=0) {
-					break;
-				}
-				$currentQ = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
-				if ($currentQ['required'] == 'no') {
-					$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"][] = $currentQ;
-					$remainingQuestions--;
-				}
-			}
-*/
+
 		// Need to do this all in one "rawQuestions" loop
 		foreach ( $rawQuestions as $rawQuestion ){
 			$currentQ = Wpsqt_System::unserializeQuestion($rawQuestion, $this->_type);
