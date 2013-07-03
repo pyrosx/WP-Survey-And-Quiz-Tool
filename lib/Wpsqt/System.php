@@ -99,12 +99,9 @@ class Wpsqt_System {
 		
 		global $wpdb;
 		
-		list($itemName,$itemId,$itemSettings) =  self::_serializeDetails($itemDetails,$type);
-		
-		return $wpdb->query( 
-				$wpdb->prepare("UPDATE `".WPSQT_TABLE_QUIZ_SURVEYS."` SET `name`=%s,`settings`=%s WHERE `id`=%d", 
-								array($itemName,$itemSettings,$itemId) )
-		);
+		list($itemName,$itemId,$itemEnabled,$itemSettings) =  self::_serializeDetails($itemDetails,$type);
+		return $wpdb->query( $wpdb->prepare("UPDATE `".WPSQT_TABLE_QUIZ_SURVEYS."` SET `name`=%s, `enabled`=%d, `settings`=%s WHERE `id`=%d", 
+								array($itemName,$itemEnabled,$itemSettings,$itemId)) );
 		
 	}
 		
@@ -121,11 +118,11 @@ class Wpsqt_System {
 	
 		global $wpdb;
 		
-		list($itemName,$itemId,$itemSettings) = self::_serializeDetails($itemDetails,$type);
+		list($itemName,$itemEnabled,$itemId,$itemSettings) = self::_serializeDetails($itemDetails,$type);
 	
 		$wpdb->query(
-			$wpdb->prepare("INSERT INTO `".WPSQT_TABLE_QUIZ_SURVEYS."` (name,settings,type) VALUES (%s,%s,%s)",
-						   array($itemName,$itemSettings,$type)
+			$wpdb->prepare("INSERT INTO `".WPSQT_TABLE_QUIZ_SURVEYS."` (name,enabled,settings,type) VALUES (%s,%d,%s,%s)",
+						   array($itemName,$itemEnabled,$itemSettings,$type)
 			)
 		);
 		
@@ -147,6 +144,7 @@ class Wpsqt_System {
 		$details = array(
 						'id' => $row['id'],
 						'name' => $row['name'],
+						'enabled' => $row['enabled'] ? "yes" : "no",
 						);
 						
 		if ( isset($row['results']) ){
@@ -184,14 +182,16 @@ class Wpsqt_System {
 		
 		$quizName = $details['name'];
 		$quizId = (isset($details['id'])) ? $details['id'] : 0;
+		$quizEnabled = $details['enabled'] == "yes" ? true : false;
 		
 		unset($details['type']);
 		unset($details['id']);
 		unset($details['name']);
+		unset($details['enabled']);
 		
 		$quizSettings = serialize($details);
 	
-		return array($quizName,$quizId,$quizSettings);
+		return array($quizName,$quizId,$quizEnabled,$quizSettings);
 	
 	}
 	
@@ -600,12 +600,64 @@ class Wpsqt_System {
 			return $id;
 		}
 		
+		// check user exists
+		$wp_user_id = get_user_by('id',$id_user);
+		if (!$wp_user_id) {
+			return false;
+		}
+		
 		$sql = $wpdb->prepare(
 			"INSERT INTO `".WPSQT_TABLE_EMPLOYEES."` (id_user,id_store,franchisee) VALUES (%d,%d,FALSE)",
 			array($id_user,$id_store)
 			);
 		
 		return $wpdb->get_var($sql);
+	}
+	
+	/**
+		Call from Franchisee section to remove an employee from the specified store 
+	*/
+	public static function franchisee_remove_employee($id_user, $id_store) {
+		global $wpdb;	
+		
+		//check we're not duplicating
+		$sql = $wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d AND id_store=%d AND franchisee=FALSE",
+		array($id_user,$id_store));
+		$wpdb->query($sql);
+		return;
+	}
+	
+	/**
+		Call from Franchisee section to add a new employee to a store
+			- checks email against wordpress users for existing - add's that employee if available
+			- if not, creates a new employee and emails details to the specified address 
+	*/
+	public static function franchisee_add_employee($id_store,$new_name,$new_email) {
+		global $wpdb;
+		
+		$id_user = 0;
+
+		$user = get_user_by('email',$new_email);
+		if ($user) {
+			// user exists, add employee to store
+			$id_user = $user->ID;
+			// do something with new_name? update?
+			
+		} else {
+			// new user needs creating
+			$random_password = wp_generate_password();
+			$id_user = wp_insert_user( array (
+				'user_pass' => $random_password,
+				'user_name' => $new_email,
+				'user_login' => $new_email,
+				'user_email' => $new_email,
+				'display_name' => $new_name
+			) ) ;
+			wp_new_user_notification($id_user,$random_password);
+		}
+
+		self::add_employee($id_user,$id_store);
+		
 	}
 
 	public static function add_store($store, $state) {
@@ -633,27 +685,56 @@ class Wpsqt_System {
 	
 	public static function getQuizCount() {
 		global $wpdb;
-		$sql = "SELECT count(id) FROM `".WPSQT_TABLE_QUIZ_SURVEYS."`";
-		return $wpdb->get_var($sql);
+		$sql = "SELECT count(id) FROM `".WPSQT_TABLE_QUIZ_SURVEYS."` WHERE enabled=true";
+		return intval($wpdb->get_var($sql));
 	}
 	
 	public static function getEmployeeCount($id_store) {
 		global $wpdb;	
 		$sql = "SELECT count(id) FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_store=".$id_store." AND franchisee = 0";
-		return $wpdb->get_var($sql);
+		return intval($wpdb->get_var($sql));
 	}
 	
-
-	public static function getCompletionRate($id_store) {
+	public static function getEmployeeCompletionRate($id_employee) {
 		global $wpdb;			
-		$sql = "SELECT count(emp.id) FROM `".WPSQT_TABLE_EMPLOYEES."` emp 
-				INNER JOIN `".WPSQT_TABLE_RESULTS."` res ON emp.id_user = res.user_id
-				WHERE emp.id_store=".$id_store." AND emp.franchisee = 0 AND res.pass = 1";
-		$completions = $wpdb->get_var($sql);
+		$sql = "SELECT count(id) FROM `".WPSQT_TABLE_RESULTS."`
+				WHERE user_id=".$id_employee." AND pass = 1";
+		$completions = intval($wpdb->get_var($sql));
 		
-		$emp_count = intval(self::getEmployeeCount($id_store));
-		if ($emp_count <= 0) return "n/a";
-		return ( (intval($completions) / intval(self::getQuizCount())) / $emp_count *100 )."%";
+		$total = self::getQuizCount();
+		
+		return floatval($completions / $total);
+	}
+
+	public static function getStoreCompletionRate($id_store) {
+		global $wpdb;			
+		$sql = "SELECT id_user FROM `".WPSQT_TABLE_EMPLOYEES."` 
+				WHERE id_store=".$id_store." AND franchisee = 0 ";
+		$employees = $wpdb->get_results($sql,'ARRAY_A');
+		
+		$total = 0;
+		$count = 0;
+		foreach($employees as $employee) {
+			$total += self::getEmployeeCompletionRate($employee['id_user']);
+			$count++;
+		}
+		if ($count <= 0) return 0;
+		return floatval($total/$count);
+	}
+	
+	public static function colorCompletionRate($comp) {
+		$output = '<span style="color:';
+		if ($comp <= 0.5) {
+			$output .= 'red';
+		} else if ($comp <= 0.7) {
+			$output .= 'orange';			
+		} else if ($comp <= 0.9) {
+			$output .= '#8fbf00'; // darkish greeny yellow
+		} else {
+			$output .= '#007f00'; // dark yellow
+		}
+		$output .= '">'.intval($comp*100).'%</span>';
+		return $output;
 	}
 }
 

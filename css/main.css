@@ -22,3 +22,7 @@ div.wpsqt-progress div {
 	height: 10px;
 	border-radius: 10px;
 }
+
+.entry-content .add_user_area label, .entry-content .add_user_area input {
+	display: inline;
+}

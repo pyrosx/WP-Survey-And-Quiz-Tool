@@ -144,6 +144,7 @@ function wpsqt_main_install(){
 	$wpdb->query("CREATE TABLE IF NOT EXISTS `".WPSQT_TABLE_QUIZ_SURVEYS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `name` varchar(512) NOT NULL,
+				  `enabled` BOOLEAN NOT NULL, 
 				  `settings` longtext NOT NULL,
 				  `type` varchar(266) NOT NULL,
 				  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

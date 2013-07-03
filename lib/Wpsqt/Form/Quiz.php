@@ -19,6 +19,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 
 		if ( empty($options) ){
 			$options = array('name' => false,
+							'enabled' => false,
 							'permalink' => 0,
 							'notificaton_type' => false,
 							'limit_one' => false,
@@ -30,8 +31,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 							'pass_mark' => '100',
 							'show_progress_bar' => false,
 							'automark_whenfreetext' => 'no',
-							'finish_display' => false,
-							'status' => false,
+							'finish_display' => false,			
 							'contact' => false,
 							'use_wp' => true,
 							'email_template' => false,
@@ -45,6 +45,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 		}
 
 		$this->addOption("wpsqt_name", "Name", "text", $options['name'], "What you would like the quiz to be called." )
+			 ->addOption("wpsqt_enabled", "Enabled", "yesno", $options['enabled'], "Is the module available to users?")
 			 ->addOptionA("wpsqt_permalink", "Permalink", "text", $options['permalink'], "ID of the linked WP Page" )
 			 ->addOptionA("wpsqt_limit_one", "Limit to one submission per IP","yesno", $options['limit_one'], "Limit the quiz to one submission per IP.")
 			 ->addOptionA("wpsqt_limit_one_wp", "Limit to one submission per WP user","yesno",  $options['limit_one_wp'], "Limit the quiz to one submission per WP user. You must have the Use WP Details option below set to yes.")
@@ -56,7 +57,6 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 			 ->addOptionA("wpsqt_show_progress_bar", "Show progress bar", "yesno",  $options['show_progress_bar'], "Shows a progress bar based on which section the user is on")
 			 ->addOptionA("wpsqt_automark_whenfreetxt", "Auto mark when freetext questions", "select",  $options['automark_whenfreetext'], "If the quiz contains free text questions then this option will have the behaviour:<br /><strong>No</strong> - Do not attempt to mark the quiz<br /><strong>Yes - include</strong> - Mark all questions except and mark free texts as incorrect<br /><strong>Yes - exclude</strong> - Mark all questions except free text questions and ignore them from the total count.",array('no','yes - include freetext', 'yes - exclude freetext') )
 			 ->addOptionA("wpsqt_finish_display", "Finish Display",'select', $options['finish_display'], "What should be displayed on the finishing of the quiz.", array("Quiz Review","Finish message","Both"))
-			 ->addOptionA("wpsqt_status", "Status", "select", $options['status'], "Status of the quiz either enabled where users can take it or disabled where users can't.", array('enabled','disabled'))
 			 ->addOptionA("wpsqt_send_user", "Send notification email to user as well", "yesno",  $options["send_user"], "Should we send a notification email to the user who took the quiz. You must enable the 'use wordpress details' option below and the use must be logged in for this to work. This is due to a bug in the 'take contact details' option." )
 			 ->addOptionA("wpsqt_contact", "Take contact details", "yesno", $options['contact'] ,"This will show a form for users to enter their contact details before proceeding.")
 			 ->addOptionA("wpsqt_use_wp", "Use WordPress user details", "yesno", $options['use_wp'], "This will allow you to have the quiz to use the details of the user if they are signed in. If enabled the contact form will not be shown if enabled.")

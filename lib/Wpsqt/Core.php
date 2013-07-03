@@ -38,6 +38,7 @@ class Wpsqt_Core {
 		add_shortcode( 'wpsqt_results', array($this, 'shortcode_results') );
 		add_shortcode( 'wpsqt_survey_results', array($this, 'shortcode_survey_results') );
 		add_shortcode( 'wpsqt_info' , array($this, 'shortcode_info') );
+		
 		add_shortcode( 'wpsqt_franchisee_tools' , array($this, 'shortcode_franchisee') );
 
 		add_action('init', array($this,"init"));
@@ -444,31 +445,56 @@ class Wpsqt_Core {
 
 	public function shortcode_results( $atts ) {
 		global $wpdb;
-		extract( shortcode_atts( array(
-					'username' => false,
-					'accepted' => false
-		), $atts) );
-		if ($username != false) {
-			$sql = 'SELECT * FROM `'.WPSQT_TABLE_RESULTS.'` WHERE `person_name` = "'.$username.'"';
-			if ($accepted != false)
-				$sql .=  'AND `status` = "Accepted"';
-			$return = $wpdb->get_results($sql, 'ARRAY_A');
-			if (empty($return))
-				echo '<p>'.$username.' has no results</p>';
-			foreach ($return as $result) {
-				$sql = 'SELECT * FROM `'.WPSQT_TABLE_QUIZ_SURVEYS.'` WHERE `id` = "'.$result['item_id'].'"';
-				$return = $wpdb->get_results($sql, 'ARRAY_A');
-				if (empty($return)) {
-					continue;
-				}
-				return  "<h3>Results for ".$return[0]['name']."</h3>".
-						"<p>Score: ".$result['score']."/".$result['total']."</p>".
-						"<p>Percentage: ".$result['percentage']."</p>".
-						"<br /><br />";
-			}
+
+		$userid = 0;
+		$output = "";
+		if (!empty($_POST['id_user'])) {
+			$userid = $_POST['id_user'];
+			$output .= "<h3>".$_POST['display_name']."</h3>";
+		} else if ( is_user_logged_in() ) {
+			$userid = wp_get_current_user()->ID;
 		} else {
-			return 'No username was supplied for this results page. The shortcode should look like [wpsqt_results username="admin"]';
+			return;
 		}
+		
+		// TODO remove *
+		$sql = 'SELECT * FROM `'.WPSQT_TABLE_QUIZ_SURVEYS.'` WHERE enabled = 1';
+		$modules = $wpdb->get_results($sql,'ARRAY_A');
+				
+		$output .= "<table>
+						<thead><tr><th>Module</th><th>Best Mark</th><th>Attempts</th><th>Last Attempt</th></tr></thead>
+						<tbody>
+		";
+		foreach($modules as $module) {
+			// TODO remove *
+			$sql = 'SELECT * FROM `'.WPSQT_TABLE_RESULTS.'` WHERE item_id='.$module['id'].' AND user_id='.$userid.' ORDER BY datetaken';
+			$results = $wpdb->get_results($sql,'ARRAY_A');
+			
+			$bestmark = 0;
+			$lastdate = "n/a";
+			$count = 0;
+			if ($results) {				
+				foreach($results as $r) {
+					if ($bestmark < $r['percentage']) $bestmark = $r['percentage'];
+				}
+				$lastdate = date('d-m-Y',$results[0]["datetaken"]);
+				
+				$count = count($results);
+			}
+		
+			$output .= '<tr>
+							<td>'.$module["name"].'</td>
+							<td>'.$bestmark.'</td>
+							<td>'.$count.'</td>
+							<td>'.$lastdate.'</td>
+							
+						</tr>';
+		}
+		
+
+		$output .= "</tbody></table>";
+		
+		return $output;
 	}
 	
 	
@@ -481,13 +507,12 @@ class Wpsqt_Core {
 		
 		$output = "";
 		
-		//No username supplied, try for logged in user
 		if ( is_user_logged_in() ) {
 			// for each quiz
-			$output .= "<h4>Training Modules</h4>";
-			$output .= '<table id="wpsqt_info"><tr><th>Section</th><th>Completion</th></tr>';
+			$output .= "<h4>My Training Progress</h4>";
+			$output .= '<table id="wpsqt_info"><thead><tr><th>Module</th><th>Completion</th></tr></thead><tbody>';
 			
-			$sql = "SELECT id FROM ".WPSQT_TABLE_QUIZ_SURVEYS;
+			$sql = "SELECT id FROM `".WPSQT_TABLE_QUIZ_SURVEYS."` WHERE enabled = true";
 			$quizzes = $wpdb->get_results($sql, 'ARRAY_A');
 			
 			$completed = true;
@@ -515,10 +540,10 @@ class Wpsqt_Core {
 					$output .= "Not Attempted";
 					$completed = false;
 				}
-				$output .= "</td>";
+				$output .= "</td></tr>";
 					
 			}
-			$output .= "</table>";
+			$output .= "</tbody></table>";
 				
 			
 			if ($completed) {
@@ -591,7 +616,16 @@ class Wpsqt_Core {
 
 				$output = ""; // start output string
 
-	
+				
+				if(!empty($_POST["franchisee_remove_user"])) {
+					// jquery handles confirm... and it's already happened
+					Wpsqt_System::franchisee_remove_employee($_POST["id_user"],$_POST["id_store"]);
+				} 
+				if (!empty($_POST["franchisee_add_user"])) {
+					// add new user clicked
+					Wpsqt_System::franchisee_add_employee($_POST['id_store'],$_POST['new_name'],$_POST['new_email']);							
+				}
+			
 				// Stores that user is assigned as "franchisee" to
 				$stores = array();
 				$sql = "SELECT store.id, store.location, store.state 
@@ -603,16 +637,29 @@ class Wpsqt_Core {
 		
 				$output .= "<h4>Franchise Management</h4>";
 			
-				$output .= '<table id="franchises"><tr><th>Store</th><th>Employees</th><th>Completion Rate</th><th></th></tr>';
+				$output .= '<table id="franchises"><thead><tr><th>Store</th><th>Employees</th><th>Completion</th><th></th></tr></thead><tbody>';
 				// yep, franchisee
 
 				foreach($stores as $store) {
 				
+					//make opened elements stay open after a POST/reload
+					$users_style = "none";
+					$new_user_display = "none";
+					$new_user_button = "block";
+					
+					if (!empty($_POST['id_store']) && $_POST['id_store']==$store['id']) {
+						$users_style = "table-row";
+						if (!empty($_POST['new_name'])) {
+							$new_user_display = "block";
+							$new_user_button = "none";
+						}						
+					}
+				
 					$output .= "<tr>";
 					$output .= "<td>".$store['location'].", ".Wpsqt_System::getStateName($store['state'])."</td>";
 					$output .= "<td>".Wpsqt_System::getEmployeeCount($store['id'])."</td>";
-					$output .= "<td>".Wpsqt_System::getCompletionRate($store['id'])."</td>";
-					$output .= '<td><input type="submit" value="Manage" class="display_user_table" id="store_'.$store['id'].'"/></td>';
+					$output .= "<td>".Wpsqt_System::colorCompletionRate(Wpsqt_System::getStoreCompletionRate($store['id']))."</td>";
+					$output .= '<td><input type="submit" value="Manage" class="display_user_table" id="store_'.$store['id'].'" /></td>';
 				
 					$output .= "</tr>";						
 					
@@ -621,42 +668,57 @@ class Wpsqt_Core {
 					$sql = "SELECT user.id, user.display_name, user.user_email
 							FROM `".WP_TABLE_USERS."` user
 							INNER JOIN `".WPSQT_TABLE_EMPLOYEES."` emp on user.id = emp.id_user
-							WHERE emp.id_store = ".$store['id']."
+							WHERE emp.id_store = ".$store['id']." AND emp.franchisee = 0
 							ORDER BY user.display_name";
 		
 					$users = $wpdb->get_results($sql, 'ARRAY_A');
-					if (count($users) > 0) {
 
-						// extra column to maintain alternate colouring and have users in matching colour...
-						$output .= '<tr class="franchise_users_extra"><td colspan=4></td></tr>';
-						
-						$output .= '<tr class="franchise_users" id="rowstore_'.$store['id'].'"><td colspan=4>
-									<table>';
-						$output .= "<tr><th>Name</th><th>Email</th><th></th></tr>"; 
-						foreach($users as $user) {
-							$output .= "<tr><td>".$user['display_name']."</td>";
-							$output .= "<td>".$user['user_email']."</td>";
-							$output .= '<td>
-										<form action="'.$_SERVER["REQUEST_URI"].'" method="POST">
-										<input type="hidden" name="id_store" value="'.$store['id'].'"/>
-										<input type="hidden" name="id_user" value="'.$user['id'].'"/>	
-										<input type="hidden" name="operation" value="edit"/>	
-										<input type="submit" value="Edit"/>
-										</form>';
-							$output .= '<form action="'.$_SERVER["REQUEST_URI"].'" method="POST">
-										<input type="hidden" name="id_store" value="'.$store['id'].'"/>
-										<input type="hidden" name="id_user" value="'.$user['id'].'"/>	
-										<input type="hidden" name="operation" value="delete"/>	
-										<input type="submit" value="Delete"/>
-										</form>';
-							$output .= "</td></tr>";
+					// extra column to maintain alternate colouring and have users in matching colour...
+					$output .= '<tr style="display:none;"><td colspan=4></td></tr>';
 					
-						}
-						$output .= "</table></td></tr>"; 
+					$output .= '<tr class="franchise_users" id="rowstore_'.$store['id'].'" style="display:'.$users_style.';"><td colspan=4>
+								<table>';
+					$output .= "<thead><tr><th>Name</th><th>Email</th><th>Completion</th><th></th></tr></thead><tbody>"; 
+					
+					foreach($users as $user) {
+						$output .= "<tr><td>".$user['display_name']."</td>";
+						$output .= "<td>".$user['user_email']."</td>";
+						$output .= "<td>".Wpsqt_System::colorCompletionRate(Wpsqt_System::getEmployeeCompletionRate($user['id']))."</td>";
+						$output .= '<td>';
+						// Results button
+						$output .= '<form action="'.home_url('/results/').'" method="POST">
+										<input type="hidden" name="id_user" value="'.$user['id'].'"/>
+										<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
+										<input type="submit" value="Results" name="results"/>
+									</form>';
+						// Remove button
+						$output .= '<form action="" method="POST">
+										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+										<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user"/>
+									</form>';
+						$output .= "</td></tr>";
 					}
-
+					$output .= '<tr style="display:none;"><td colspan=4></td></tr>';
+					
+					$output .= '</tbody><tfoot><tr><td colspan="4">
+									<input type="submit" value="Add Employee" class="add_user" id="store_'.$store['id'].'" style="display:'.$new_user_button.'"/>
+									<div class="add_user_area" id="add_store_'.$store['id'].'" style="display:'.$new_user_display.'">
+										<form action="" method="POST">
+											<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+											New User:
+											<table><tr>
+												<td>Name: <input type="text" name="new_name" required/></td>
+												<td>Email: <input type="email" name="new_email" required/></td>
+											</tr></table>
+											<input type="submit" value="Add Employee" name="franchisee_add_user"/>
+										</form>
+									</div>
+								</td></tr>'; 
+					$output .="</tfoot></table>";
 				}
-				$output .="</table>";	
+				
+				$output .="</tbody></table>";	
 
 
 				

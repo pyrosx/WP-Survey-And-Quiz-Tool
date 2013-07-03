@@ -81,7 +81,14 @@
 							<span class="delete"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=delete&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Delete</a></span>
 						</div>
 					</td>
-					<td><font color="<?php if ($result['status'] == 'enabled'){ ?>#00FF00<?php } else { ?>#FF0000<?php }?>"><?php esc_html_e(ucfirst($result["status"]), 'wp-survey-and-quiz-tool'); ?></font></td>
+					<td><font color="
+					<?php 
+						if ($result['enabled'] == "yes") { 
+							?>#00FF00">Enabled <?php
+						} else { 
+							?>#FF0000">Disabled <?php 
+						}
+					?></font></td>
 					<td class="comments column-comments">
 						<div class="post-com-count-wrapper">
 							<a class="post-com-count" title=" pending" href="<?php echo WPSQT_URL_MAIN;?>&section=results&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">

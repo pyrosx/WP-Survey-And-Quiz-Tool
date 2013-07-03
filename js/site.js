@@ -1,15 +1,24 @@
-jQuery(document).ready( function() {
+jQuery(document).ready( function($) {
 
 	///////////////////
 	// Franchise user table (tr.franchise_users) hidden until button (.display_user_table) pressed
-	
 	jQuery('.display_user_table').click( function() {
-		var user_table_id = '#row'+jQuery(this).attr('id');
-		
-		jQuery(user_table_id).slideToggle(2000);
+		var user_table_id = '#row'+jQuery(this).attr('id');		
+		jQuery(user_table_id).toggle(1000);
+		return false;
 	});
 
 
+	jQuery('.remove_user').click( function($) {
+		return confirm('Are you sure you want to remove this user?');
+	});
+		
+	jQuery('.add_user').click( function($) {
+		var id = '#add_'+jQuery(this).attr('id');		
+		jQuery(id).toggle(1000);
+		jQuery(this).hide();
+		return false;
+	});
 
 	jQuery('.wpsqt-show-answer').click( function() {
 		jQuery(this).siblings('.wpsqt-answer-explanation').show();

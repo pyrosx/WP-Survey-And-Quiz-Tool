@@ -7,7 +7,7 @@
 	<?php } ?>
 	<div id="icon-tools" class="icon32"></div>
 	<h2>
-		Online Training - Create Quiz
+		Online Training - Module
 	</h2>
 			
 	<?php require WPSQT_DIR.'pages/admin/misc/navbar.php'; ?>

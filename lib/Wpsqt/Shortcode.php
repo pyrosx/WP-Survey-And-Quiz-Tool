@@ -187,7 +187,7 @@ class Wpsqt_Shortcode {
 		$quizName = $_SESSION['wpsqt']['current_id'];
 
 		// Checks if the quiz/survey/poll is disabled
-		if (isset($_SESSION['wpsqt'][$quizName]['details']['status']) && $_SESSION['wpsqt'][$quizName]['details']['status'] == 'disabled') {
+		if (isset($_SESSION['wpsqt'][$quizName]['details']['enabled']) && $_SESSION['wpsqt'][$quizName]['details']['enabled'] == false) {
 			printf(__('This %s is currently disabled.', 'wp-survey-and-quiz-tool'), $_SESSION['wpsqt'][$quizName]['details']['type']);
 			return;
 		}
