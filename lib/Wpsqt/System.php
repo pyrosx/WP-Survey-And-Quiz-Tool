@@ -487,6 +487,9 @@ class Wpsqt_System {
 	State setup: We need the state name -> value to be used in common in multiple places
 	
 	One Array_A will rule them all!
+	
+	Originally planned to do tricky 'mod' tricks by storing sets of states as one int, 
+	but it didn't end up that way, and now I dont really see the need to change the int values
 	*/
 	
 	private static $StateValueArray = array(
@@ -499,7 +502,23 @@ class Wpsqt_System {
 		64 => 'Victoria',
 		128 => 'Western Australia'
 	);
+	
+	public static function getStateName($id) {
+		
+		if (empty(self::$StateValueArray[$id])) {
+			return false;
+		}
+		
+		return self::$StateValueArray[$id];
+	}
+
 	private static $StateFlipArray;
+	public static function getStateId($name) {		
+	 	if (self::$StateFlipArray == null) {
+	 		self::$StateFlipArray = array_flip(self::$StateValueArray);
+	 	}
+		return self::$StateFlipArray[$name];
+	}
 
 	public static function getStateArray() {
 		$arr = self::$StateValueArray; // this should copy the array so it won't be modified accidentally?
@@ -511,7 +530,7 @@ class Wpsqt_System {
 	public static function getStateDropdown($name, $selected = 0) {
 		$out = '<select name="'.$name.'">';
 	
-		$out .= Wpsqt_System::addOption("","",$selected);
+		$out .= self::addOption("","",$selected);
 
 /*
 		$out .= Wpsqt_System::addOption("ACT","ACT",$selected);
@@ -525,24 +544,14 @@ class Wpsqt_System {
 */
 		
 		foreach ( self::$StateValueArray as $id => $val ) {
-			$out .= Wpsqt_System::addOption($id,$val,$selected);
+			$out .= self::addOption($id,$val,$selected);
 		}
 		
 		$out .= '</select>';
 
 		return $out;
 	}
-	public static function getStateName($id) {
-		return self::$StateValueArray[$id];
-	}
-
-
-	public static function getStateId($name) {		
-	 	if (self::$StateFlipArray == null) {
-	 		self::$StateFlipArray = array_flip(self::$StateValueArray);
-	 	}
-		return self::$StateFlipArray[$name];
-	}
+	
 
 	public static function addOption($id,$val,$selected = "") {
 		$out = '<option value="'.$id.'" ';
@@ -551,60 +560,34 @@ class Wpsqt_System {
 		return $out;
 	}
 
-	/** Adds a new Franchisee to the employees table
-		Returns the id of the added entry
-	*/
-	public static function add_franchisee($id_user, $id_store) {
-		global $wpdb;	
-		
-		//check we're not duplicating
-		$sql = $wpdb->prepare("SELECT id FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d AND id_store=%d AND franchisee=TRUE",
-		array($id_user,$id_store));
-		$id = $wpdb->get_var($sql);
-		if ($id != 0) {
-			// dupe detected
-			return $id;
-		}
-		
-		$sql = $wpdb->prepare(
-			"INSERT INTO `".WPSQT_TABLE_EMPLOYEES."` (id_user,id_store,franchisee) VALUES (%d,%d,TRUE)",
-			array($id_user,$id_store)
-			);
-		
-		return $wpdb->get_var($sql);
-	}
 	
-	// can be used for Employees too
-	public static function edit_franchisee($id,$id_user, $id_store) {
-		global $wpdb;	
-		$sql = $wpdb->prepare(
-			"UPDATE `".WPSQT_TABLE_EMPLOYEES."` SET id_user=%d, id_store=%d WHERE id=%d",
-			array($id_user,$id_store,$id)
-			);
-		
-		return $wpdb->get_results($sql, ARRAY_A);
-	}
 	
 	/** Adds a new Employee to the employees table
 		Returns the id of the added entry
 	*/
-	public static function add_employee($id_user, $id_store) {
+	public static function add_employee($id_user, $id_store, $franchisee = false) {
 		global $wpdb;	
-		
-		//check we're not duplicating
-		$sql = $wpdb->prepare("SELECT id FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d AND id_store=%d AND franchisee=FALSE",
-		array($id_user,$id_store));
-		$id = $wpdb->get_var($sql);
-		if ($id != 0) {
-			// dupe detected
-			return $id;
-		}
-		
+
 		// check user exists
 		$wp_user_id = get_user_by('id',$id_user);
 		if (!$wp_user_id) {
 			return false;
 		}
+
+		//check we're not duplicating
+		$sql = $wpdb->prepare("SELECT id, franchisee FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d AND id_store=%d",array($id_user,$id_store));
+		$res = $wpdb->get_row($sql,'ARRAY_A');
+		if ($res['id'] != 0) {
+			// user already assigned to this store
+			// if attempting to upgrade franchisee status
+			if ($franchisee && !$res['franchisee']) {
+				$sql = "UPDATE `".WPSQT_TABLE_EMPLOYEES."` SET franchisee=TRUE WHERE id = ".$res['id'];
+				var_dump($sql);
+				$wpdb->query($sql);
+			}
+			return $res['id'];
+		}
+		
 		
 		$sql = $wpdb->prepare(
 			"INSERT INTO `".WPSQT_TABLE_EMPLOYEES."` (id_user,id_store,franchisee) VALUES (%d,%d,FALSE)",
@@ -613,18 +596,30 @@ class Wpsqt_System {
 		
 		return $wpdb->get_var($sql);
 	}
+	public static function edit_employee($id,$id_user, $id_store) {
+		global $wpdb;	
+		$sql = $wpdb->prepare(
+			"UPDATE `".WPSQT_TABLE_EMPLOYEES."` SET id_user=%d, id_store=%d WHERE id=%d",
+			array($id_user,$id_store,$id)
+			);
+		
+		return $wpdb->get_results($sql, ARRAY_A);
+	}
+	/** Adds a new Franchisee to the employees table
+		Returns the id of the added entry
+	*/
+	public static function add_franchisee($id_user, $id_store) {
+		return self::add_employee($id_user,$id_store,true);
+	}
+
 	
 	/**
 		Call from Franchisee section to remove an employee from the specified store 
 	*/
-	public static function franchisee_remove_employee($id_user, $id_store) {
-		global $wpdb;	
-		
-		//check we're not duplicating
-		$sql = $wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d AND id_store=%d AND franchisee=FALSE",
-		array($id_user,$id_store));
+	public static function remove_employee($id_user, $id_store) {
+		global $wpdb;			
+		$sql = $wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d AND id_store=%d",array($id_user,$id_store));
 		$wpdb->query($sql);
-		return;
 	}
 	
 	/**
@@ -632,7 +627,7 @@ class Wpsqt_System {
 			- checks email against wordpress users for existing - add's that employee if available
 			- if not, creates a new employee and emails details to the specified address 
 	*/
-	public static function franchisee_add_employee($id_store,$new_name,$new_email) {
+	public static function add_user($id_store,$new_name,$new_email,$franchisee = false) {
 		global $wpdb;
 		
 		$id_user = 0;
@@ -656,20 +651,31 @@ class Wpsqt_System {
 			wp_new_user_notification($id_user,$random_password);
 		}
 
-		self::add_employee($id_user,$id_store);
-		
+		if ($franchisee) {
+			self::add_franchisee($id_user,$id_store);
+		} else {
+			self::add_employee($id_user,$id_store);
+		}		
 	}
+	
 
 	public static function add_store($store, $state) {
 		global $wpdb;	
-		$sql = $wpdb->prepare(
-			"INSERT INTO `".WPSQT_TABLE_STORES."` (location,state) VALUES (%s,%s)",
-			array($store,$state)
-			);
+
+		// make sure $state is valid
+		if (!self::getStateName($state)) {
+			return false;
+		}
+
+		// check we're not duplicating
+		if (!is_null($wpdb->get_var($wpdb->prepare('SELECT id FROM `'.WPSQT_TABLE_STORES.'` WHERE location=%s AND state=%s',array($store,$state))))) {
+			return false;
+		}
+
+		$sql = $wpdb->prepare("INSERT INTO `".WPSQT_TABLE_STORES."` (location,state) VALUES (%s,%s)",array($store,$state));
 		
 		return $wpdb->get_results($sql, ARRAY_A);
 	}
-
 
 	public static function getUsersForSelect() {
 		global $wpdb;	
@@ -689,10 +695,13 @@ class Wpsqt_System {
 		return intval($wpdb->get_var($sql));
 	}
 	
-	public static function getEmployeeCount($id_store) {
+	public static function getEmployeeCount($id_store, $franchisee = false) {
 		global $wpdb;	
-		$sql = "SELECT count(id) FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_store=".$id_store." AND franchisee = 0";
+		$sql = "SELECT count(id) FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_store=".$id_store." AND franchisee = ".intval($franchisee);
 		return intval($wpdb->get_var($sql));
+	}
+	public static function getFranchiseeCount($id_store) {
+		return self::getEmployeeCount($id_store,true);
 	}
 	
 	public static function getEmployeeCompletionRate($id_employee) {
@@ -706,10 +715,13 @@ class Wpsqt_System {
 		return floatval($completions / $total);
 	}
 
-	public static function getStoreCompletionRate($id_store) {
+	public static function getStoreCompletionRate($id_store, $includesFranchisees = false) {
 		global $wpdb;			
 		$sql = "SELECT id_user FROM `".WPSQT_TABLE_EMPLOYEES."` 
-				WHERE id_store=".$id_store." AND franchisee = 0 ";
+				WHERE id_store=".$id_store;
+		if (!$includesFranchisees) {
+			$sql.=" AND franchisee = 0 ";
+		}
 		$employees = $wpdb->get_results($sql,'ARRAY_A');
 		
 		$total = 0;
@@ -723,18 +735,272 @@ class Wpsqt_System {
 	}
 	
 	public static function colorCompletionRate($comp) {
+		if (is_float($comp) & $comp <= 1) {
+			$comp = $comp*100;
+		}
 		$output = '<span style="color:';
-		if ($comp <= 0.5) {
+		if ($comp <= 25) {
 			$output .= 'red';
-		} else if ($comp <= 0.7) {
-			$output .= 'orange';			
-		} else if ($comp <= 0.9) {
+		} else if ($comp <= 50) {
+			$output .= '#FF4500'; // orangeRed			
+		} else if ($comp <= 75) {
+			$output .= '#FFA500'; // orange	
+		} else if ($comp < 100) {
 			$output .= '#8fbf00'; // darkish greeny yellow
 		} else {
-			$output .= '#007f00'; // dark yellow
+			$output .= '#007f00'; // dark green
 		}
-		$output .= '">'.intval($comp*100).'%</span>';
+		$output .= '">'.intval($comp).'%</span>';
 		return $output;
+	}
+	
+	
+	
+	public static function getStoreTable($id_user = null) {
+		global $wpdb;
+		$output = ""; // start output string
+		
+		// first some error/hacking checking
+		// if id_user is null, we have to be inside the wp admin area
+		if (is_null($id_user)) {
+			if (!is_admin()) {
+				return false;
+			}
+		} else {
+			// because it's set, id_user has to match logged in user
+			if ($id_user != get_current_user_id()) {
+				return false;
+			}
+		}
+				
+		if(!empty($_POST["franchisee_remove_user"])) {
+			// jquery handles confirm... and it's already happened
+			self::remove_employee($_POST["id_user"],$_POST["id_store"]);
+		} 
+		if (!empty($_POST["franchisee_add_user"])) {
+			// add new user clicked
+			self::add_user($_POST['id_store'],$_POST['new_name'],$_POST['new_email']);							
+		}
+		if (!empty($_POST["add_franchisee"])) {
+			// add new franchisee clicked
+			self::add_user($_POST['id_store'],$_POST['new_name'],$_POST['new_email'],true);
+		}
+		
+		$new_store_display = "none";
+		$new_store_button = "block";
+		if (!empty($_POST["add_store"])) {
+			$new_store_display = "block";
+			$new_store_button = "none";		
+			self::add_store($_POST['new_store'], $_POST['new_state']);
+		}
+	
+		// Stores - optionally, restricted to those that user is assigned as "franchisee" to
+		$stores = array();
+		$sql = "SELECT store.id, store.location, store.state 
+				FROM  `".WPSQT_TABLE_STORES."` store ";
+		if (!is_null($id_user)) {	
+			$sql .="INNER JOIN `".WPSQT_TABLE_EMPLOYEES."` emp ON store.id = emp.id_store 
+					WHERE emp.id_user = ".$id_user." AND emp.franchisee = 1 ";
+		}
+		$sql .=	"ORDER BY store.state, store.location";
+		$stores = $wpdb->get_results($sql, 'ARRAY_A');
+
+		if (!is_null($id_user)) {
+			// heading only for franchisees, not admins
+			$output .= "<h4>Franchise Management</h4>";
+		}	
+				
+		$output .= '<table id="franchises"><thead><tr><th>Store</th>';
+		if (is_null($id_user)) {
+			$output .= '<th>Franchisees</th>';
+			$colspan = 5;
+		} else {
+			$colspan = 4;
+		}
+		$output .= '<th>Employees</th><th>Completion</th><th></th></tr></thead><tbody>';
+		
+		foreach($stores as $store) {
+		
+			//make active section stay open after a POST/reload
+			$users_style = "none";
+			$users_button = "+";
+			$new_user_display = "none";
+			$new_user_button = "block";
+			$new_franc_display = "none";
+			$new_franc_button = "block";
+			
+			if (!empty($_POST['id_store']) && $_POST['id_store']==$store['id']) {
+				$users_style = "table-row";
+				$users_button = "-";
+				if (!empty($_POST['new_name'])) {
+					if (!empty($_POST["franchisee_add_user"])) {
+						$new_user_display = "block";
+						$new_user_button = "none";
+					} else if (!empty($_POST["add_franchisee"])) {
+						$new_franc_display = "block";
+						$new_franc_button = "none";
+					}
+				}
+			}
+		
+			$output .= "<tr>";
+			$output .= "<td>".$store['location'].", ".self::getStateName($store['state'])."</td>";
+			if (is_null($id_user)) {
+				$output .= "<td>".self::getFranchiseeCount($store['id'])."</td>";
+			}
+			$output .= "<td>".self::getEmployeeCount($store['id'])."</td>";
+			$output .= "<td>".self::colorCompletionRate(self::getStoreCompletionRate($store['id'],is_null($id_user)))."</td>";
+			$output .= '<td><input type="submit" value="'.$users_button.'" class="display_user_table" id="store_'.$store['id'].'" /></td>';
+		
+			$output .= "</tr>";						
+			
+			
+			// list employees
+			$sql1 = "SELECT user.id, user.display_name, user.user_email
+					FROM `".WP_TABLE_USERS."` user
+					INNER JOIN `".WPSQT_TABLE_EMPLOYEES."` emp on user.id = emp.id_user
+					WHERE emp.id_store = ".$store['id']." AND emp.franchisee = ";
+					
+			$sql2= " ORDER BY user.display_name";
+			
+			$sql = $sql1."0".$sql2;
+
+			$users = $wpdb->get_results($sql, 'ARRAY_A');
+
+			// extra column to maintain alternate colouring and have users in matching colour...
+			$output .= '<tr style="display:none;"><td></td></tr>';
+			
+			$output .= '<tr class="franchise_users" id="rowstore_'.$store['id'].'" style="display:'.$users_style.';"><td colspan='.$colspan.'>
+						<table>';
+						
+			if (is_null($id_user)) {
+				// display franchisees, and add franchisee option
+				
+				$sql = $sql1."1".$sql2;
+				$franchisees = $wpdb->get_results($sql, 'ARRAY_A');
+				
+				$output .= '<thead><tr><th colspan='.$colspan.'><i>Franchisee(s)</i></th></tr></thead>';
+				if(count($franchisees) > 0) {
+					$output .= "<thead><tr><th>Name</th><th>Email</th><th>Completion</th><th></th></tr></thead><tbody>"; 
+			
+					foreach($franchisees as $user) {
+						$output .= "<tr><td>".$user['display_name']."</td>";
+						$output .= "<td>".$user['user_email']."</td>";
+						$output .= "<td>".self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']))."</td>";
+						$output .= '<td>';
+						// Results button
+						$output .= '<form action="'.home_url('/results/').'" method="POST">
+										<input type="hidden" name="id_user" value="'.$user['id'].'"/>
+										<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
+										<input type="submit" value="Results" name="results"/>
+									</form>';
+						// Remove button
+						$output .= '<form action="" method="POST">
+										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+										<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user"/>
+									</form>';
+						$output .= "</td></tr>";
+					}
+				} else {
+					$output .= '<tr><td colspan='.$colspan.'><p>No franchisees assigned yet</p></td></tr>';
+				}
+
+				$output .= '<tr><td colspan='.$colspan.'>
+								<input type="submit" value="Add Franchisee" class="add_user" id="fstore_'.$store['id'].'" style="display:'.$new_franc_button.'"/>
+								<div class="add_user_area" id="add_fstore_'.$store['id'].'" style="display:'.$new_franc_display.'">
+									<form action="" method="POST">
+										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+									
+										<table>
+										<thead><tr><td colspan=3>New Franchisee:</td></tr></thead>
+										<tbody>
+										<tr>
+											<td>Name: <input type="text" name="new_name" required/></td>
+											<td>Email: <input type="email" name="new_email" required/></td>
+											<td><input type="submit" value="Add Franchisee" name="add_franchisee"/></td>
+										</tr>
+										</tbody></table>
+									</form>
+								</div>
+							</td></tr></tbody>';					
+
+				$output .= '<thead><tr><th colspan='.$colspan.'><i>Employees</i></th></tr></thead>';
+			}
+			
+			if (count($users) > 0) {
+				$output .= "<thead><tr><th>Name</th><th>Email</th><th>Completion</th><th></th></tr></thead><tbody>"; 
+			
+				foreach($users as $user) {
+					$output .= "<tr><td>".$user['display_name']."</td>";
+					$output .= "<td>".$user['user_email']."</td>";
+					$output .= "<td>".self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']))."</td>";
+					$output .= '<td>';
+					// Results button
+					$output .= '<form action="'.home_url('/results/').'" method="POST">
+									<input type="hidden" name="id_user" value="'.$user['id'].'"/>
+									<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
+									<input type="submit" value="Results" name="results"/>
+								</form>';
+					// Remove button
+					$output .= '<form action="" method="POST">
+									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+									<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user"/>
+								</form>';
+					$output .= "</td></tr>";
+				}
+			} else {
+				$output .= '<tr><td colspan='.$colspan.'><p>No employees assigned yet</p></td></tr>';
+			}
+
+			$output .= '<tr><td colspan='.$colspan.'>
+							<input type="submit" value="Add Employee" class="add_user" id="store_'.$store['id'].'" style="display:'.$new_user_button.'"/>
+							<div class="add_user_area" id="add_store_'.$store['id'].'" style="display:'.$new_user_display.'">
+								<form action="" method="POST">
+									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+									
+									<table>
+									<thead><tr><td colspan=3>New User:</td></tr></thead>
+									<tbody>
+									<tr>
+										<td>Name: <input type="text" name="new_name" required/></td>
+										<td>Email: <input type="email" name="new_email" required/></td>
+										<td><input type="submit" value="Add Employee" name="franchisee_add_user"/></td>
+									</tr>
+									</tbody></table>
+								</form>
+							</div>
+						</td></tr>'; 
+			$output .="</tbody></table>";
+		}
+		
+		if (is_null($id_user)) {
+			// add store section
+			$output .= '<tr><td colspan='.$colspan.'>
+							<input type="submit" value="Add Store" class="add_user" id="store_new" style="display:'.$new_store_button.'"/>
+							<div class="add_user_area" id="add_store_new" style="display:'.$new_store_display.'">
+								<form action="" method="POST">
+									
+									<table>
+									<thead><tr><td colspan=3>New Store:</td></tr></thead>
+									<tbody>
+									<tr>
+										<td>Name: <input type="text" name="new_store" required/></td>
+										<td>State:'.self::getStateDropdown("new_state").'</td>			
+										<td><input type="submit" value="Add Store" name="add_store"/></td>
+									</tr>
+									</tbody></table>
+								</form>
+							</div>
+						</td></tr>';
+		}
+		
+		$output .="</tbody></table>";	
+
+
+		
+		return $output;		
 	}
 }
 

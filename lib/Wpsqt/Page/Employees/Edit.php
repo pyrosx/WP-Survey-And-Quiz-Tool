@@ -66,7 +66,7 @@ class Wpsqt_Page_Employees_Edit extends Wpsqt_Page {
 		
 			if (empty($errors)) {
 				
-				Wpsqt_System::edit_franchisee($_GET['id'],$_POST['wpqst_franchisee_user'],$_POST['wpqst_franchisee_store']);
+				Wpsqt_System::edit_employee($_GET['id'],$_POST['wpqst_franchisee_user'],$_POST['wpqst_franchisee_store']);
 			
 				$this->_pageView ="admin/misc/redirect.php";	
 				$this->_pageVars['redirectLocation'] = WPSQT_URL_EMPLOYEES;			

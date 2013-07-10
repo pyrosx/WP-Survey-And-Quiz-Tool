@@ -1,3 +1,39 @@
 div.alignleft a {
 	display: inline !important;
 }
+
+.add_user_area label, .add_user_area input {
+	display: inline;
+}
+.open_results {
+	text-decoration: underline;
+}
+
+#store_table table {
+	width: 100%;
+	border-spacing: 0;
+	border: 1px solid #ddd;
+}
+#store_table table form {
+	display: inline;
+}
+#store_table table form input[type="text"], 
+#store_table table form input[type="email"],
+#store_table table form select {
+	width: 80%;
+}
+#store_table table table {
+	width: 80%;
+	margin: 10px;
+	margin-left: 10%;
+	
+}
+
+#store_table table thead tr {
+	background-color: #ddd;
+	text-align: left;
+}
+#store_table table tr:nth-child(even) {
+	background-color: #eee;
+}
+

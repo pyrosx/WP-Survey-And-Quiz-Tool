@@ -45,6 +45,8 @@ class Wpsqt_Core {
 		add_action('admin_bar_menu', array($this,"adminbar"),999);
 		add_action( 'init' , array($this,"enqueue_files"));
 
+		// action to run a function when a user is deleted from wordpress
+		add_action('deleted_user',array($this,'remove_employee'));
 
 		// Register the top scores widget
 		require_once WPSQT_DIR.'lib/Wpsqt/Widget.php';
@@ -484,11 +486,32 @@ class Wpsqt_Core {
 		
 			$output .= '<tr>
 							<td>'.$module["name"].'</td>
-							<td>'.$bestmark.'</td>
-							<td>'.$count.'</td>
-							<td>'.$lastdate.'</td>
-							
+							<td>'.Wpsqt_System::colorCompletionRate($bestmark).'</td>';
+			if ($count > 1 ) {
+				$output .= '<td><a href="" class="open_results" id="div_'.$module['id'].'">'.$count.'</a></td>';
+			} else {
+				$output .= '<td>'.$count.'</td>';
+			}
+			$output .= '	<td>'.$lastdate.'</td>
 						</tr>';
+
+			if ($count > 1) {
+				// sub-table for attempts if more than 1	
+				$output .= '<tr style="display:none;"></tr><tr class="results_div" id="results_div_'.$module['id'].'" style="display:none;"><td colspan=5>
+					
+						<table><thead><tr><th>Date Taken</th><th>Mark</th><th>Time Spent</th></tr></thead>
+						<tbody>';
+				foreach($results as $res) {
+					$output .= '<tr>
+								<td>'.date('d-m-Y',$res["datetaken"]).'</td>
+								<td>'.Wpsqt_System::colorCompletionRate($res['percentage']).'</td>
+								<td>'.sprintf( "%01.2d:%02.2d", floor( $res['timetaken'] / 60 ), $res['timetaken'] % 60 ).'</td>
+								</tr>';
+				}
+				$output .= '</tbody></table>
+					
+				</td></tr>';
+			}
 		}
 		
 
@@ -527,15 +550,10 @@ class Wpsqt_Core {
 				$sql = "SELECT pass,percentage,datetaken FROM ".WPSQT_TABLE_RESULTS." WHERE item_id = '".$quiz['id']."' AND user_id = '".wp_get_current_user()->ID."' ORDER BY percentage DESC LIMIT 1";
 				$results = $wpdb->get_results($sql, 'ARRAY_A');
 				if (count($results)) {
-					if ($results[0]['pass'] == 1 ) {
-						$output .= "Completed";
-						if ($completed_date < $results[0]['datetaken']) {
-							$completed_date = $results[0]['datetaken'];
-						}
-					} else {
-						$output .= "Best Mark - ".$results[0]['percentage']."%";
+					if ($results[0]['pass'] != 1 ) {					
 						$completed = false;
 					}
+					$output .= Wpsqt_System::colorCompletionRate($results[0]['percentage']);
 				} else {
 					$output .= "Not Attempted";
 					$completed = false;
@@ -613,120 +631,15 @@ class Wpsqt_Core {
 			$sql = "SELECT count(id) FROM `".WPSQT_TABLE_EMPLOYEES."` 
 					WHERE id_user = ".$id_user." AND franchisee = 1";			
 			if ($wpdb->get_var($sql) > 0) {
-
-				$output = ""; // start output string
-
 				
-				if(!empty($_POST["franchisee_remove_user"])) {
-					// jquery handles confirm... and it's already happened
-					Wpsqt_System::franchisee_remove_employee($_POST["id_user"],$_POST["id_store"]);
-				} 
-				if (!empty($_POST["franchisee_add_user"])) {
-					// add new user clicked
-					Wpsqt_System::franchisee_add_employee($_POST['id_store'],$_POST['new_name'],$_POST['new_email']);							
-				}
-			
-				// Stores that user is assigned as "franchisee" to
-				$stores = array();
-				$sql = "SELECT store.id, store.location, store.state 
-						FROM `".WPSQT_TABLE_EMPLOYEES."` emp
-						INNER JOIN `".WPSQT_TABLE_STORES."` store ON store.id = emp.id_store
-						WHERE emp.id_user = ".$id_user." AND emp.franchisee = 1
-						ORDER BY store.state, store.location";
-				$stores = $wpdb->get_results($sql, 'ARRAY_A');
-		
-				$output .= "<h4>Franchise Management</h4>";
-			
-				$output .= '<table id="franchises"><thead><tr><th>Store</th><th>Employees</th><th>Completion</th><th></th></tr></thead><tbody>';
-				// yep, franchisee
-
-				foreach($stores as $store) {
+				return Wpsqt_System::getStoreTable($id_user);
 				
-					//make opened elements stay open after a POST/reload
-					$users_style = "none";
-					$new_user_display = "none";
-					$new_user_button = "block";
-					
-					if (!empty($_POST['id_store']) && $_POST['id_store']==$store['id']) {
-						$users_style = "table-row";
-						if (!empty($_POST['new_name'])) {
-							$new_user_display = "block";
-							$new_user_button = "none";
-						}						
-					}
-				
-					$output .= "<tr>";
-					$output .= "<td>".$store['location'].", ".Wpsqt_System::getStateName($store['state'])."</td>";
-					$output .= "<td>".Wpsqt_System::getEmployeeCount($store['id'])."</td>";
-					$output .= "<td>".Wpsqt_System::colorCompletionRate(Wpsqt_System::getStoreCompletionRate($store['id']))."</td>";
-					$output .= '<td><input type="submit" value="Manage" class="display_user_table" id="store_'.$store['id'].'" /></td>';
-				
-					$output .= "</tr>";						
-					
-					
-					// list employees
-					$sql = "SELECT user.id, user.display_name, user.user_email
-							FROM `".WP_TABLE_USERS."` user
-							INNER JOIN `".WPSQT_TABLE_EMPLOYEES."` emp on user.id = emp.id_user
-							WHERE emp.id_store = ".$store['id']." AND emp.franchisee = 0
-							ORDER BY user.display_name";
-		
-					$users = $wpdb->get_results($sql, 'ARRAY_A');
-
-					// extra column to maintain alternate colouring and have users in matching colour...
-					$output .= '<tr style="display:none;"><td colspan=4></td></tr>';
-					
-					$output .= '<tr class="franchise_users" id="rowstore_'.$store['id'].'" style="display:'.$users_style.';"><td colspan=4>
-								<table>';
-					$output .= "<thead><tr><th>Name</th><th>Email</th><th>Completion</th><th></th></tr></thead><tbody>"; 
-					
-					foreach($users as $user) {
-						$output .= "<tr><td>".$user['display_name']."</td>";
-						$output .= "<td>".$user['user_email']."</td>";
-						$output .= "<td>".Wpsqt_System::colorCompletionRate(Wpsqt_System::getEmployeeCompletionRate($user['id']))."</td>";
-						$output .= '<td>';
-						// Results button
-						$output .= '<form action="'.home_url('/results/').'" method="POST">
-										<input type="hidden" name="id_user" value="'.$user['id'].'"/>
-										<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
-										<input type="submit" value="Results" name="results"/>
-									</form>';
-						// Remove button
-						$output .= '<form action="" method="POST">
-										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-										<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user"/>
-									</form>';
-						$output .= "</td></tr>";
-					}
-					$output .= '<tr style="display:none;"><td colspan=4></td></tr>';
-					
-					$output .= '</tbody><tfoot><tr><td colspan="4">
-									<input type="submit" value="Add Employee" class="add_user" id="store_'.$store['id'].'" style="display:'.$new_user_button.'"/>
-									<div class="add_user_area" id="add_store_'.$store['id'].'" style="display:'.$new_user_display.'">
-										<form action="" method="POST">
-											<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-											New User:
-											<table><tr>
-												<td>Name: <input type="text" name="new_name" required/></td>
-												<td>Email: <input type="email" name="new_email" required/></td>
-											</tr></table>
-											<input type="submit" value="Add Employee" name="franchisee_add_user"/>
-										</form>
-									</div>
-								</td></tr>'; 
-					$output .="</tfoot></table>";
-				}
-				
-				$output .="</tbody></table>";	
-
-
-				
-				return $output;		
-								
-				
-			// no output if not a franchisee....
 			}
+		
+		
+		
+		
+		
 		}
 	}
 
@@ -735,4 +648,11 @@ class Wpsqt_Core {
 		wp_enqueue_script('site',plugins_url('/js/site.js', WPSQT_FILE));
 		wp_enqueue_style("wpsqt-main",plugins_url('/css/main.css',WPSQT_FILE));
 	}
+	
+	function remove_employee($id_user) {
+		// $id_user is the ID of the wordpress user being deleted
+		global $wpdb;
+		$wpdb->query("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=".$id_user);
+	}
+
 }

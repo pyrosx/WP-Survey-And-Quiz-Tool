@@ -49,15 +49,10 @@ class Wpsqt_Page_Franchisees_Addnew extends Wpsqt_Page {
 			}
 		
 		
-			if (empty($errors)) {
-				
+			if (empty($errors)) {	
 				// flag chosen user as Franchisee by adding user meta data			
 				Wpsqt_System::add_franchisee($_POST['wpqst_franchisee_user'],$_POST['wpqst_franchisee_store']);
-			
-				// change user's role to "editor" for access to employee management
-				$wp_user_object = new WP_User($_POST['wpqst_franchisee_user']);
-				$wp_user_object->set_role('editor');
-			
+						
 				$this->_pageVars['successMessage'] = "New Franchisee added successfully";
 			}
 					

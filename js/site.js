@@ -3,8 +3,13 @@ jQuery(document).ready( function($) {
 	///////////////////
 	// Franchise user table (tr.franchise_users) hidden until button (.display_user_table) pressed
 	jQuery('.display_user_table').click( function() {
-		var user_table_id = '#row'+jQuery(this).attr('id');		
-		jQuery(user_table_id).toggle(1000);
+		var user_table_id = '#row'+jQuery(this).attr('id');
+		if (jQuery(this).attr('value') == "+") {
+			jQuery(this).attr('value',"-");
+		} else {
+			jQuery(this).attr('value',"+");
+		}
+		jQuery(user_table_id).fadeToggle(500);
 		return false;
 	});
 
@@ -15,8 +20,14 @@ jQuery(document).ready( function($) {
 		
 	jQuery('.add_user').click( function($) {
 		var id = '#add_'+jQuery(this).attr('id');		
-		jQuery(id).toggle(1000);
+		jQuery(id).toggle();
 		jQuery(this).hide();
+		return false;
+	});
+	
+	jQuery('.open_results').click( function($) {
+		var id = '#results_'+jQuery(this).attr('id');
+		jQuery(id).toggle();
 		return false;
 	});
 

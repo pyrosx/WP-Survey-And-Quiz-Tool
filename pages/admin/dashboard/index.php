@@ -9,11 +9,15 @@
 	
 	<table>
 		<tr>
-			<td>Number of Stores</td>
+			<td>Stores</td>
 			<td><?php echo $numStores;?></td>
 		</tr>
 		<tr>
-			<td>Number of Franchisees</td>
+			<td>Stores without Franchisee</td>
+			<td><?php echo $numStoresWithoutFranchisees;?></td>
+		</tr>
+		<tr>
+			<td>Franchisees</td>
 			<td><?php echo $numFranchisees;?></td>
 		</tr>
 		<tr>
@@ -22,7 +26,9 @@
 		</tr>
 		<tr></tr>
 	</table>
-	
-	
-	
+
+	<div id="store_table">
+	<?php echo Wpsqt_System::getStoreTable(); ?>	
+	</div>
+		
 </div>

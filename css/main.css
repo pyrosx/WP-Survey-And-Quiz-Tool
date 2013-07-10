@@ -26,3 +26,6 @@ div.wpsqt-progress div {
 .entry-content .add_user_area label, .entry-content .add_user_area input {
 	display: inline;
 }
+.open_results {
+	text-decoration: underline;
+}
