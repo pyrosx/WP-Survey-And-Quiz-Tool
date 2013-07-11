@@ -582,7 +582,6 @@ class Wpsqt_System {
 			// if attempting to upgrade franchisee status
 			if ($franchisee && !$res['franchisee']) {
 				$sql = "UPDATE `".WPSQT_TABLE_EMPLOYEES."` SET franchisee=TRUE WHERE id = ".$res['id'];
-				var_dump($sql);
 				$wpdb->query($sql);
 			}
 			return $res['id'];
@@ -590,8 +589,8 @@ class Wpsqt_System {
 		
 		
 		$sql = $wpdb->prepare(
-			"INSERT INTO `".WPSQT_TABLE_EMPLOYEES."` (id_user,id_store,franchisee) VALUES (%d,%d,FALSE)",
-			array($id_user,$id_store)
+			"INSERT INTO `".WPSQT_TABLE_EMPLOYEES."` (id_user,id_store,franchisee) VALUES (%d,%d,%d)",
+			array($id_user,$id_store,$franchisee)
 			);
 		
 		return $wpdb->get_var($sql);
