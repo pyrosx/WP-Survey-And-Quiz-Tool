@@ -575,7 +575,7 @@ class Wpsqt_Shortcode {
 			}
 			
 			// truncate end of questions array to match required number
-			if ( !empty($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']) ){
+			if ( !empty($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']) && $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit'] > 0 ){
 				array_splice($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"], $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']);			
 			}
 
