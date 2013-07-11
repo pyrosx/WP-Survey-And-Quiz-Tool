@@ -19,7 +19,7 @@ class Wpsqt_Form_Quiz extends Wpsqt_Form {
 
 		if ( empty($options) ){
 			$options = array('name' => false,
-							'enabled' => false,
+							'enabled' => true,
 							'permalink' => 0,
 							'notificaton_type' => false,
 							'limit_one' => false,

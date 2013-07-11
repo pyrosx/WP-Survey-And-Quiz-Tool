@@ -26,8 +26,8 @@ class Wpsqt_Core {
 		->_addPage(WPSQT_PAGE_STORES, 'Stores', 'Stores', 'wpsqt-manage', 'Stores', WPSQT_PAGE_DASHBOARD)
 		->_addPage(WPSQT_PAGE_FRANCHISEES, 'Franchisees', 'Franchisees', 'wpsqt-manage', 'Franchisees', WPSQT_PAGE_DASHBOARD)
 		->_addPage(WPSQT_PAGE_EMPLOYEES, 'Employees', 'Employees', 'wpsqt-manage', 'Employees', WPSQT_PAGE_DASHBOARD)
-		->_addPage(WPSQT_PAGE_OPTIONS, "Options", "Options", "wpsqt-manage", "Options", WPSQT_PAGE_DASHBOARD)
-		->_addPage(WPSQT_PAGE_MAINTENANCE, 'Maintenance', 'Maintenance', 'wpsqt-manage', 'Maintenance', WPSQT_PAGE_DASHBOARD)
+//		->_addPage(WPSQT_PAGE_OPTIONS, "Options", "Options", "wpsqt-manage", "Options", WPSQT_PAGE_DASHBOARD)
+//		->_addPage(WPSQT_PAGE_MAINTENANCE, 'Maintenance', 'Maintenance', 'wpsqt-manage', 'Maintenance', WPSQT_PAGE_DASHBOARD)
 ;
 
 		add_action("init",array($this, "create_nonce" ) );
@@ -577,7 +577,7 @@ class Wpsqt_Core {
 				$output .= '<form method="POST" action="'.plugins_url('pdf.php',WPSQT_FILE).'">';
 				$output .= '<input type="hidden" name="completed_date" value="'.$completed_date.'"/>';
 				$output .= '<input type="hidden" name="display_name" value="'.$display_name.'"/>';
-				$output .= '<input type="submit" value="Download Your Certificate"/>';
+				$output .= '<input type="submit" value="Training Completed! Click here to download Your Certificate"/>';
 				$output .= '</form>';
 											
 			}

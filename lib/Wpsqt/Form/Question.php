@@ -28,7 +28,7 @@ class Wpsqt_Form_Question extends Wpsqt_Form {
 							 'points' => "1",
 							 'difficulty' => false,
 							 'randomize_answers' => true,
-							 'exclude_states' => 0,
+							 'exclude_states' => array(),
 							 'section' => false,
 							 'add_text' => false,
 							 'explanation' => false,
