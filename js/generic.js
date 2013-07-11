@@ -10,6 +10,10 @@ jQuery(document).ready( function(){
 		return false;
 	});
 
+	jQuery('#resetresultsButton').click( function() {
+		// confirmation for "reset all results"
+		return(confirm("Are you sure you want to remove ALL results for this module. \r\nPlease note: This action CANNOT be undone."));
+	});
 
 	jQuery('.wpsqt-selectall').click( function() {
 		if (jQuery(this).attr('checked') == 'checked') {

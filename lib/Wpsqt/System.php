@@ -616,9 +616,13 @@ class Wpsqt_System {
 	/**
 		Call from Franchisee section to remove an employee from the specified store 
 	*/
-	public static function remove_employee($id_user, $id_store) {
+	public static function remove_employee($id_user, $id_store = null) {
 		global $wpdb;			
-		$sql = $wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d AND id_store=%d",array($id_user,$id_store));
+		if ($id_store != null) {
+			$sql = $wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d AND id_store=%d",array($id_user,$id_store));
+		} else {
+			$sql = $wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d",array($id_user));
+		}
 		$wpdb->query($sql);
 	}
 	
@@ -767,7 +771,7 @@ class Wpsqt_System {
 				return false;
 			}
 		} else {
-			// because it's set, id_user has to match logged in user
+			// but if it's set, id_user has to match logged in user
 			if ($id_user != get_current_user_id()) {
 				return false;
 			}
@@ -804,11 +808,6 @@ class Wpsqt_System {
 		}
 		$sql .=	"ORDER BY store.state, store.location";
 		$stores = $wpdb->get_results($sql, 'ARRAY_A');
-
-		if (!is_null($id_user)) {
-			// heading only for franchisees, not admins
-			$output .= "<h4>Franchise Management</h4>";
-		}	
 				
 		$output .= '<table id="franchises"><thead><tr><th>Store</th>';
 		if (is_null($id_user)) {

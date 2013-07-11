@@ -27,6 +27,13 @@
 		<tr></tr>
 	</table>
 
+	<p>&nbsp;</p>
+
+	<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&wpsqt-download">Export All Results as CSV</a>
+	</p>
+
+	<p>&nbsp;</p>
+	<h3>Stores</h3>
 	<div id="store_table">
 	<?php echo Wpsqt_System::getStoreTable(); ?>	
 	</div>

@@ -249,14 +249,21 @@ END;
 				require_once WPSQT_DIR.'lib/Wpsqt/Export/Csv.php';
 				$csvExporter = new Wpsqt_Export_Csv;
 
-				$csvExporter->quizId = $_GET['id'];
-				$lines = $csvExporter->generate($_GET['id']);
+				if (isset($_GET['id'])) {
+					$csvExporter->quizId = $_GET['id'];
+					$lines = $csvExporter->generate($_GET['id']);
+					$getid = $_GET['id'];
+				} else {
+					$csvExporter->quizId = false;
+					$lines = $csvExporter->generateAll();
+					$getid = 0;
+				}
 
 				header("Content-type: application/x-msdownload",true,200);
-				header("Content-Disposition: attachment; filename=results-{$_GET['wpsqt-download']}.csv");
+				header("Content-Disposition: attachment; filename={$csvExporter->filename}.csv");
 				header("Pragma: no-cache");
 				header("Expires: 0");
-				echo apply_filters('wpsqt-export-csv', implode("\r\n", $lines), $_GET['id']);
+				echo apply_filters('wpsqt-export-csv', implode("\r\n", $lines), $getid);
 				exit();
 			}
 		}

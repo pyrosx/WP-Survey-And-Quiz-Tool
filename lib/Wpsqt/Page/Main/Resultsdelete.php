@@ -30,6 +30,14 @@ class Wpsqt_Page_Main_Resultsdelete extends Wpsqt_Page {
 				$this->redirect(WPSQT_URL_MAIN."&section=results".
 											   "&subsection=quiz&id=".
 											   $_GET['id']."&deleted=true");
+			} else if(isset($_POST['resetresults'])) {
+				$wpdb->query(
+					$wpdb->prepare("DELETE FROM `".WPSQT_TABLE_RESULTS."`
+									WHERE item_id = %d", array((int) $_GET['id']))
+				);
+				$this->redirect(WPSQT_URL_MAIN."&section=results".
+											   "&subsection=quiz&id=".
+											   $_GET['id']."&deleted=true");
 			} else {
 				$wpdb->query(
 					$wpdb->prepare("DELETE FROM `".WPSQT_TABLE_RESULTS."`

@@ -56,7 +56,7 @@
 					<th scope="col" width="75"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=score&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Score</a></th>
 					<th scope="col" width="90"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=percentage&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Percentage</a></th>
 					<th scope="col" width="75"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=pass&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Pass/Fail</a></th>
-					<th scope="col" width="75"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=status&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Status</a></th>
+					<!--<th scope="col" width="75"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=status&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Status</a></th>-->
 					<th scope="col" width="75"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=datetaken&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Date</a></th>
 				</tr>			
 			</thead>
@@ -68,7 +68,7 @@
 					<th scope="col" width="75"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=score&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Score</a></th>
 					<th scope="col" width="90"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=percentage&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Percentage</a></th>
 					<th scope="col" width="75"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=pass&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Pass/Fail</a></th>
-					<th scope="col" width="75"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=status&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Status</a></th>
+					<!--<th scope="col" width="75"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=status&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Status</a></th>-->
 					<th scope="col" width="75"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&orderby=datetaken&order=<?php echo $order; ?><?php if (isset($_GET['status'])) { echo '&status='.$_GET['status']; }  if (isset($_GET['username'])) { echo '&username='.$_GET['username']; } ?>">Date</a></th>
 				</tr>			
 			</tfoot>
@@ -82,14 +82,14 @@
 							<a class="row-title" href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&resultid=<?php echo $result['id']; ?>"><?php echo esc_html(wp_kses_stripslashes($result['person_name'])); ?></a>
 						</strong>
 						<div class="row-actions">
-							<span class="mark"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=mark&id=<?php echo urlencode($_GET['id']); ?>&resultid=<?php echo $result['id']; ?>">Mark</a> | </span>
+							<span class="mark"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=mark&id=<?php echo urlencode($_GET['id']); ?>&resultid=<?php echo $result['id']; ?>">View</a> | </span>
 							<span class="delete"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=resultsdelete&subsection=quiz&id=<?php echo urlencode($_GET['id']); ?>&resultid=<?php echo $result['id']; ?>">Delete</a></span>
 						</div>
 					</td>
 					<td><?php if($result['total'] == 0) {echo "Unable to auto mark";} else {echo $result['score']."/".$result['total'];} ?></td>
 					<td><?php if($result['total'] == 0) {echo "Unable to auto mark";} else {echo $result['percentage']."%";} ?></td>
 					<td><font color="<?php if ($result['pass'] == 1) {echo "green";} else {echo "#FF0000";} ?>"><?php if ($result['pass'] == 1) {echo "Pass";} else {echo "Fail";} ?></font></td>
-					<td><font color="<?php if ( ucfirst($result['status']) == 'Unviewed' ) {?>#000000<?php } elseif ( $result['status'] == 'Accepted' ){ ?>green<?php } else { ?>#FF0000<?php } ?>"><?php echo ucfirst($result['status']); ?></font></td>
+					<!--<td><font color="<?php if ( ucfirst($result['status']) == 'Unviewed' ) {?>#000000<?php } elseif ( $result['status'] == 'Accepted' ){ ?>green<?php } else { ?>#FF0000<?php } ?>"><?php echo ucfirst($result['status']); ?></font></td>-->
 					<td><?php if (!empty($result['datetaken'])) { echo date('d-m-y G:i:s',$result['datetaken']); } else { echo '-'; } ?>
 					</td>
 				</tr>
@@ -105,6 +105,6 @@
 			</div>
 		</div>
 		<input type="submit" name="deleteselected" value="Delete Selected" /><br /><br />
-		<input type="checkbox" name="hideanon" value="hide" id="wpsqt-hideanon" /><label for="wpsqt-hideanon">Hide results with username Anonymous</label>
+		<input type="submit" name="resetresults" value="Reset All Results" id="resetresultsButton"/><br/>		
 	</form>
 </div>

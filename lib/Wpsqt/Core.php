@@ -630,16 +630,12 @@ class Wpsqt_Core {
 			// check if user is a franchisee
 			$sql = "SELECT count(id) FROM `".WPSQT_TABLE_EMPLOYEES."` 
 					WHERE id_user = ".$id_user." AND franchisee = 1";			
+
 			if ($wpdb->get_var($sql) > 0) {
-				
-				return Wpsqt_System::getStoreTable($id_user);
-				
+				$output = "<h4>Franchise Management</h4>";
+				$output.= Wpsqt_System::getStoreTable($id_user);		
+				return $output;
 			}
-		
-		
-		
-		
-		
 		}
 	}
 
@@ -650,9 +646,7 @@ class Wpsqt_Core {
 	}
 	
 	function remove_employee($id_user) {
-		// $id_user is the ID of the wordpress user being deleted
-		global $wpdb;
-		$wpdb->query("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=".$id_user);
+		Wpsqt_System::remove_employee($id_user);
 	}
 
 }
