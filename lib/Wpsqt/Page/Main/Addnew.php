@@ -50,8 +50,9 @@ abstract class Wpsqt_Page_Main_Addnew extends Wpsqt_Page {
 				$permalink = $details['wpsqt_permalink'];
 				
 				$details = Wpsqt_Form::getSavableArray($details);
-				
+			
 				$this->_pageVars['id'] = Wpsqt_System::insertItemDetails($details, strtolower($this->_subsection));
+
 				
 				// update wordpress page now that we know ID
 				$shortcode = '[wpsqt type="quiz" id="'.$this->_pageVars['id'].'"]';

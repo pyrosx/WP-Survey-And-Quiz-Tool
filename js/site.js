@@ -17,6 +17,9 @@ jQuery(document).ready( function($) {
 	jQuery('.remove_user').click( function($) {
 		return confirm('Are you sure you want to remove this user?');
 	});
+	jQuery('.remove_store').click( function($) {
+		return confirm('Are you sure you want to remove this store?');
+	});
 		
 	jQuery('.add_user').click( function($) {
 		var id = '#add_'+jQuery(this).attr('id');		

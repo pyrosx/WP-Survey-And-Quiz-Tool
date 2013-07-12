@@ -531,57 +531,62 @@ class Wpsqt_Core {
 		$output = "";
 		
 		if ( is_user_logged_in() ) {
-			// for each quiz
-			$output .= "<h4>My Training Progress</h4>";
-			$output .= '<table id="wpsqt_info"><thead><tr><th>Module</th><th>Completion</th></tr></thead><tbody>';
+			if ( Wpsqt_System::is_current_user_assigned() ) {
+		
+				// for each quiz
+				$output .= "<h4>My Training Progress</h4>";
+				$output .= '<table id="wpsqt_info"><thead><tr><th>Module</th><th>Completion</th></tr></thead><tbody>';
 			
-			$sql = "SELECT id FROM `".WPSQT_TABLE_QUIZ_SURVEYS."` WHERE enabled = true";
-			$quizzes = $wpdb->get_results($sql, 'ARRAY_A');
+				$sql = "SELECT id FROM `".WPSQT_TABLE_QUIZ_SURVEYS."` WHERE enabled = true";
+				$quizzes = $wpdb->get_results($sql, 'ARRAY_A');
 			
-			$completed = true;
-			$completed_date = "";
+				$completed = true;
+				$completed_date = "";
 			
-			foreach($quizzes as $q) {
-				$id = $q['id'];
-				$quiz = Wpsqt_System::getItemDetails($id,'quiz');
-				$link = Wpsqt_System::format_post_name($quiz['name']);
-				$output .= '<tr><td><a href="'.$link.'">'.$quiz['name']."</a></td><td>";
+				foreach($quizzes as $q) {
+					$id = $q['id'];
+					$quiz = Wpsqt_System::getItemDetails($id,'quiz');
+					$link = Wpsqt_System::format_post_name($quiz['name']);
+					$output .= '<tr><td><a href="'.$link.'">'.$quiz['name']."</a></td><td>";
 				
-				$sql = "SELECT pass,percentage,datetaken FROM ".WPSQT_TABLE_RESULTS." WHERE item_id = '".$quiz['id']."' AND user_id = '".wp_get_current_user()->ID."' ORDER BY percentage DESC LIMIT 1";
-				$results = $wpdb->get_results($sql, 'ARRAY_A');
-				if (count($results)) {
-					if ($results[0]['pass'] != 1 ) {					
+					$sql = "SELECT pass,percentage,datetaken FROM ".WPSQT_TABLE_RESULTS." WHERE item_id = '".$quiz['id']."' AND user_id = '".wp_get_current_user()->ID."' ORDER BY percentage DESC LIMIT 1";
+					$results = $wpdb->get_results($sql, 'ARRAY_A');
+					if (count($results)) {
+						if ($results[0]['pass'] != 1 ) {					
+							$completed = false;
+						}
+						$output .= Wpsqt_System::colorCompletionRate($results[0]['percentage']);
+					} else {
+						$output .= "Not Attempted";
 						$completed = false;
 					}
-					$output .= Wpsqt_System::colorCompletionRate($results[0]['percentage']);
-				} else {
-					$output .= "Not Attempted";
-					$completed = false;
-				}
-				$output .= "</td></tr>";
+					$output .= "</td></tr>";
 					
-			}
-			$output .= "</tbody></table>";
+				}
+				$output .= "</tbody></table>";
 				
 			
-			if ($completed) {
+				if ($completed) {
 
-			// pdf certificate
-			// if 100% completed
+				// pdf certificate
+				// if 100% completed
 
-				$display_name = wp_get_current_user()->user_firstname .' '.wp_get_current_user()->user_lastname;
-				if ($display_name == '') {
-					$display_name = wp_get_current_user()->display_name;
-				}
+					$display_name = wp_get_current_user()->user_firstname .' '.wp_get_current_user()->user_lastname;
+					if ($display_name == '') {
+						$display_name = wp_get_current_user()->display_name;
+					}
 
-				$output .= '<form method="POST" action="'.plugins_url('pdf.php',WPSQT_FILE).'">';
-				$output .= '<input type="hidden" name="completed_date" value="'.$completed_date.'"/>';
-				$output .= '<input type="hidden" name="display_name" value="'.$display_name.'"/>';
-				$output .= '<input type="submit" value="Training Completed! Click here to download Your Certificate"/>';
-				$output .= '</form>';
+					$output .= '<form method="POST" action="'.plugins_url('pdf.php',WPSQT_FILE).'">';
+					$output .= '<input type="hidden" name="completed_date" value="'.$completed_date.'"/>';
+					$output .= '<input type="hidden" name="display_name" value="'.$display_name.'"/>';
+					$output .= '<input type="submit" value="Training Completed! Click here to download Your Certificate"/>';
+					$output .= '</form>';
 											
-			}
-				
+				}
+			} else {
+				// valid user, but not assigned to any store - basically, deactivated
+				$output = "<p>Your user profile has not been assigned to any Stores - please ask your Manager or Franchise Owner to fix this for you.</p>";
+			}				
 		} else {
 			$output = "<p>Please login to access training materials. If you do not have login details, please contact your Manager or Franchise Owner</p>";
 		}

@@ -118,7 +118,7 @@ class Wpsqt_System {
 	
 		global $wpdb;
 		
-		list($itemName,$itemEnabled,$itemId,$itemSettings) = self::_serializeDetails($itemDetails,$type);
+		list($itemName,$itemId,$itemEnabled,$itemSettings) = self::_serializeDetails($itemDetails,$type);
 	
 		$wpdb->query(
 			$wpdb->prepare("INSERT INTO `".WPSQT_TABLE_QUIZ_SURVEYS."` (name,enabled,settings,type) VALUES (%s,%d,%s,%s)",
@@ -561,6 +561,16 @@ class Wpsqt_System {
 	}
 
 	
+	/** Returns true if the current wordpress user is properly assigned to a store */
+	public static function is_current_user_assigned() {
+		global $wpdb;
+		
+		$userid = get_current_user_id();
+		
+		return ($wpdb->get_var("SELECT count(id) FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=".$userid) > 0);
+		
+//		return true;
+	}
 	
 	/** Adds a new Employee to the employees table
 		Returns the id of the added entry
@@ -679,6 +689,10 @@ class Wpsqt_System {
 		
 		return $wpdb->get_results($sql, ARRAY_A);
 	}
+	public static function remove_store($id_store) {
+		global $wpdb;
+		$wpdb->query("DELETE FROM `".WPSQT_TABLE_STORES."` WHERE id=".$id_store);
+	}
 
 	public static function getUsersForSelect() {
 		global $wpdb;	
@@ -737,6 +751,20 @@ class Wpsqt_System {
 		return floatval($total/$count);
 	}
 	
+	public static function getOverallCompletionRate() {
+		global $wpdb;
+		
+		$stores = $wpdb->get_results("SELECT id FROM `".WPSQT_TABLE_STORES."`",'ARRAY_A');
+		$count = 0;
+		$total = 0;
+		foreach($stores as $store) {
+			$total += self::getStoreCompletionRate($store['id'],true);
+			$count ++;
+		}
+		if ($count == 0) { return 0; }
+		return floatval($total/$count);
+	}
+	
 	public static function colorCompletionRate($comp) {
 		if (is_float($comp) & $comp <= 1) {
 			$comp = $comp*100;
@@ -787,6 +815,9 @@ class Wpsqt_System {
 		if (!empty($_POST["add_franchisee"])) {
 			// add new franchisee clicked
 			self::add_user($_POST['id_store'],$_POST['new_name'],$_POST['new_email'],true);
+		}
+		if (!empty($_POST["remove_store"])) {
+			self::remove_store($_POST['id_store']);
 		}
 		
 		$new_store_display = "none";
@@ -892,6 +923,12 @@ class Wpsqt_System {
 										<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
 										<input type="submit" value="Results" name="results"/>
 									</form>';
+						// Edit button
+						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
+							<input type="hidden" name="user_id" value="'.$user['id'].'">
+							<input type="submit" value="Edit"/>
+						</form>';
+
 						// Remove button
 						$output .= '<form action="" method="POST">
 										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
@@ -940,6 +977,13 @@ class Wpsqt_System {
 									<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
 									<input type="submit" value="Results" name="results"/>
 								</form>';
+					// Edit button
+					if (is_null($id_user)) {
+						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
+							<input type="hidden" name="user_id" value="'.$user['id'].'">
+							<input type="submit" value="Edit"/>
+						</form>';
+					}
 					// Remove button
 					$output .= '<form action="" method="POST">
 									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
@@ -970,6 +1014,17 @@ class Wpsqt_System {
 								</form>
 							</div>
 						</td></tr>'; 
+			
+			if (is_null($id_user)) {
+				// remove Store Button
+				$output .= '<thead><tr><td colspan='.$colspan.'>
+					<form action="" method="POST">
+						<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+						<input type="submit" value="Remove Store" name="remove_store" class="remove_store"/>
+					</form>
+				</td></tr></thead>';
+			}			
+			
 			$output .="</tbody></table>";
 		}
 		

@@ -58,6 +58,7 @@ define( 'WP_TABLE_USERS'		     , $wpdb->get_blog_prefix().'users' );
 define( 'WP_TABLE_USERSMETA'	     , $wpdb->get_blog_prefix().'usermeta' );
 
 
+define( 'WPSQT_URL_DASHBOARD'        , admin_url('admin.php?page='.WPSQT_PAGE_DASHBOARD) );
 define( 'WPSQT_URL_MAIN'             , admin_url('admin.php?page='.WPSQT_PAGE_MAIN) );
 define( 'WPSQT_URL_MAINENTANCE'      , admin_url('admin.php?page='.WPSQT_PAGE_MAINTENANCE) );
 define( 'WPSQT_URL_STORES'           , admin_url('admin.php?page='.WPSQT_PAGE_STORES) );
@@ -87,6 +88,27 @@ if ( !empty($oldVersion) && (version_compare($oldVersion, WPSQT_VERSION) < 0) ){
 // Make sure admin has the capability
 $role = get_role('administrator');
 $role->add_cap('wpsqt-manage');
+
+// Editor too
+$role = get_role('editor');
+$role->add_cap('wpsqt-manage');
+
+
+// Editor needs WP User manage capabilities
+//cleanup
+$role->remove_cap('list_users');
+$role->remove_cap('edit_users');
+$role->remove_cap('remove_users');
+$role->remove_cap('delete_users');
+$role->remove_cap('create_users');
+
+$role->add_cap('list_users');
+$role->add_cap('edit_users');
+//$role->add_cap('remove_users');
+//$role->add_cap('delete_users');
+//$role->add_cap('create_users');
+
+
 
 /**
  * Class for Installing plugin on activation.

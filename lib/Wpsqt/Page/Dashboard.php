@@ -22,6 +22,8 @@ class Wpsqt_Page_Dashboard extends Wpsqt_Page {
 				
 		$this->_pageVars['numStoresWithoutFranchisees'] = count($wpdb->get_results($sql));
 
+		$this->_pageVars['overallCompRate'] = Wpsqt_System::colorCompletionRate( Wpsqt_System::getOverallCompletionRate() );
+
 		$this->_pageView = 'admin/dashboard/index.php';
 	}
 

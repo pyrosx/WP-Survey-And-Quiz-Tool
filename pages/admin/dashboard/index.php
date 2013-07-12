@@ -7,7 +7,7 @@
 
 	<h3>Overview</h3>
 	
-	<table>
+	<table id="overview">
 		<tr>
 			<td>Stores</td>
 			<td><?php echo $numStores;?></td>
@@ -24,7 +24,10 @@
 			<td>Number of Users</td>
 			<td><?php echo $numEmployees;?></td>
 		</tr>
-		<tr></tr>
+		<tr>
+			<td>Average Store Completion Rate</td>
+			<td><?php echo $overallCompRate;?></td>
+		</tr>
 	</table>
 
 	<p>&nbsp;</p>

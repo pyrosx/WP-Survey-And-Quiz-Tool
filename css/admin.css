@@ -8,7 +8,9 @@ div.alignleft a {
 .open_results {
 	text-decoration: underline;
 }
-
+#overview td {
+	padding-left:20px;
+}
 #store_table table {
 	width: 100%;
 	border-spacing: 0;
