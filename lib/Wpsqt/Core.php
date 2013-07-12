@@ -433,16 +433,25 @@ class Wpsqt_Core {
 			return;
 		}
 
-		ob_start();
+		// Shortcodes only ever work for logged in, assigned user
+		if ( is_user_logged_in() ) {
+			if ( Wpsqt_System::is_current_user_assigned() ) {
+				ob_start();
 
-		require_once WPSQT_DIR.'lib/Wpsqt/Shortcode.php';
-		$objShortcode = new Wpsqt_Shortcode($id, $type);
-		$objShortcode->display();
+				require_once WPSQT_DIR.'lib/Wpsqt/Shortcode.php';
+				$objShortcode = new Wpsqt_Shortcode($id, $type);
+				$objShortcode->display();
 
-		$content = ob_get_contents();
-		ob_end_clean();
+				$content = ob_get_contents();
+				ob_end_clean();
 
-		return $content;
+				return $content;
+			} else {
+				"<p>Please contact your manager or franchise owner to properly assign your user account to a store</p>";
+			}
+		} else {
+			return "<p>Please login to access training materials</p>";
+		}
 	}
 
 	public function shortcode_results( $atts ) {
