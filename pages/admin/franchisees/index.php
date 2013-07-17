@@ -40,6 +40,7 @@
 		<thead>
 			<tr>
 				<th>Name</th>
+				<th>Completion Rate</th>
 				<th>Store</th>
 				<th>State</th>
 			</tr>
@@ -47,6 +48,7 @@
 		<tfoot>
 			<tr>
 				<th>Name</th>
+				<th>Completion Rate</th>
 				<th>Store</th>
 				<th>State</th>
 			</tr>
@@ -71,6 +73,7 @@
 						<span class="delete"><a href="<?php echo WPSQT_URL_FRANCHISEES; ?>&section=edit&action=delete&id=<?php echo $franchisee['id']; ?>">Delete</a></span>
 					</div>
 				</td>
+				<td><a href="<?php echo WPSQT_URL_EMPLOYEES; ?>&subsection=results&id_user=<?php echo $franchisee['id_user']?>"><?php echo $franchisee['completion'];?></a></td>
 				<td><a href="<?php echo WPSQT_URL_FRANCHISEES; ?>&location=<?php echo $franchisee['location']; ?>"><?php echo $franchisee['location']; ?></a></td>
 				<td><a href="<?php echo WPSQT_URL_FRANCHISEES; ?>&state=<?php echo $franchisee['state']; ?>"><?php echo $franchisee['state']; ?></a></td>
 			</tr>

@@ -633,6 +633,7 @@ class Wpsqt_System {
 			$sql = $wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d",array($id_user));
 		}
 		$wpdb->query($sql);
+		self::_log("remove_employee - ".$id_user.", ".$id_store);
 	}
 	
 	/**
@@ -642,7 +643,7 @@ class Wpsqt_System {
 	*/
 	public static function add_user($id_store,$new_name,$new_email,$franchisee = false) {
 		global $wpdb;
-		
+		self::_log(array("add_user",$id_store,$new_name,$new_email,$franchisee));
 		$id_user = 0;
 
 		$user = get_user_by('email',$new_email);
@@ -677,15 +678,19 @@ class Wpsqt_System {
 
 		// make sure $state is valid
 		if (!self::getStateName($state)) {
+			self::_log("Invalid state, store add - ".$store.", ".$state);
 			return false;
 		}
 
 		// check we're not duplicating
 		if (!is_null($wpdb->get_var($wpdb->prepare('SELECT id FROM `'.WPSQT_TABLE_STORES.'` WHERE location=%s AND state=%s',array($store,$state))))) {
+			self::_log("Dupe Store, not added - ".$store.", ".$state);
 			return false;
 		}
 
 		$sql = $wpdb->prepare("INSERT INTO `".WPSQT_TABLE_STORES."` (location,state) VALUES (%s,%s)",array($store,$state));
+		
+		self::_log("Store added - ".$store.", ".$state);
 		
 		return $wpdb->get_results($sql, ARRAY_A);
 	}
@@ -915,14 +920,21 @@ class Wpsqt_System {
 					foreach($franchisees as $user) {
 						$output .= "<tr><td>".$user['display_name']."</td>";
 						$output .= "<td>".$user['user_email']."</td>";
-						$output .= "<td>".self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']))."</td>";
-						$output .= '<td>';
-						// Results button
-						$output .= '<form action="'.home_url('/results/').'" method="POST">
-										<input type="hidden" name="id_user" value="'.$user['id'].'"/>
-										<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
-										<input type="submit" value="Results" name="results"/>
-									</form>';
+						$output .= "<td>";
+						if (is_null($id_user)) {
+							$output .= '<a href="'.WPSQT_URL_EMPLOYEES.'&subsection=results&id_user='.$user['id'].'">';
+							$output .= self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']));
+							$output .= '</a></td><td>';
+						} else {
+							$output .= self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']));
+							$output .= "</td><td>";
+							// Results button
+							$output .= '<form action="'.home_url('/results/').'" method="POST">
+											<input type="hidden" name="id_user" value="'.$user['id'].'"/>
+											<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
+											<input type="submit" value="Results" name="results"/>
+										</form>';
+						}
 						// Edit button
 						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
 							<input type="hidden" name="user_id" value="'.$user['id'].'">
@@ -969,14 +981,23 @@ class Wpsqt_System {
 				foreach($users as $user) {
 					$output .= "<tr><td>".$user['display_name']."</td>";
 					$output .= "<td>".$user['user_email']."</td>";
-					$output .= "<td>".self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']))."</td>";
-					$output .= '<td>';
-					// Results button
-					$output .= '<form action="'.home_url('/results/').'" method="POST">
-									<input type="hidden" name="id_user" value="'.$user['id'].'"/>
-									<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
-									<input type="submit" value="Results" name="results"/>
-								</form>';
+
+					$output .= "<td>";
+					if (is_null($id_user)) {
+						$output .= '<a href="'.WPSQT_URL_EMPLOYEES.'&subsection=results&id_user='.$user['id'].'">';
+						$output .= self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']));
+						$output .= '</a></td><td>';
+					} else {
+						$output .= self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']));
+						$output .= "</td><td>";
+						// Results button
+						$output .= '<form action="'.home_url('/results/').'" method="POST">
+										<input type="hidden" name="id_user" value="'.$user['id'].'"/>
+										<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
+										<input type="submit" value="Results" name="results"/>
+									</form>';
+					}
+
 					// Edit button
 					if (is_null($id_user)) {
 						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
@@ -1054,6 +1075,79 @@ class Wpsqt_System {
 
 		
 		return $output;		
+	}
+	
+	public static function getResultsTable($userid) {
+		global $wpdb;
+
+		$sql = 'SELECT * FROM `'.WPSQT_TABLE_QUIZ_SURVEYS.'` WHERE enabled = 1';
+		$modules = $wpdb->get_results($sql,'ARRAY_A');
+				
+		$output = '<div id="user_results_table"><table>
+						<thead><tr><th>Module</th><th>Best Mark</th><th>Attempts</th><th>Last Attempt</th></tr></thead>
+						<tbody>
+		';
+		foreach($modules as $module) {
+			// TODO remove *
+			$sql = 'SELECT * FROM `'.WPSQT_TABLE_RESULTS.'` WHERE item_id='.$module['id'].' AND user_id='.$userid.' ORDER BY datetaken';
+			$results = $wpdb->get_results($sql,'ARRAY_A');
+			
+			$bestmark = 0;
+			$lastdate = "n/a";
+			$count = 0;
+			if ($results) {				
+				foreach($results as $r) {
+					if ($bestmark < $r['percentage']) $bestmark = $r['percentage'];
+				}
+				$lastdate = date('d-m-Y',$results[0]["datetaken"]);
+				
+				$count = count($results);
+			}
+		
+			$output .= '<tr>
+							<td>'.$module["name"].'</td>
+							<td>'.Wpsqt_System::colorCompletionRate($bestmark).'</td>';
+			if ($count > 1 ) {
+				$output .= '<td><a href="" class="open_results" id="div_'.$module['id'].'">'.$count.'</a></td>';
+			} else {
+				$output .= '<td>'.$count.'</td>';
+			}
+			$output .= '	<td>'.$lastdate.'</td>
+						</tr>';
+
+			if ($count > 1) {
+				// sub-table for attempts if more than 1	
+				$output .= '<tr style="display:none;"></tr><tr class="results_div" id="results_div_'.$module['id'].'" style="display:none;"><td colspan=5>
+					
+						<table><thead><tr><th>Date Taken</th><th>Mark</th><th>Time Spent</th></tr></thead>
+						<tbody>';
+				foreach($results as $res) {
+					$output .= '<tr>
+								<td>'.date('d-m-Y',$res["datetaken"]).'</td>
+								<td>'.Wpsqt_System::colorCompletionRate($res['percentage']).'</td>
+								<td>'.sprintf( "%01.2d:%02.2d", floor( $res['timetaken'] / 60 ), $res['timetaken'] % 60 ).'</td>
+								</tr>';
+				}
+				$output .= '</tbody></table>
+					
+				</td></tr>';
+			}
+		}
+		
+
+		$output .= "</tbody></table></div>";
+		
+		return $output;
+	}
+	
+	public function _log($x) {
+		
+		error_log($current_user);
+		if (is_array($x) || is_object($x)) {
+			error_log(print_r($x,true));
+		} else {
+			error_log($x);
+		}
 	}
 }
 

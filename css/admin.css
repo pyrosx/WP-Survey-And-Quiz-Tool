@@ -11,7 +11,7 @@ div.alignleft a {
 #overview td {
 	padding-left:20px;
 }
-#store_table table {
+#store_table table,  #user_results_table table {
 	width: 100%;
 	border-spacing: 0;
 	border: 1px solid #ddd;
@@ -24,18 +24,22 @@ div.alignleft a {
 #store_table table form select {
 	width: 80%;
 }
-#store_table table table {
+#store_table table table, #user_results_table table table {
 	width: 80%;
 	margin: 10px;
 	margin-left: 10%;
 	
 }
 
-#store_table table thead tr {
-	background-color: #ddd;
+#store_table table thead tr,  #user_results_table table thead tr {
+	background-color: #ddd !important;
 	text-align: left;
 }
-#store_table table tr:nth-child(even) {
+#store_table table tr:nth-child(even), #user_results_table table tr:nth-child(even){
 	background-color: #eee;
 }
+#store_table table tr:nth-child(odd), #user_results_table table tr:nth-child(odd){
+	background-color: white;
+}
+
 

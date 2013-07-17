@@ -454,77 +454,20 @@ class Wpsqt_Core {
 		}
 	}
 
-	public function shortcode_results( $atts ) {
-		global $wpdb;
+	public function shortcode_results() {
 
 		$userid = 0;
 		$output = "";
+		
 		if (!empty($_POST['id_user'])) {
-			$userid = $_POST['id_user'];
 			$output .= "<h3>".$_POST['display_name']."</h3>";
+			$output .= Wpsqt_System::getResultsTable($_POST['id_user']);
 		} else if ( is_user_logged_in() ) {
-			$userid = wp_get_current_user()->ID;
+			$output .= "<h3>Your Results</h3>";
+			$output .= Wpsqt_System::getResultsTable(wp_get_current_user()->ID);
 		} else {
-			return;
+			$output = "<p>You must be logged in to view your results</p>";
 		}
-		
-		// TODO remove *
-		$sql = 'SELECT * FROM `'.WPSQT_TABLE_QUIZ_SURVEYS.'` WHERE enabled = 1';
-		$modules = $wpdb->get_results($sql,'ARRAY_A');
-				
-		$output .= "<table>
-						<thead><tr><th>Module</th><th>Best Mark</th><th>Attempts</th><th>Last Attempt</th></tr></thead>
-						<tbody>
-		";
-		foreach($modules as $module) {
-			// TODO remove *
-			$sql = 'SELECT * FROM `'.WPSQT_TABLE_RESULTS.'` WHERE item_id='.$module['id'].' AND user_id='.$userid.' ORDER BY datetaken';
-			$results = $wpdb->get_results($sql,'ARRAY_A');
-			
-			$bestmark = 0;
-			$lastdate = "n/a";
-			$count = 0;
-			if ($results) {				
-				foreach($results as $r) {
-					if ($bestmark < $r['percentage']) $bestmark = $r['percentage'];
-				}
-				$lastdate = date('d-m-Y',$results[0]["datetaken"]);
-				
-				$count = count($results);
-			}
-		
-			$output .= '<tr>
-							<td>'.$module["name"].'</td>
-							<td>'.Wpsqt_System::colorCompletionRate($bestmark).'</td>';
-			if ($count > 1 ) {
-				$output .= '<td><a href="" class="open_results" id="div_'.$module['id'].'">'.$count.'</a></td>';
-			} else {
-				$output .= '<td>'.$count.'</td>';
-			}
-			$output .= '	<td>'.$lastdate.'</td>
-						</tr>';
-
-			if ($count > 1) {
-				// sub-table for attempts if more than 1	
-				$output .= '<tr style="display:none;"></tr><tr class="results_div" id="results_div_'.$module['id'].'" style="display:none;"><td colspan=5>
-					
-						<table><thead><tr><th>Date Taken</th><th>Mark</th><th>Time Spent</th></tr></thead>
-						<tbody>';
-				foreach($results as $res) {
-					$output .= '<tr>
-								<td>'.date('d-m-Y',$res["datetaken"]).'</td>
-								<td>'.Wpsqt_System::colorCompletionRate($res['percentage']).'</td>
-								<td>'.sprintf( "%01.2d:%02.2d", floor( $res['timetaken'] / 60 ), $res['timetaken'] % 60 ).'</td>
-								</tr>';
-				}
-				$output .= '</tbody></table>
-					
-				</td></tr>';
-			}
-		}
-		
-
-		$output .= "</tbody></table>";
 		
 		return $output;
 	}
@@ -536,9 +479,7 @@ class Wpsqt_Core {
 	*/
 	public function shortcode_info( $atts ) {
 		global $wpdb;
-		
-		$output = "";
-		
+								
 		if ( is_user_logged_in() ) {
 			if ( Wpsqt_System::is_current_user_assigned() ) {
 		

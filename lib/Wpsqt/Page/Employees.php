@@ -25,7 +25,7 @@ class Wpsqt_Page_Employees extends Wpsqt_Page {
 		} 
 		
 
-		$sql = "SELECT emp.id, user.display_name As name, store.location, store.state 
+		$sql = "SELECT emp.id AS id, user.id AS id_user, user.display_name AS name, store.location, store.state 
 			FROM `".WPSQT_TABLE_EMPLOYEES."` emp
 			INNER JOIN `".WP_TABLE_USERS."` user ON (emp.id_user = user.id)
 			INNER JOIN `".WPSQT_TABLE_STORES."` store ON (emp.id_store = store.id)
@@ -38,6 +38,7 @@ class Wpsqt_Page_Employees extends Wpsqt_Page {
 		// need to convert state numbers to names here
 		for($i=0;$i<count($res);$i++) {
 			$res[$i]['state'] = Wpsqt_System::getStateName($res[$i]['state']);
+			$res[$i]['completion'] = Wpsqt_System::colorCompletionRate(Wpsqt_System::getEmployeeCompletionRate($res[$i]['id_user']));
 		}
 		$this->_pageVars['franchiseeList'] = $res;
 
