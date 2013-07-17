@@ -826,6 +826,9 @@ class Wpsqt_System {
 		if (!empty($_POST["remove_store"])) {
 			self::remove_store($_POST['id_store']);
 		}
+		if (!empty($_POST['send_reminder'])) {
+			wpqst_reminder_email($_POST['id_user']);
+		}
 		
 		$new_store_display = "none";
 		$new_store_button = "block";
@@ -937,6 +940,13 @@ class Wpsqt_System {
 											<input type="submit" value="Results" name="results"/>
 										</form>';
 						}
+						// Reminder button
+						$output .= '<form action="" method="POST">
+										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+										<input type="submit" value="Send Reminder" name="send_reminder"/>
+									</form>';
+
 						// Edit button
 						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
 							<input type="hidden" name="user_id" value="'.$user['id'].'">
@@ -999,6 +1009,12 @@ class Wpsqt_System {
 										<input type="submit" value="Results" name="results"/>
 									</form>';
 					}
+					// Reminder button
+					$output .= '<form action="" method="POST">
+									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+									<input type="submit" value="Send Reminder" name="send_reminder"/>
+								</form>';
 
 					// Edit button
 					if (is_null($id_user)) {

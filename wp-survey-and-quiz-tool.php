@@ -74,6 +74,7 @@ define( 'WPSQT_FILE'     , __FILE__ );
 
 require_once WPSQT_DIR.'lib/Wpsqt/Core.php';
 require_once WPSQT_DIR.'lib/Wpsqt/System.php';
+require_once WPSQT_DIR.'lib/Wpsqt/Email.php';
 
 // Call Wpsqt_Installer Class to write in WPSQT tables on activation
 register_activation_hook ( __FILE__, 'wpsqt_main_install' );
@@ -90,6 +91,8 @@ function wpsqt_wp_mail_from_name( $email_name ) { return WPSQT_EMAIL_NAME; }
 
 add_filter( 'wp_mail_from', 'wpsqt_wp_mail_from' );
 add_filter( 'wp_mail_from_name', 'wpsqt_wp_mail_from_name' );
+
+// TODO need to work out how to move this somewhere else.... Email.php hopefully...
 
 
 // Make sure admin has the capability
