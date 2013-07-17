@@ -28,6 +28,9 @@ global $wpdb;
 
 if ( !session_id() )
 	session_start();
+	
+define( 'WPSQT_EMAIL'				, 'training@sushiizu.com.au');
+define( 'WPSQT_EMAIL_NAME'			, 'Training Admin');
 
 define( 'WPSQT_PAGE_DASHBOARD'       , 'wpsqt-menu-dashboard' );
 define( 'WPSQT_PAGE_MAIN'            , 'wpsqt-menu' );
@@ -80,10 +83,14 @@ update_option('wpsqt_version',WPSQT_VERSION);
 if ( !get_option('wpsqt_number_of_items') ){
 	update_option('wpsqt_number_of_items',25);
 }
-// Simple way of checking if an it's an update or not.
-if ( !empty($oldVersion) && (version_compare($oldVersion, WPSQT_VERSION) < 0) ){
-	require_once WPSQT_DIR.'lib/Wpsqt/Page/Maintenance/upgradeScript.php';
-}
+
+// Email stuff
+function wpsqt_wp_mail_from( $email_address ) { return WPSQT_EMAIL; }
+function wpsqt_wp_mail_from_name( $email_name ) { return WPSQT_EMAIL_NAME; }
+
+add_filter( 'wp_mail_from', 'wpsqt_wp_mail_from' );
+add_filter( 'wp_mail_from_name', 'wpsqt_wp_mail_from_name' );
+
 
 // Make sure admin has the capability
 $role = get_role('administrator');
@@ -93,21 +100,9 @@ $role->add_cap('wpsqt-manage');
 $role = get_role('editor');
 $role->add_cap('wpsqt-manage');
 
-
 // Editor needs WP User manage capabilities
-//cleanup
-$role->remove_cap('list_users');
-$role->remove_cap('edit_users');
-$role->remove_cap('remove_users');
-$role->remove_cap('delete_users');
-$role->remove_cap('create_users');
-
 $role->add_cap('list_users');
 $role->add_cap('edit_users');
-//$role->add_cap('remove_users');
-//$role->add_cap('delete_users');
-//$role->add_cap('create_users');
-
 
 
 /**

@@ -650,8 +650,9 @@ class Wpsqt_System {
 		if ($user) {
 			// user exists, add employee to store
 			$id_user = $user->ID;
-			// do something with new_name? update?
-			
+
+			self::_log("add user, ".$new_email." already exists, id=".$user->ID." - Added to store ".$id_store." franchisee = ".$franchisee);
+
 		} else {
 			// new user needs creating
 			$random_password = wp_generate_password();
@@ -663,6 +664,7 @@ class Wpsqt_System {
 				'display_name' => $new_name
 			) ) ;
 			wp_new_user_notification($id_user,$random_password);
+			self::_log(array("add user, new user created",$new_name,$new_email,"store = ".$id_store,"franchisee = ".$franchisee));
 		}
 
 		if ($franchisee) {
