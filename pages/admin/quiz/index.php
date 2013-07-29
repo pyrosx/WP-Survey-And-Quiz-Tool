@@ -2,7 +2,7 @@
 
 	<div id="icon-tools" class="icon32"></div>
 	<h2>
-		Online Training - Quizes
+		Online Training - Quizzes
 	</h2>
 		
 	<?php require WPSQT_DIR.'pages/admin/misc/navbar.php'; ?>

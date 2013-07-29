@@ -2,9 +2,10 @@
 
 	<div id="icon-tools" class="icon32"></div>
 	<h2>
-		Online Training
+		Online Training - Dashboard
 	</h2>
 
+	<div class="dashboard-box">
 	<h3>Overview</h3>
 	
 	<table id="overview">
@@ -21,7 +22,7 @@
 			<td><?php echo $numFranchisees;?></td>
 		</tr>
 		<tr>
-			<td>Number of Users</td>
+			<td>Employees</td>
 			<td><?php echo $numEmployees;?></td>
 		</tr>
 		<tr>
@@ -29,15 +30,22 @@
 			<td><?php echo $overallCompRate;?></td>
 		</tr>
 	</table>
+	</div>
+	
+	<div class="dashboard-box">
+		<h3>Tools</h3>
+		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&wpsqt-download">Export All Results as CSV</a></p>
+		<p><a href="<?php echo WPSQT_URL_DASHBOARD; ?>&subsection=bulkemail">Bulk Email Reminders</a></p>
+	</div>
+	
 
 	<p>&nbsp;</p>
 
-	<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&wpsqt-download">Export All Results as CSV</a>
-	</p>
 
 	<p>&nbsp;</p>
+	<div id="store_table" class="dashboard-box">
+	
 	<h3>Stores</h3>
-	<div id="store_table">
 	<?php echo Wpsqt_System::getStoreTable(); ?>	
 	</div>
 		

@@ -5,11 +5,50 @@ div.alignleft a {
 .add_user_area label, .add_user_area input {
 	display: inline;
 }
+.alert-box {
+	background-color: #bb2222;
+	color: white;
+	font-weight: bold;
+}
+#bulkemail {
+	width: 600px;
+}
+#bulkemail .section {
+	width: 100%;
+	margin-left: 40px;
+	margin-bottom: 50px;
+}
+#bulkemail .section .disabled {
+	color: lightgrey !important;
+}
+#bulkemail .section strong {
+	margin-left: -20px;
+}
+#bulkemail .section textarea, #bulkemail .section input[type="text"] {
+	width: 100%;
+	background-color: white;
+}
+#bulkemail .section textarea {
+	height: 100px;
+}
+.dashboard-box {
+	float: left;
+	margin: 20px 50px 50px 0px;
+	border: 1px solid darkgrey;
+	padding: 10px 20px;
+}
+.dashboard-box h3 {
+	margin-top: 0;
+}
 .open_results {
 	text-decoration: underline;
 }
-#overview td {
-	padding-left:20px;
+#overview  td {
+	padding-right: 30px;
+}
+#store_table {
+	clear:both;
+	width:95%;
 }
 #store_table table,  #user_results_table table {
 	width: 100%;

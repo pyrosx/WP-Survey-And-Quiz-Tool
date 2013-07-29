@@ -729,6 +729,7 @@ class Wpsqt_Shortcode {
 		} else {
 			$_SESSION['wpsqt']['result_id'] = null;
 		}
+		/* These emails aren't necessary... or even reasonable!
 		$emailAddress = get_option('wpsqt_contact_email');
 
 		if ( isset($_SESSION['wpsqt'][$quizName]['details']['notificaton_type']) && $_SESSION['wpsqt'][$quizName]['details']['notificaton_type'] == 'instant' ){
@@ -749,6 +750,7 @@ class Wpsqt_Shortcode {
 		if ( isset($emailTrue) ){
 			Wpsqt_Mail::sendMail();
 		}
+		*/
 
 		if ( $this->_type == "survey" || $this->_type == "poll" ){
 			$this->_cacheSurveys();

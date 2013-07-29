@@ -4,9 +4,6 @@
 	<h2>
 		Online Training - Modules
 		<a href="<?php echo WPSQT_URL_MAIN; ?>&section=addnew&subsection=quiz" class="button add-new-h2">Add New Quiz</a>
-<!--		<a href="<?php echo WPSQT_URL_MAIN; ?>&section=addnew&subsection=survey" class="button add-new-h2">Add New Survey</a>
-		<a href="<?php echo WPSQT_URL_MAIN; ?>&section=addnew&subsection=poll" class="button add-new-h2">Add New Poll</a>
--->
 	</h2>
 
 	<?php if ( isset($_GET['delete']) && $_GET['delete'] == "true" ){
@@ -20,22 +17,6 @@
 	<form method="post" action="">
 
 		<div class="tablenav">
-<!--
-			<ul class="subsubsub">
-				<li>
-					<a href="<?php echo WPSQT_URL_MAIN; ?>" <?php if ($type == "") { ?>  class="current"<?php } ?> id="all_link">All <span class="count">(<?php echo $totalNo; ?>)</span></a> |
-				</li>
-				<li>
-					<a href="<?php echo WPSQT_URL_MAIN; ?>&type=quiz" <?php if ($type =="quiz") { ?>  class="current"<?php } ?> id="quiz_link">Quizzes <span class="count">(<?php echo $quizNo; ?>)</span></a> |
-				</li>
-				<li>
-					<a href="<?php echo WPSQT_URL_MAIN; ?>&type=survey" <?php if ($type == "survey") { ?>  class="current"<?php } ?>  id="survey_link">Surveys <span class="count">(<?php echo $surveyNo; ?>)</span></a> |
-				</li>
-				<li>
-					<a href="<?php echo WPSQT_URL_MAIN; ?>&type=poll" <?php if ($type == "poll") { ?>  class="current"<?php } ?>  id="survey_link">Polls <span class="count">(<?php echo $pollNo; ?>)</span></a>
-				</li>
-			</ul>
--->
 			<div class="tablenav-pages">
 		   		<?php echo Wpsqt_Core::getPaginationLinks($currentPage, $numberOfPages); ?>
 		   	</div>
@@ -81,12 +62,12 @@
 							<span class="delete"><a href="<?php echo WPSQT_URL_MAIN; ?>&section=delete&subsection=<?php esc_html_e($result["type"], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($result["id"], 'wp-survey-and-quiz-tool'); ?>">Delete</a></span>
 						</div>
 					</td>
-					<td><font color="
+					<td><font color=
 					<?php 
 						if ($result['enabled'] == "yes") { 
-							?>#00FF00">Enabled <?php
+							?>"#00FF00">Enabled <?php
 						} else { 
-							?>#FF0000">Disabled <?php 
+							?>"#FF0000">Disabled <?php 
 						}
 					?></font></td>
 					<td class="comments column-comments">

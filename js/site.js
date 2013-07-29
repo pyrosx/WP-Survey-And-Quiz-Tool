@@ -33,6 +33,43 @@ jQuery(document).ready( function($) {
 		jQuery(id).toggle();
 		return false;
 	});
+	
+	////////////////////////
+	// Bulk Email
+	
+	jQuery('.toradio').click( function() {
+		if (jQuery(this).attr("id") == "toall" || jQuery(this).attr("id") == "tofranchisees" ) {
+			// Standard reminders not appropriate for ALL options
+			
+			jQuery('#bodystandard').attr("disabled", true);
+			jQuery('#bodystandardlabel').addClass("disabled");
+			jQuery('#bodycustom').click();
+			
+		} else {
+			// reenable options removed above...
+			jQuery('#bodystandard').attr("disabled", false);
+			jQuery('#bodystandardlabel').removeClass("disabled");				
+		}
+	});
+	// custom section, disabled when standard is selected
+	jQuery('#bodystandard').click( function() {
+		jQuery('#customsection').addClass("disabled");
+		jQuery('.custominput').addClass("disabled");
+		jQuery('.custominput').removeAttr("required");
+	});
+	// and reenabled when custom is selected
+	jQuery('#bodycustom').click( function() {
+		jQuery('#customsection').removeClass("disabled");
+		jQuery('.custominput').removeClass("disabled");
+		jQuery('.custominput').attr("required","true");
+	});
+	// no need to repeat the disabled stuff anywhere else... just manually "click"	
+	jQuery('#bodystandard').click();
+
+	// send button - confirm
+	jQuery('#bulkemailsend').click( function() {
+		return confirm ("Are you sure? "+$('input[name=toradio]:checked').attr("jqcount")+" emails will be sent immediately, and this cannot be undone");
+	});
 
 	jQuery('.wpsqt-show-answer').click( function() {
 		jQuery(this).siblings('.wpsqt-answer-explanation').show();

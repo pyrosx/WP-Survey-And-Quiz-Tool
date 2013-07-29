@@ -479,7 +479,8 @@ class Wpsqt_Core {
 	*/
 	public function shortcode_info( $atts ) {
 		global $wpdb;
-								
+		$output = "";						
+		
 		if ( is_user_logged_in() ) {
 			if ( Wpsqt_System::is_current_user_assigned() ) {
 		
@@ -491,7 +492,7 @@ class Wpsqt_Core {
 				$quizzes = $wpdb->get_results($sql, 'ARRAY_A');
 			
 				$completed = true;
-				$completed_date = "";
+				$completed_date = 0;
 			
 				foreach($quizzes as $q) {
 					$id = $q['id'];
@@ -506,6 +507,10 @@ class Wpsqt_Core {
 							$completed = false;
 						}
 						$output .= Wpsqt_System::colorCompletionRate($results[0]['percentage']);
+						
+						if ($completed_date < $results[0]['datetaken']) {
+							$completed_date = $results[0]['datetaken'];
+						}
 					} else {
 						$output .= "Not Attempted";
 						$completed = false;
@@ -526,10 +531,10 @@ class Wpsqt_Core {
 						$display_name = wp_get_current_user()->display_name;
 					}
 
-					$output .= '<form method="POST" action="'.plugins_url('pdf.php',WPSQT_FILE).'">';
-					$output .= '<input type="hidden" name="completed_date" value="'.$completed_date.'"/>';
+					$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
+					$output .= '<input type="hidden" name="completed_date" value="'.date('l jS \of F Y',$completed_date).'"/>';
 					$output .= '<input type="hidden" name="display_name" value="'.$display_name.'"/>';
-					$output .= '<input type="submit" value="Training Completed! Click here to download Your Certificate"/>';
+					$output .= '<input type="submit" class="button expand success" value="Training Completed! Click here to download Your Certificate"/>';
 					$output .= '</form>';
 											
 				}

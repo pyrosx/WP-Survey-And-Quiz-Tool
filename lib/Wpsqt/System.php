@@ -573,7 +573,7 @@ class Wpsqt_System {
 	}
 	
 	/** Adds a new Employee to the employees table
-		Returns the id of the added entry
+		Returns the id of the added entry, or 0 if there's a problem
 	*/
 	public static function add_employee($id_user, $id_store, $franchisee = false) {
 		global $wpdb;	
@@ -581,7 +581,7 @@ class Wpsqt_System {
 		// check user exists
 		$wp_user_id = get_user_by('id',$id_user);
 		if (!$wp_user_id) {
-			return false;
+			return 0;
 		}
 
 		//check we're not duplicating
@@ -643,15 +643,13 @@ class Wpsqt_System {
 	*/
 	public static function add_user($id_store,$new_name,$new_email,$franchisee = false) {
 		global $wpdb;
-		self::_log(array("add_user",$id_store,$new_name,$new_email,$franchisee));
 		$id_user = 0;
 
 		$user = get_user_by('email',$new_email);
 		if ($user) {
 			// user exists, add employee to store
 			$id_user = $user->ID;
-
-			self::_log("add user, ".$new_email." already exists, id=".$user->ID." - Added to store ".$id_store." franchisee = ".$franchisee);
+			self::_log(array("add user, already exists",$new_name,$new_email,"user id = ".$user->ID,"store = ".$id_store,"franchisee = ".strval($franchisee)));
 
 		} else {
 			// new user needs creating
@@ -664,13 +662,13 @@ class Wpsqt_System {
 				'display_name' => $new_name
 			) ) ;
 			wp_new_user_notification($id_user,$random_password);
-			self::_log(array("add user, new user created",$new_name,$new_email,"store = ".$id_store,"franchisee = ".$franchisee));
+			self::_log(array("add user, new user created",$new_name,$new_email,"user id = ".$id_user,"store = ".$id_store,"franchisee = ".strval($franchisee)));
 		}
 
 		if ($franchisee) {
-			self::add_franchisee($id_user,$id_store);
+			return self::add_franchisee($id_user,$id_store);
 		} else {
-			self::add_employee($id_user,$id_store);
+			return self::add_employee($id_user,$id_store);
 		}		
 	}
 	
@@ -694,7 +692,7 @@ class Wpsqt_System {
 		
 		self::_log("Store added - ".$store.", ".$state);
 		
-		return $wpdb->get_results($sql, ARRAY_A);
+		return $wpdb->get_var($sql, ARRAY_A);
 	}
 	public static function remove_store($id_store) {
 		global $wpdb;
@@ -814,28 +812,40 @@ class Wpsqt_System {
 		if(!empty($_POST["franchisee_remove_user"])) {
 			// jquery handles confirm... and it's already happened
 			self::remove_employee($_POST["id_user"],$_POST["id_store"]);
+			$output .= '<div class="alert-box">User Removed</div>';
 		} 
-		if (!empty($_POST["franchisee_add_user"])) {
-			// add new user clicked
-			self::add_user($_POST['id_store'],$_POST['new_name'],$_POST['new_email']);							
-		}
-		if (!empty($_POST["add_franchisee"])) {
-			// add new franchisee clicked
-			self::add_user($_POST['id_store'],$_POST['new_name'],$_POST['new_email'],true);
+		if (!empty($_POST["franchisee_add_user"]) || !empty($_POST["add_franchisee"]) ) {
+			// add new user clicked           OR       add franchisee clicked
+			$franchisee = false;
+			if (!empty($_POST["add_franchisee"])) {
+				$franchisee = true;
+			}
+			if (self::add_user($_POST['id_store'],$_POST['new_name'],$_POST['new_email'],$franchisee) != 0) {							
+				$output .= '<div class="alert-box">User added</div>';
+			} else {
+				$output .= '<div class="alert-box">An error occurred while adding user</div>';
+			}
 		}
 		if (!empty($_POST["remove_store"])) {
 			self::remove_store($_POST['id_store']);
+			$output .= '<div class="alert-box">Store Removed</div>';
 		}
 		if (!empty($_POST['send_reminder'])) {
 			wpqst_reminder_email($_POST['id_user']);
+			$output .= '<div class="alert-box">Reminder sent</div>';
 		}
 		
 		$new_store_display = "none";
 		$new_store_button = "block";
+		
 		if (!empty($_POST["add_store"])) {
 			$new_store_display = "block";
 			$new_store_button = "none";		
-			self::add_store($_POST['new_store'], $_POST['new_state']);
+			if (self::add_store($_POST['new_store'], $_POST['new_state'])) {
+				$output .= '<div class="alert-box">Store Added</div>';
+			} else {
+				$output .= '<div class="alert-box">An error occurred while adding Store</div>';
+			}
 		}
 	
 		// Stores - optionally, restricted to those that user is assigned as "franchisee" to
@@ -889,7 +899,7 @@ class Wpsqt_System {
 			}
 			$output .= "<td>".self::getEmployeeCount($store['id'])."</td>";
 			$output .= "<td>".self::colorCompletionRate(self::getStoreCompletionRate($store['id'],is_null($id_user)))."</td>";
-			$output .= '<td><input type="submit" value="'.$users_button.'" class="display_user_table" id="store_'.$store['id'].'" /></td>';
+			$output .= '<td><input type="submit" value="'.$users_button.'" class="display_user_table button tiny secondary" id="store_'.$store['id'].'" /></td>';
 		
 			$output .= "</tr>";						
 			
@@ -913,6 +923,16 @@ class Wpsqt_System {
 						<table>';
 						
 			if (is_null($id_user)) {
+
+				// remove Store Button
+				$output .= '<thead><tr><td colspan='.$colspan.'>
+					<form action="" method="POST">
+						<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+						<input type="submit" value="Remove Store" name="remove_store" class="remove_store button tiny secondary"/>
+					</form>
+				</td></tr></thead>
+				<tr><td></td></tr>';
+
 				// display franchisees, and add franchisee option
 				
 				$sql = $sql1."1".$sql2;
@@ -924,7 +944,7 @@ class Wpsqt_System {
 			
 					foreach($franchisees as $user) {
 						$output .= "<tr><td>".$user['display_name']."</td>";
-						$output .= "<td>".$user['user_email']."</td>";
+						$output .= '<td><a href="mailto:'.$user['user_email'].'">'.$user['user_email']."</a></td>";
 						$output .= "<td>";
 						if (is_null($id_user)) {
 							$output .= '<a href="'.WPSQT_URL_EMPLOYEES.'&subsection=results&id_user='.$user['id'].'">';
@@ -937,27 +957,27 @@ class Wpsqt_System {
 							$output .= '<form action="'.home_url('/results/').'" method="POST">
 											<input type="hidden" name="id_user" value="'.$user['id'].'"/>
 											<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
-											<input type="submit" value="Results" name="results"/>
+											<input type="submit" value="Results" name="results" class="button tiny secondary"/>
 										</form>';
 						}
 						// Reminder button
 						$output .= '<form action="" method="POST">
 										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
 										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-										<input type="submit" value="Send Reminder" name="send_reminder"/>
+										<input type="submit" value="Send Reminder" name="send_reminder" class="button tiny secondary"/>
 									</form>';
 
 						// Edit button
 						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
 							<input type="hidden" name="user_id" value="'.$user['id'].'">
-							<input type="submit" value="Edit"/>
+							<input type="submit" value="Edit" class="button tiny secondary"/>
 						</form>';
 
 						// Remove button
 						$output .= '<form action="" method="POST">
 										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
 										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-										<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user"/>
+										<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
 									</form>';
 						$output .= "</td></tr>";
 					}
@@ -966,7 +986,7 @@ class Wpsqt_System {
 				}
 
 				$output .= '<tr><td colspan='.$colspan.'>
-								<input type="submit" value="Add Franchisee" class="add_user" id="fstore_'.$store['id'].'" style="display:'.$new_franc_button.'"/>
+								<input type="submit" value="Add Franchisee" class="add_user button tiny secondary" id="fstore_'.$store['id'].'" style="display:'.$new_franc_button.'"/>
 								<div class="add_user_area" id="add_fstore_'.$store['id'].'" style="display:'.$new_franc_display.'">
 									<form action="" method="POST">
 										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
@@ -977,7 +997,7 @@ class Wpsqt_System {
 										<tr>
 											<td>Name: <input type="text" name="new_name" required/></td>
 											<td>Email: <input type="email" name="new_email" required/></td>
-											<td><input type="submit" value="Add Franchisee" name="add_franchisee"/></td>
+											<td><input type="submit" value="Add Franchisee" name="add_franchisee" class="button tiny secondary"/></td>
 										</tr>
 										</tbody></table>
 									</form>
@@ -992,7 +1012,7 @@ class Wpsqt_System {
 			
 				foreach($users as $user) {
 					$output .= "<tr><td>".$user['display_name']."</td>";
-					$output .= "<td>".$user['user_email']."</td>";
+					$output .= '<td><a href="mailto:'.$user['user_email'].'">'.$user['user_email']."</a></td>";
 
 					$output .= "<td>";
 					if (is_null($id_user)) {
@@ -1006,28 +1026,28 @@ class Wpsqt_System {
 						$output .= '<form action="'.home_url('/results/').'" method="POST">
 										<input type="hidden" name="id_user" value="'.$user['id'].'"/>
 										<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
-										<input type="submit" value="Results" name="results"/>
+										<input type="submit" value="Results" name="results" class="button tiny secondary"/>
 									</form>';
 					}
 					// Reminder button
 					$output .= '<form action="" method="POST">
 									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
 									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-									<input type="submit" value="Send Reminder" name="send_reminder"/>
+									<input type="submit" value="Send Reminder" name="send_reminder" class="button tiny secondary"/>
 								</form>';
 
 					// Edit button
 					if (is_null($id_user)) {
 						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
 							<input type="hidden" name="user_id" value="'.$user['id'].'">
-							<input type="submit" value="Edit"/>
+							<input type="submit" value="Edit" class="button tiny secondary"/>
 						</form>';
 					}
 					// Remove button
 					$output .= '<form action="" method="POST">
 									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
 									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-									<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user"/>
+									<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
 								</form>';
 					$output .= "</td></tr>";
 				}
@@ -1036,7 +1056,7 @@ class Wpsqt_System {
 			}
 
 			$output .= '<tr><td colspan='.$colspan.'>
-							<input type="submit" value="Add Employee" class="add_user" id="store_'.$store['id'].'" style="display:'.$new_user_button.'"/>
+							<input type="submit" value="Add Employee" class="add_user button tiny secondary" id="store_'.$store['id'].'" style="display:'.$new_user_button.'"/>
 							<div class="add_user_area" id="add_store_'.$store['id'].'" style="display:'.$new_user_display.'">
 								<form action="" method="POST">
 									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
@@ -1047,30 +1067,20 @@ class Wpsqt_System {
 									<tr>
 										<td>Name: <input type="text" name="new_name" required/></td>
 										<td>Email: <input type="email" name="new_email" required/></td>
-										<td><input type="submit" value="Add Employee" name="franchisee_add_user"/></td>
+										<td><input type="submit" value="Add Employee" name="franchisee_add_user" class="button tiny secondary"/></td>
 									</tr>
 									</tbody></table>
 								</form>
 							</div>
 						</td></tr>'; 
-			
-			if (is_null($id_user)) {
-				// remove Store Button
-				$output .= '<thead><tr><td colspan='.$colspan.'>
-					<form action="" method="POST">
-						<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-						<input type="submit" value="Remove Store" name="remove_store" class="remove_store"/>
-					</form>
-				</td></tr></thead>';
-			}			
-			
+						
 			$output .="</tbody></table>";
 		}
 		
 		if (is_null($id_user)) {
 			// add store section
 			$output .= '<tr><td colspan='.$colspan.'>
-							<input type="submit" value="Add Store" class="add_user" id="store_new" style="display:'.$new_store_button.'"/>
+							<input type="submit" value="Add Store" class="add_user button tiny secondary" id="store_new" style="display:'.$new_store_button.'"/>
 							<div class="add_user_area" id="add_store_new" style="display:'.$new_store_display.'">
 								<form action="" method="POST">
 									
@@ -1080,7 +1090,7 @@ class Wpsqt_System {
 									<tr>
 										<td>Name: <input type="text" name="new_store" required/></td>
 										<td>State:'.self::getStateDropdown("new_state").'</td>			
-										<td><input type="submit" value="Add Store" name="add_store"/></td>
+										<td><input type="submit" value="Add Store" name="add_store" class="button tiny secondary"/></td>
 									</tr>
 									</tbody></table>
 								</form>
@@ -1160,7 +1170,8 @@ class Wpsqt_System {
 	
 	public function _log($x) {
 		
-		error_log($current_user);
+		error_log("----------");
+		error_log(wp_get_current_user()->user_email);
 		if (is_array($x) || is_object($x)) {
 			error_log(print_r($x,true));
 		} else {

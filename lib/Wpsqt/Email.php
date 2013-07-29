@@ -49,7 +49,29 @@ In case you've misplaced your username:\r\n";
 		$message .= sprintf(__('Username: %s'), $user_login) . "\r\n";
 
 		wp_mail($user_email, $subject, $message);
+		Wpsqt_System::_log("Standard reminder email, to:".$user_email);
 	
 	}
+
+	function wpqst_email($user_id, $subject, $message) {
+		$user = get_userdata( $user_id );
+		$user_login = stripslashes($user->user_login);
+		$user_email = stripslashes($user->user_email);
+		$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
+
+		// TODO make this better!
+		$message .= "\r\n
+". home_url() . "\r\n
+\r\n
+In case you've misplaced your username:\r\n";
+		// TODO you must complete this blah blah blah
+		$message .= sprintf(__('Username: %s'), $user_login) . "\r\n";
+
+		wp_mail($user_email, $subject, $message);
+		Wpsqt_System::_log("Custom email, to:".$user_email);
+
+	}
+
+
 
 ?>
