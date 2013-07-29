@@ -1,5 +1,5 @@
 <?php
-
+if (!function_exists('wp_new_user_notification')) {
 	function wp_new_user_notification($user_id, $plaintext_pass = '') {
 		$user = get_userdata( $user_id );
 
@@ -31,7 +31,7 @@
 		wp_mail($user_email, sprintf(__('[%s] Your username and password'), $blogname), $message);
 
 	}
-	
+}
 	function wpqst_reminder_email($user_id) {
 		$user = get_userdata( $user_id );
 		$user_login = stripslashes($user->user_login);

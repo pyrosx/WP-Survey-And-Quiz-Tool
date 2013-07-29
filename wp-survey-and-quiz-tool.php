@@ -1,13 +1,13 @@
 <?php
 /*
-Plugin Name: WP Survey And Quiz Tool
-Plugin URI: http://catn.com/2010/10/04/wp-survey-and-quiz-tool/
-Description: Allows wordpress owners to create their own web based quizes.
-Author: Fubra Limited
-Author URI: http://www.catn.com
+Plugin Name: Online Training Plugin for Sushi Izu
+Plugin URI: http://training.sushiizu.com.au/
+Description: Custom WP Plugin for Online Training with franchisee management
+Author: Daniel Beach
+Author URI: http://pyrosx.com/
 Version: 2.13.1
 
-WP Survey And Quiz Tool
+Based on - WP Survey And Quiz Tool
 Copyright (C) 2011  Fubra Limited
 
 This program is free software: you can redistribute it and/or modify

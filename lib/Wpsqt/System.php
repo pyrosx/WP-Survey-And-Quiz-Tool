@@ -4,6 +4,7 @@
 	 * Central class for the Create Read Update Delete
 	 * of the quizzes and surveys.
 	 *
+	 *  -- ORIGINAL --
 	 * @author Iain Cambridge
 	 * @copyright All rights reserved 2010-2011 (c)
 	 * @license http://www.gnu.org/licenses/gpl.html GPL v3 
@@ -598,12 +599,12 @@ class Wpsqt_System {
 		}
 		
 		
-		$sql = $wpdb->prepare(
+		$wpdb->query($wpdb->prepare(
 			"INSERT INTO `".WPSQT_TABLE_EMPLOYEES."` (id_user,id_store,franchisee) VALUES (%d,%d,%d)",
 			array($id_user,$id_store,$franchisee)
-			);
+		));
 		
-		return $wpdb->get_var($sql);
+		return $wpdb->insert_id;
 	}
 	public static function edit_employee($id,$id_user, $id_store) {
 		global $wpdb;	
@@ -689,10 +690,11 @@ class Wpsqt_System {
 		}
 
 		$sql = $wpdb->prepare("INSERT INTO `".WPSQT_TABLE_STORES."` (location,state) VALUES (%s,%s)",array($store,$state));
-		
-		self::_log("Store added - ".$store.", ".$state);
-		
-		return $wpdb->get_var($sql, ARRAY_A);
+		$wpdb->query($sql, ARRAY_A);
+		if ($wpdb->insert_id) {
+			self::_log("Store added - ".$store.", ".$state);
+		}
+		return $wpdb->insert_id;
 	}
 	public static function remove_store($id_store) {
 		global $wpdb;
@@ -841,7 +843,7 @@ class Wpsqt_System {
 		if (!empty($_POST["add_store"])) {
 			$new_store_display = "block";
 			$new_store_button = "none";		
-			if (self::add_store($_POST['new_store'], $_POST['new_state'])) {
+			if (self::add_store($_POST['new_store'], $_POST['new_state']) != false) {
 				$output .= '<div class="alert-box">Store Added</div>';
 			} else {
 				$output .= '<div class="alert-box">An error occurred while adding Store</div>';
