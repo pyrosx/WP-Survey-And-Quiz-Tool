@@ -21,14 +21,14 @@ if (!function_exists('wp_new_user_notification')) {
 		if ( empty($plaintext_pass) )
 			return;
 
-		$message = "Welcome to Sushi Izu Online Training\r\n
-		\r\n";
-		// TODO you must complete this blah blah blah
+		$message = "Welcome to ".$blogname."\r\n
+\r\nPlease find below your login details\r\n";
+
 		$message .= sprintf(__('Username: %s'), $user_email) . "\r\n";
 		$message .= sprintf(__('Password: %s'), $plaintext_pass) . "\r\n";
 		$message .= "\r\nPlease visit ". home_url() . " to start your training.\r\n";
 
-		wp_mail($user_email, sprintf(__('[%s] Your username and password'), $blogname), $message);
+		wp_mail($user_email, sprintf(__('Welcome to %s'), $blogname), $message);
 
 	}
 }
@@ -38,7 +38,7 @@ if (!function_exists('wp_new_user_notification')) {
 		$user_email = stripslashes($user->user_email);
 		$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
-		$subject = "Sushi Izu Online Training Reminder";
+		$subject = $blogname." Reminder";
 
 		// TODO make this better!
 		$message = "Please complete your training ASAP\r\n
