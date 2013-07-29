@@ -24,7 +24,7 @@ if (!function_exists('wp_new_user_notification')) {
 		$message = "Welcome to Sushi Izu Online Training\r\n
 		\r\n";
 		// TODO you must complete this blah blah blah
-		$message .= sprintf(__('Username: %s'), $user_login) . "\r\n";
+		$message .= sprintf(__('Username: %s'), $user_email) . "\r\n";
 		$message .= sprintf(__('Password: %s'), $plaintext_pass) . "\r\n";
 		$message .= "\r\nPlease visit ". home_url() . " to start your training.\r\n";
 
@@ -46,7 +46,7 @@ if (!function_exists('wp_new_user_notification')) {
 \r\n
 In case you've misplaced your username:\r\n";
 		// TODO you must complete this blah blah blah
-		$message .= sprintf(__('Username: %s'), $user_login) . "\r\n";
+		$message .= sprintf(__('Username: %s'), $user_email) . "\r\n";
 
 		wp_mail($user_email, $subject, $message);
 		Wpsqt_System::_log("Standard reminder email, to:".$user_email);
@@ -65,7 +65,7 @@ In case you've misplaced your username:\r\n";
 \r\n
 In case you've misplaced your username:\r\n";
 		// TODO you must complete this blah blah blah
-		$message .= sprintf(__('Username: %s'), $user_login) . "\r\n";
+		$message .= sprintf(__('Username: %s'), $user_email) . "\r\n";
 
 		wp_mail($user_email, $subject, $message);
 		Wpsqt_System::_log("Custom email, to:".$user_email);
