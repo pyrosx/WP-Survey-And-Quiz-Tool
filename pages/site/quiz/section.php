@@ -71,7 +71,7 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 				echo $q_number.'. ';
 			}
 			
-			stripslashes($question['name']);
+			echo stripslashes($question['name']);
 
 			// See if the question has been missed and this is a replay
 			if ( !empty($_SESSION['wpsqt']['current_message']) && !in_array($questionId,$_SESSION['wpsqt']['required']['given']) ){
