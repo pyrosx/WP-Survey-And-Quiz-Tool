@@ -47,7 +47,7 @@ if (isset($_POST['wpsqt_time_elapsed'])) {
 		$answers = ( isset($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["answers"]) ) ? $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["answers"] : array();
 foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as $questionKey => $question) { ?>
 
-	<div class="wpst_question">
+	<div class="wpsqt_question">
 		<?php
 
 			$questionId = $question['id'];
@@ -69,7 +69,7 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 			if (isset($_SESSION['wpsqt'][$quizName]['details']['question_numbers']) && $_SESSION['wpsqt'][$quizName]['details']['question_numbers'] == 'yes') {
 				echo $q_number.'. ';
 			}
-			echo stripslashes($question['name']);
+			echo '<p>'.stripslashes($question['name']).'</p>';
 
 			// See if the question has been missed and this is a replay
 			if ( !empty($_SESSION['wpsqt']['current_message']) && !in_array($questionId,$_SESSION['wpsqt']['required']['given']) ){

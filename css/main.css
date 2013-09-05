@@ -29,3 +29,7 @@ div.wpsqt-progress div {
 .open_results {
 	text-decoration: underline;
 }
+
+.wpsqt_question p {
+	margin-bottom: 0.5em;
+}
