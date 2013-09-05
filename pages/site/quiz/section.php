@@ -66,10 +66,12 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 				}
 			}
 */
+			echo '<p>';
 			if (isset($_SESSION['wpsqt'][$quizName]['details']['question_numbers']) && $_SESSION['wpsqt'][$quizName]['details']['question_numbers'] == 'yes') {
 				echo $q_number.'. ';
 			}
-			echo '<p>'.stripslashes($question['name']).'</p>';
+			
+			stripslashes($question['name']);
 
 			// See if the question has been missed and this is a replay
 			if ( !empty($_SESSION['wpsqt']['current_message']) && !in_array($questionId,$_SESSION['wpsqt']['required']['given']) ){
@@ -101,7 +103,10 @@ foreach ($_SESSION['wpsqt'][$quizName]['sections'][$sectionKey]['questions'] as 
 					echo '<a href="#" class="wpsqt-show-answer" style="display: none;">'; _e('Show answer', 'wp-survey-and-quiz-tool'); echo '</a>';
 					echo '<div class="wpsqt-answer-explanation" style="display: none;">'.nl2br(stripslashes($explanation)).'</div>';
 				}
-			} ?>
+			} 
+			
+			echo '</p>';
+			?>
 
 	</div>
 
