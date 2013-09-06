@@ -527,7 +527,7 @@ class Wpsqt_Core {
 				// if 100% completed
 
 					$display_name = wp_get_current_user()->user_firstname .' '.wp_get_current_user()->user_lastname;
-					if ($display_name == '') {
+					if ($display_name == ' ') {
 						$display_name = wp_get_current_user()->display_name;
 					}
 
