@@ -6,7 +6,7 @@ $objTokens->setDefaultValues();
 
 ?>
 
-<h3 class="wpsqt-exam-finished-title"><?php _e('Exam Finished', 'wp-survey-and-quiz-tool'); ?></h3>
+<h3 class="wpsqt-exam-finished-title"><?php _e('Section Completed', 'wp-survey-and-quiz-tool'); ?></h3>
 
 <?php if ($_SESSION['wpsqt'][$quizName]['details']['finish_display'] == 'Finish message' || $_SESSION['wpsqt'][$quizName]['details']['finish_display'] == 'Both'  ) { ?>
 	<?php if (isset($_SESSION['wpsqt'][$quizName]['details']['pass_finish']) &&

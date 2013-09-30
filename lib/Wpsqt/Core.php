@@ -534,7 +534,7 @@ class Wpsqt_Core {
 					$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
 					$output .= '<input type="hidden" name="completed_date" value="'.date('l jS \of F Y',$completed_date).'"/>';
 					$output .= '<input type="hidden" name="display_name" value="'.$display_name.'"/>';
-					$output .= '<input type="submit" class="button expand success" value="Training Completed! Click here to download Your Certificate"/>';
+					$output .= '<input type="submit" class="button expand success" value="Training Complete! Click here to download Your Certificate"/>';
 					$output .= '</form>';
 											
 				}

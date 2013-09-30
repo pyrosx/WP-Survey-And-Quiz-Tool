@@ -22,7 +22,7 @@
 
 	$pdf->AddPage();
 
-	$pdf->Image('header.png',45,10);
+	$pdf->Image('header.png',0,10);
 	$pdf->Ln(70);
 
 	$pdf->SetFont('Arial','B',32);
@@ -45,7 +45,7 @@
 	$pdf->Cell(0,0,"In Recognition of completing the",0,1,"C");
 	$pdf->Ln(12);
 	$pdf->SetFont('Arial','B',18);
-	$pdf->Cell(0,0,"Sushi Izu Food Safety Course",0,1,"C");
+	$pdf->Cell(0,0,"Advanced Fresh Concepts Food Safety Course",0,1,"C");
 	
 	$pdf->Ln(12);
 
