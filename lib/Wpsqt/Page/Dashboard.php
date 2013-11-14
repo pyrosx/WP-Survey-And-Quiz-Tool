@@ -41,7 +41,7 @@ class Wpsqt_Page_Dashboard extends Wpsqt_Page {
 		$users = array();
 		$fails = 0;
 		$failDetails = array();
-		
+		var_dump($query);
 		foreach($query as $res) {
 			$failed = false;
 			if(!is_null($res['item_id'])) {

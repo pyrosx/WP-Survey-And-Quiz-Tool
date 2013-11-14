@@ -9,10 +9,10 @@
 		<form id="bulkemailform" method="POST" action="">
 		<div class="section">
 			<p><strong>To:</strong></p>
-			<p><input type="radio" name="toradio" class="toradio" value="unfinished" id="tounfinished" jqcount="<?php echo $countUnfinished ?>" checked></input> <label for="tounfinished">Users who have Not Finished - <em>(<?php echo $countUnfinished ?>)</em></label></p>
-			<p><input type="radio" name="toradio" class="toradio" value="unstarted" id="tounstarted" jqcount="<?php echo $countUnstarted ?>"></input> <label for="tounstarted">Users who have Not Started - <em>(<?php echo $countUnstarted ?>)</em></label></p>
+			<p><input type="radio" name="toradio" class="toradio" value="unfinished" id="tounfinished" jqcount="<?php echo $countUnfinished ?>" checked></input> <label for="tounfinished">Employees who have Not Finished - <em>(<?php echo $countUnfinished ?>)</em></label></p>
+			<p><input type="radio" name="toradio" class="toradio" value="unstarted" id="tounstarted" jqcount="<?php echo $countUnstarted ?>"></input> <label for="tounstarted">Employees who have Not Started - <em>(<?php echo $countUnstarted ?>)</em></label></p>
 			<p><input type="radio" name="toradio" class="toradio" value="all" id="toall" jqcount="<?php echo $countAll ?>"></input> <label for="toall">All Registered Users - <em>(<?php echo $countAll ?>)</em></label></p>
-			<p><input type="radio" name="toradio" class="toradio" value="franchisees" id="tofranchisees" jqcount="<?php echo $countFranchisees ?>"></input> <label for="tofranchisees">Franchisees Only - <em>(<?php echo $countFranchisees ?>)</em></label></p>
+			<p><input type="radio" name="toradio" class="toradio" value="franchisees" id="tofranchisees" jqcount="<?php echo $countFranchisees ?>"></input> <label for="tofranchisees">Franchise Owners Only - <em>(<?php echo $countFranchisees ?>)</em></label></p>
 		</div>
 		<div class="section">
 			<p>	<strong>Content:</strong></p>
