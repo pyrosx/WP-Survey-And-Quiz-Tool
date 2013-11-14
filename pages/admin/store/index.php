@@ -10,6 +10,8 @@
 			<a class="nav-tab nav-tab-active" href="<?php echo WPSQT_URL_STORES; ?>">Stores</a>
 			<a class="nav-tab" href="<?php echo WPSQT_URL_FRANCHISEES; ?>">Franchisees</a>
 			<a class="nav-tab" href="<?php echo WPSQT_URL_EMPLOYEES; ?>">Employees</a>
+			<a class="nav-tab" href="<?php echo WPSQT_URL_EMPLOYEES; ?>&location=Corporate%20Stores">Corporate Employees</a>
+
 		</h2>
 	</div>
 

@@ -10,6 +10,9 @@ div.alignleft a {
 	color: white;
 	font-weight: bold;
 }
+.alert-box.success {
+	background-color: #5da423;
+}
 #bulkemail {
 	width: 600px;
 }
@@ -43,42 +46,52 @@ div.alignleft a {
 .open_results {
 	text-decoration: underline;
 }
-#overview  td {
+.overview  td {
 	padding-right: 30px;
 }
-#store_table {
+.store_table {
 	clear:both;
 	width:95%;
 }
-#store_table table,  #user_results_table table {
+.store_table table,  #user_results_table table {
 	width: 100%;
 	border-spacing: 0;
 	border: 1px solid #ddd;
 }
-#store_table table form {
+.store_table table form {
 	display: inline;
 }
-#store_table table form input[type="text"], 
-#store_table table form input[type="email"],
-#store_table table form select {
+.store_table table form input[type="text"], 
+.store_table table form input[type="email"],
+.store_table table form select {
 	width: 80%;
 }
-#store_table table table, #user_results_table table table {
+.store_table table table, #user_results_table table table {
 	width: 80%;
 	margin: 10px;
 	margin-left: 10%;
-	
 }
-
-#store_table table thead tr,  #user_results_table table thead tr {
-	background-color: #ddd !important;
+.store_table table thead tr th, #user_results_table table thead tr th {
 	text-align: left;
 }
-#store_table table tr:nth-child(even), #user_results_table table tr:nth-child(even){
+.store_table table thead tr,  #user_results_table table thead tr {
+	background-color: #ddd !important;
+	text-align: left !important; 
+}
+.store_table table tr:nth-child(even), #user_results_table table tr:nth-child(even){
 	background-color: #eee;
 }
-#store_table table tr:nth-child(odd), #user_results_table table tr:nth-child(odd){
+.store_table table tr:nth-child(odd), #user_results_table table tr:nth-child(odd){
 	background-color: white;
+}
+
+#alert-box, #failDetails h3 {
+	color: red;
+}
+#failDetails {
+	width: 80%;
+	clear: both;
+	display: none;
 }
 
 

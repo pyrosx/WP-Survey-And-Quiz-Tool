@@ -51,8 +51,9 @@ class Wpsqt_Mail {
 		wp_mail($address,$emailSubject,$emailMessage,$headers);
 	}
 
+
 	/**
-	 * Sends the notificatione mail.
+	 * Sends the notification mail.
 	 * 
 	 * @since 2.0
 	 */
@@ -143,5 +144,4 @@ class Wpsqt_Mail {
 			}	
 		}
 	}
-	
 }

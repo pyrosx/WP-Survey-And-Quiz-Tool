@@ -249,9 +249,18 @@ class Wpsqt_Shortcode {
 		
 		// Checks if the user has taken the exam, AND PASSED it already
 		$id = (int) $_SESSION['wpsqt']['item_id'];
-		$result = $wpdb->get_row("SELECT * FROM `".WPSQT_TABLE_RESULTS."` WHERE user_id = '".wp_get_current_user()->ID."' AND item_id = '".$id."' AND percentage = '100'", ARRAY_A);
-		if (count($result)) {
+		$result = $wpdb->get_var("SELECT count(id) FROM `".WPSQT_TABLE_RESULTS."` WHERE user_id = '".wp_get_current_user()->ID."' AND item_id = '".$id."' AND pass = 1");
+		if ($result) {
 			echo("You have already passed this exam!");
+			require_once WPSQT_DIR.'/lib/Wpsqt/Page.php';
+			return;
+		}
+		
+		// Checks if the user has taken the exam too many times
+		$id = (int) $_SESSION['wpsqt']['item_id'];
+		$result = $wpdb->get_var("SELECT count(id) FROM `".WPSQT_TABLE_RESULTS."` WHERE user_id = '".wp_get_current_user()->ID."' AND item_id = '".$id."' AND pass = 0 AND status != 'rejected'");
+		if ($result >= 5 ) {
+			echo("You have run out of attempts for this exam - Please contact your manager");
 			require_once WPSQT_DIR.'/lib/Wpsqt/Page.php';
 			return;
 		}
@@ -751,6 +760,7 @@ class Wpsqt_Shortcode {
 			Wpsqt_Mail::sendMail();
 		}
 		*/
+		
 
 		if ( $this->_type == "survey" || $this->_type == "poll" ){
 			$this->_cacheSurveys();

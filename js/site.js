@@ -28,6 +28,19 @@ jQuery(document).ready( function($) {
 		return false;
 	});
 	
+	jQuery('.add_user_form').submit( function($) {
+	
+		name_input = jQuery(this).find('input[name=new_name]').val();
+	
+		if (name_input.indexOf(" ") == -1) { 
+			// name contains no spaces
+			return confirm('Are you sure this is the correct, full name?\r\nThe name entered contains no spaces\r\nThis name will be printed on the Certificate');
+		
+		}
+			
+	});
+	
+	
 	jQuery('.open_results').click( function($) {
 		var id = '#results_'+jQuery(this).attr('id');
 		jQuery(id).toggle();
@@ -69,6 +82,12 @@ jQuery(document).ready( function($) {
 	// send button - confirm
 	jQuery('#bulkemailsend').click( function() {
 		return confirm ("Are you sure? "+$('input[name=toradio]:checked').attr("jqcount")+" emails will be sent immediately, and this cannot be undone");
+	});
+	
+	// fail detail panel show
+	jQuery('#failDetailsLink').click( function() {
+		jQuery('#failDetails').toggle();
+		return false;
 	});
 
 	jQuery('.wpsqt-show-answer').click( function() {

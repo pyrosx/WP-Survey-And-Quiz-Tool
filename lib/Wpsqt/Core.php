@@ -24,9 +24,9 @@ class Wpsqt_Core {
 		$this->_addPage(WPSQT_PAGE_DASHBOARD, "Online Training", "Online Training", "wpsqt-manage", "Dashboard")
 		->_addPage(WPSQT_PAGE_MAIN, "Modules", "Modules", "wpsqt-manage", "Main", WPSQT_PAGE_DASHBOARD)
 		->_addPage(WPSQT_PAGE_STORES, 'Stores', 'Stores', 'wpsqt-manage', 'Stores', WPSQT_PAGE_DASHBOARD)
-		->_addPage(WPSQT_PAGE_FRANCHISEES, 'Franchisees', 'Franchisees', 'wpsqt-manage', 'Franchisees', WPSQT_PAGE_DASHBOARD)
+		->_addPage(WPSQT_PAGE_FRANCHISEES, 'Franchise Owners', 'Franchise Owners', 'wpsqt-manage', 'Franchisees', WPSQT_PAGE_DASHBOARD)
 		->_addPage(WPSQT_PAGE_EMPLOYEES, 'Employees', 'Employees', 'wpsqt-manage', 'Employees', WPSQT_PAGE_DASHBOARD)
-//		->_addPage(WPSQT_PAGE_OPTIONS, "Options", "Options", "wpsqt-manage", "Options", WPSQT_PAGE_DASHBOARD)
+		->_addPage(WPSQT_PAGE_OPTIONS, "Options", "Options", "wpsqt-manage", "Options", WPSQT_PAGE_DASHBOARD)
 //		->_addPage(WPSQT_PAGE_MAINTENANCE, 'Maintenance', 'Maintenance', 'wpsqt-manage', 'Maintenance', WPSQT_PAGE_DASHBOARD)
 ;
 
@@ -592,7 +592,7 @@ class Wpsqt_Core {
 					WHERE id_user = ".$id_user." AND franchisee = 1";			
 
 			if ($wpdb->get_var($sql) > 0) {
-				$output = "<h4>Franchise Management</h4>";
+				$output = "<h4>Location Management</h4>";
 				$output.= Wpsqt_System::getStoreTable($id_user);		
 				return $output;
 			}
