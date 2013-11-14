@@ -966,7 +966,7 @@ class Wpsqt_System {
 						$output .= '<form action="" method="POST">
 										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
 										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-										<input type="submit" value="Send Reminder" name="send_reminder" class="button tiny secondary"/>
+										<input type="submit" value="Reminder" name="send_reminder" class="button tiny secondary"/>
 									</form>';
 
 						// Edit button
@@ -1064,12 +1064,17 @@ class Wpsqt_System {
 									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
 									
 									<table>
-									<thead><tr><td colspan=3>New User:</td></tr></thead>
+									<thead><tr><td colspan=2>New Employee Details: </td></tr></thead>
 									<tbody>
 									<tr>
 										<td>Full Name: <input type="text" name="new_name" required/></td>
 										<td>Email: <input type="email" name="new_email" required/></td>
-										<td><input type="submit" value="Add Employee" name="franchisee_add_user" class="button tiny secondary"/></td>
+									</tr>
+									<tr>
+										<td colspan=2>
+										<p>New users will added to the system, and will receive a welcome email with a temporary password. Users already in the system will be assigned to this store.</p>
+										<center><input type="submit" value="Add Employee" name="franchisee_add_user" class="button tiny secondary"/></center>
+										</td>
 									</tr>
 									</tbody></table>
 								</form>
