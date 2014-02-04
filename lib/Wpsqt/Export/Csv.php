@@ -137,30 +137,31 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 			$this->csvLines[] = $line;
 			
 			if ($isFull && $percent > 0) {
-
-				$q = 0;
 				
-				$sql = "SELECT r.id,datetaken,item_id,percentage,sections FROM ".WPSQT_TABLE_RESULTS." r INNER JOIN ".WPSQT_TABLE_QUIZ_SURVEYS." q ON r.item_id=q.id WHERE q.enabled=1 AND user_id=".$user['id']." ORDER BY item_id, percentage ASC";
-				$results = $wpdb->get_results($sql,ARRAY_A);
+				foreach($quizzes as $quiz) {
 				
-				for ($i = 0;$i<count($results);$i++) {
-					if ($i==count($results)-1 || $results[$i]['item_id'] != $results[$i+1]['item_id']) {
-						// next result is a different quiz id => this is the top result for this quiz
-
-						while ($quizzes[$q]['id'] != $results[$i]['item_id']) {
-							// $quizzes $q was skipped, so add "not attempted" line;
-							$this->csvLines[] = ",,,,".$quizzes[$q]['name'].",No attempts";
-							$q++;
-						}
-						
-						
-						
-						$line = ",,,".date('d-m-Y',$results[$i]['datetaken']).",".$quizzes[$q]['name'].",".$results[$i]['percentage']."%,";
+					$sql = "SELECT r.id,datetaken,percentage,sections 
+						FROM ".WPSQT_TABLE_RESULTS." r 
+						INNER JOIN ".WPSQT_TABLE_QUIZ_SURVEYS." q 
+						ON r.item_id=q.id 
+						WHERE q.enabled=1 AND r.item_id=".$quiz['id']." AND r.user_id=".$user['id']." 
+						ORDER BY percentage
+						LIMIT 1";
+					$results = $wpdb->get_results($sql,ARRAY_A);
+					
+// 					var_dump($result);
+				
+					if (count($results) <= 0) {
+						$this->csvLines[] = ",,,,".$quiz['name'].",No attempts";
+					} else {
+						$result = $results[0];
+						$line = ",,,".date('d-m-Y',$result['datetaken']).",".$quiz['name'].",".$result['percentage']."%,";
 						$this->csvLines[] = $line;
-						if ($results[$i]['percentage']<100 && $results[$i]['percentage']>0) {
+
+						if ($result['percentage']<100 && $result['percentage']>0) {
 							// get failed questions
-							$sections = unserialize($results[$i]['sections']);
-							
+							$sections = unserialize($result['sections']);
+						
 							foreach($sections[0]['questions'] as $question) {
 								$questionId = $question['id'];
 								$answer = $sections[0]['answers'][$questionId];
@@ -172,10 +173,6 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 								}
 							}
 						}
-						
-						// done with this question id now... 
-						$q++;
-
 					}
 				}
 			}
