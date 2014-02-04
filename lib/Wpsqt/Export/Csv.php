@@ -155,7 +155,7 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 						$this->csvLines[] = ",,,,".$quiz['name'].",No attempts";
 					} else {
 						$result = $results[0];
-						$line = ",,,".date('d-m-Y',$result['datetaken']).",".$quiz['name'].",".$result['percentage']."%,";
+						$line = ",,,".date('d-m-Y',$result['datetaken']).",".str_replace(",","",$quiz['name']).",".$result['percentage']."%,";
 						$this->csvLines[] = $line;
 
 						if ($result['percentage']<100 && $result['percentage']>0) {
@@ -168,7 +168,7 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 
 								if($answer['mark'] != "correct") {
 									//var_dump($question['name']);
-									$line = ",,,,,,".$question['name'].",".$question['answers'][$answer['given'][0]]['text'];
+									$line = ",,,,,,".str_replace(",","",$question['name']).",".str_replace(",","",$question['answers'][$answer['given'][0]]['text']);
 									$this->csvLines[] = $line;
 								}
 							}
