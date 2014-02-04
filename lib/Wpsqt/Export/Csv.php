@@ -124,7 +124,7 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 			$percent = Wpsqt_System::getEmployeeCompletionRate($user['id'])*100;
 			$line .= $percent."%,";
 
-			$sql = "SELECT datetaken FROM ".WPSQT_TABLE_RESULTS." WHERE user_id=".$user['id']." ORDER BY datetaken DESC";
+			$sql = "SELECT datetaken FROM ".WPSQT_TABLE_RESULTS." r INNER JOIN ".WPSQT_TABLE_QUIZ_SURVEYS." q ON r.item_id=q.id WHERE user_id=".$user['id']." AND q.enabled=1 ORDER BY datetaken DESC";
 			$results = $wpdb->get_results($sql,ARRAY_A);
 
 			if (count($results) > 0) {
@@ -140,7 +140,7 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 
 				$q = 0;
 				
-				$sql = "SELECT id,datetaken,item_id,percentage,sections FROM ".WPSQT_TABLE_RESULTS." WHERE user_id=".$user['id']." ORDER BY item_id, percentage ASC";
+				$sql = "SELECT r.id,datetaken,item_id,percentage,sections FROM ".WPSQT_TABLE_RESULTS." r INNER JOIN ".WPSQT_TABLE_QUIZ_SURVEYS." q ON r.item_id=q.id WHERE q.enabled=1 AND user_id=".$user['id']." ORDER BY item_id, percentage ASC";
 				$results = $wpdb->get_results($sql,ARRAY_A);
 				
 				for ($i = 0;$i<count($results);$i++) {

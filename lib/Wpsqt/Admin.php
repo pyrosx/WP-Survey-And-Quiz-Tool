@@ -272,11 +272,11 @@ END;
 					}
 										
 				}
-// 				echo('<html><body><code style="white-space: pre;">');
-				header("Content-type: application/x-msdownload",true,200);
-				header("Content-Disposition: attachment; filename={$csvExporter->filename}.csv");
-				header("Pragma: no-cache");
-				header("Expires: 0");
+				echo('<html><body><code style="white-space: pre;">');
+// 				header("Content-type: application/x-msdownload",true,200);
+// 				header("Content-Disposition: attachment; filename={$csvExporter->filename}.csv");
+// 				header("Pragma: no-cache");
+// 				header("Expires: 0");
 
 				echo apply_filters('wpsqt-export-csv', implode("\r\n", $lines));
 				exit();
