@@ -5,6 +5,60 @@
 		Online Training - Dashboard
 	</h2>
 
+<?php
+if ($alertOverFailLimit > 0) {
+
+?>
+	<div class="dashboard-box" id="alerts">
+	<h3>Alerts</h3>
+	
+	<table class="overview">
+		<tr>
+			<td>Users locked out of Quiz (more than 5 failures)</td>
+			<td><a href="" id="failDetailsLink"><?php echo $alertOverFailLimit;?></a></td>
+		</tr>
+<!--
+		<tr>
+			<td>Users not started</td>
+			<td><?php //echo $alertEmpNotStarted;?></td>
+		</tr>
+		<tr>
+			<td>Locations with No Passes</td>
+			<td><?php //echo $alertLocNoComplete;?></td>
+		</tr>
+		<tr>
+			<td>Locations with No Starts</td>
+			<td><?php //echo $alertLocNoStarts;?></td>
+		</tr>
+-->		
+	</table>
+
+	<div class="store_table" id="failDetails">
+
+		<p><em>If a user fails a quiz 5 times, they will be blocked from attempting it again, and will be listed here. <br/>
+		The link(s) below can be used to allow one more attempt.</em></p>
+		<table>
+			<thead><th>User</th><th>Store(s)</th><th>Quiz</th><th>Attempts</th><th></th></thead>
+			<?php foreach($failDetails as $detail) { ?>
+			<tr>
+				<td><?php echo $detail['email']?></td>
+				<td><?php echo $detail['store']?></td>
+				<td><?php echo $detail['quiz']?></td>
+				<td><?php echo $detail['attempts']?></td>
+				<td><a href="<?php echo WPSQT_URL_DASHBOARD; ?>&resetFailId=<?php echo $detail['id']?>&resetFailQuiz=<?php echo $detail['id_quiz']?>">Authorise another Attempt</a>
+			</tr>
+			<?php } ?>
+		</table>
+	</div>
+
+
+	</div>
+<?php } ?>
+
+
+	<p class="clear">&nbsp;</p>
+
+
 	<div class="dashboard-box">
 	<h3>Overview</h3>
 	
@@ -31,70 +85,32 @@
 		</tr>
 	</table>
 	</div>
-<?php
-if ($alertOverFailLimit > 0) {
 
-?>
-	<div class="dashboard-box" id="alert-box">
-	<h3>Alerts</h3>
-	
-	<table class="overview">
-		<tr>
-			<td>Users locked out of Quiz (more than 5 failures)</td>
-			<td><a href="" id="failDetailsLink"><?php echo $alertOverFailLimit;?></a></td>
-		</tr>
-<!--
-		<tr>
-			<td>Users not started</td>
-			<td><?php echo $alertEmpNotStarted;?></td>
-		</tr>
-		<tr>
-			<td>Locations with No Passes</td>
-			<td><?php echo $alertLocNoComplete;?></td>
-		</tr>
-		<tr>
-			<td>Locations with No Starts</td>
-			<td><?php echo $alertLocNoStarts;?></td>
-		</tr>
--->		
-	</table>
-	</div>
-<?php } ?>
 
 
 	
 	<div class="dashboard-box">
-		<h3>Tools</h3>
-		<p><a href="">Up-to-date Results, By Store - COMING SOON</a></p>
-		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&wpsqt-download">Export All Results as CSV</a></p>
-		<p><a href="<?php echo WPSQT_URL_DASHBOARD; ?>&subsection=bulkemail">Bulk Email Reminders</a></p>
+		<h3>Reports</h3>
+<!-- 		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&wpsqt-download">Export All Results as CSV</a></p> -->
+		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=stores&wpsqt-download">Stores &amp; Staff</a></p>
+		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=results&wpsqt-download">Results - Overview</a></p>
+		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=results&full&wpsqt-download">Results - Full</a></p>
 	</div>
+	<div class="dashboard-box">
+		<h3>Tools</h3>
+		<p><a href="<?php echo WPSQT_URL_DASHBOARD; ?>&subsection=bulkemail">Emails &amp; Reminders</a></p>
+	</div>
+			
 	
 
 	<p>&nbsp;</p>
 	
-	<div class="store_table" id="failDetails">
-		<h3>Lockout Details</h3>
-		<p>If a user fails a quiz 5 times, they will be blocked from attempting it again, and will be listed here. The link below can be used to allow one more attempt.</p>
-		<table>
-			<thead><th>User</th><th>Store(s)</th><th>Quiz</th><th>Attempts</th><th></th></thead>
-			<?php foreach($failDetails as $detail) { ?>
-			<tr>
-				<td><?php echo $detail['email']?></td>
-				<td><?php echo $detail['store']?></td>
-				<td><?php echo $detail['quiz']?></td>
-				<td><?php echo $detail['attempts']?></td>
-				<td><a href="<?php echo WPSQT_URL_DASHBOARD; ?>&resetFailId=<?php echo $detail['id']?>&resetFailQuiz=<?php echo $detail['id_quiz']?>">Authorise another Attempt</a>
-			</tr>
-			<?php } ?>
-		</table>
-	</div>
 
 
 	<p>&nbsp;</p>
 	<div class="store_table" class="dashboard-box">
 	
-	<h3>Locations</h3>
+	<h3>Location Management</h3>
 	<?php echo Wpsqt_System::getStoreTable(); ?>	
 	</div>
 		

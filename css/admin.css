@@ -13,6 +13,11 @@ div.alignleft a {
 .alert-box.success {
 	background-color: #5da423;
 }
+
+#alerts {
+	margin-bottom: 0;
+}
+
 #bulkemail {
 	width: 600px;
 }
@@ -84,14 +89,19 @@ div.alignleft a {
 .store_table table tr:nth-child(odd), #user_results_table table tr:nth-child(odd){
 	background-color: white;
 }
-
-#alert-box, #failDetails h3 {
+#alerts {
+	width: 90%;
+	background-color: #ffd;
+}
+#alerts h3, #failDetails h3 {
 	color: red;
 }
 #failDetails {
-	width: 80%;
-	clear: both;
+	width: 100%;
 	display: none;
+}
+.clear {
+	clear: both;
 }
 
 

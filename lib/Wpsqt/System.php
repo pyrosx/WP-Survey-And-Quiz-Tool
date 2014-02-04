@@ -730,11 +730,14 @@ class Wpsqt_System {
 	
 	public static function getEmployeeCompletionRate($id_employee) {
 		global $wpdb;			
+		
+		$total = self::getQuizCount();
+		if ($total <= 0) return 0;
+		
 		$sql = "SELECT count(id) FROM `".WPSQT_TABLE_RESULTS."`
 				WHERE user_id=".$id_employee." AND pass = 1";
 		$completions = intval($wpdb->get_var($sql));
 		
-		$total = self::getQuizCount();
 		
 		return floatval($completions / $total);
 	}

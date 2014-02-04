@@ -246,25 +246,41 @@ END;
 	public function download_csv() {
 		if (isset($_GET['wpsqt-download'])) {
 			if (current_user_can('manage_options')) {
+
 				require_once WPSQT_DIR.'lib/Wpsqt/Export/Csv.php';
 				$csvExporter = new Wpsqt_Export_Csv;
 
-				if (isset($_GET['id'])) {
-					$csvExporter->quizId = $_GET['id'];
-					$lines = $csvExporter->generate($_GET['id']);
-					$getid = $_GET['id'];
-				} else {
-					$csvExporter->quizId = false;
-					$lines = $csvExporter->generateAll();
-					$getid = 0;
-				}
 
+				if ($_GET['section'] == "results") {
+					if (isset($_GET['id'])) {
+						$csvExporter->quizId = $_GET['id'];
+						$lines = $csvExporter->generate($_GET['id']);
+						$getid = $_GET['id'];
+					} else {
+						$csvExporter->quizId = false;
+						$lines = $csvExporter->generateAll();
+						$getid = 0;
+					}
+
+					
+				} else if ($_GET['section'] == "report") {
+				
+					if ($_GET['subsection'] == "stores") {
+						$lines = $csvExporter->generateStoreReport();
+					} else if ($_GET['subsection'] == "results") {
+						$lines = $csvExporter->generateResultsReport(isset($_GET['full']));
+					}
+										
+				}
+// 				echo('<html><body><code style="white-space: pre;">');
 				header("Content-type: application/x-msdownload",true,200);
 				header("Content-Disposition: attachment; filename={$csvExporter->filename}.csv");
 				header("Pragma: no-cache");
 				header("Expires: 0");
-				echo apply_filters('wpsqt-export-csv', implode("\r\n", $lines), $getid);
+
+				echo apply_filters('wpsqt-export-csv', implode("\r\n", $lines));
 				exit();
+				
 			}
 		}
 	}

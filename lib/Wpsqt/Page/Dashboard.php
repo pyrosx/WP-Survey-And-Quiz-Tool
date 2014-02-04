@@ -44,8 +44,17 @@ class Wpsqt_Page_Dashboard extends Wpsqt_Page {
 		
 		foreach($query as $res) {
 			$failed = false;
+
 			if(!is_null($res['item_id'])) {
-				$users[$res['ID']][$res['item_id']]['attempts']++;
+				$userId = $res['ID'];
+				$quizId = $res['item_id'];
+
+				if (!isset($users[$userId][$quizId]['attempts'])) {
+					$users[$userId][$quizId]['attempts'] = 0;
+					$users[$userId][$quizId]['fails'] = 0;
+							
+				}
+				$users[$userId][$quizId]['attempts']++;
 				if ($res['pass'] == 0 && $res['status'] != 'rejected') {
 					$users[$res['ID']][$res['item_id']]['fails']++;
 					if (!$failed && $users[$res['ID']][$res['item_id']]['fails'] >= 5) {
@@ -56,7 +65,7 @@ class Wpsqt_Page_Dashboard extends Wpsqt_Page {
 				if ($failed) {
 					$failDetail['id'] = $res['ID'];
 					$failDetail['email'] = $res['user_email'];
-					$failDetail['attempts'] = $users[$res['ID']][$res['item_id']]['attempts'];
+ 					$failDetail['attempts'] = $users[$res['ID']][$res['item_id']]['attempts'];
 
 					$res2 = $wpdb->get_results("SELECT * FROM `".WPSQT_TABLE_EMPLOYEES."` e INNER JOIN `".WPSQT_TABLE_STORES."` s ON s.id = e.id_store WHERE e.id_user = ".$res['ID'],'ARRAY_A');
 					$failDetail['store'] = "";
