@@ -729,6 +729,16 @@ class Wpsqt_System {
 	}
 	
 	public static function getEmployeeCompletionRate($id_employee) {
+		
+		$comprate = get_user_meta($id_employee,'wpsqt_completionrate',true);
+		if ($comprate == "") {
+			self::updateEmployeeCompletionRate($id_employee);
+			$comprate = get_user_meta($id_employee,'wpsqt_completionrate',true);
+		}
+		return $comprate;
+	}
+	
+	public static function updateEmployeeCompletionRate($id_employee) {
 		global $wpdb;			
 		
 		$total = self::getQuizCount();
@@ -736,29 +746,65 @@ class Wpsqt_System {
 		
 		$sql = "SELECT count(id) FROM `".WPSQT_TABLE_RESULTS."`
 				WHERE user_id=".$id_employee." AND pass = 1";
-		$completions = intval($wpdb->get_var($sql));
+		$completions = $wpdb->get_var($sql);
 		
+		$compRate = intval(($completions / $total)*100);
 		
-		return floatval($completions / $total);
+		update_user_meta( $id_employee, 'wpsqt_completionrate', $compRate);
+		
+		// employee completion rate updated - so need to update stores comp rate as well
+		self::updateStoreCompletionRateForEmployee($id_employee);
 	}
+	
 
-	public static function getStoreCompletionRate($id_store, $includesFranchisees = false) {
+	public static function getStoreCompletionRate($id_store, $includesFranchisees = true) {
 		global $wpdb;			
+		
+		$sql = $wpdb->prepare("SELECT completionRate FROM `".WPSQT_TABLE_STORES."` WHERE `id`=%d",array($id_store));
+		$completionRate = $wpdb->get_var($sql);
+
+		if (intval($completionRate) == -1) {
+			self::updateStoreCompletionRate($id_store);			
+			$completionRate = $wpdb->get_var($sql);						
+		}
+		return $completionRate;
+	}
+	
+	public static function updateStoreCompletionRateForEmployee($id_user) {
+		global $wpdb;			
+		
+		$sql = "SELECT id_store FROM `".WPSQT_TABLE_EMPLOYEES."`
+				WHERE id_user=".$id_user;
+		$stores = $wpdb->get_results($sql,'ARRAY_A');
+		
+		foreach ($stores as $id_store) {
+			self::updateStoreCompletionRate($id_store['id_store']);
+		}		
+	}
+	
+	public static function updateStoreCompletionRate($id_store, $includesFranchisees = true) {
+		global $wpdb;
+
 		$sql = "SELECT id_user FROM `".WPSQT_TABLE_EMPLOYEES."` 
-				WHERE id_store=".$id_store;
+					WHERE id_store=".$id_store;
 		if (!$includesFranchisees) {
 			$sql.=" AND franchisee = 0 ";
 		}
 		$employees = $wpdb->get_results($sql,'ARRAY_A');
-		
+	
 		$total = 0;
 		$count = 0;
 		foreach($employees as $employee) {
 			$total += self::getEmployeeCompletionRate($employee['id_user']);
 			$count++;
 		}
-		if ($count <= 0) return 0;
-		return floatval($total/$count);
+		if ($count <= 0) 
+			$storeCompletionRate = 0;
+		else 
+			$storeCompletionRate = $total/$count;
+					
+		$wpdb->query( $wpdb->prepare("UPDATE `".WPSQT_TABLE_STORES."` SET `completionRate`=%d WHERE `id`=%d", 
+							array($storeCompletionRate,$id_store)) );
 	}
 	
 	public static function getOverallCompletionRate() {
@@ -772,10 +818,11 @@ class Wpsqt_System {
 			$count ++;
 		}
 		if ($count == 0) { return 0; }
-		return floatval($total/$count);
+		return $total/$count;
 	}
 	
 	public static function colorCompletionRate($comp) {
+		
 		if (is_float($comp) & $comp <= 1) {
 			$comp = $comp*100;
 		}
@@ -798,6 +845,7 @@ class Wpsqt_System {
 	
 	
 	public static function getStoreTable($id_user = null) {
+				
 		global $wpdb;
 		$output = ""; // start output string
 		
@@ -813,7 +861,6 @@ class Wpsqt_System {
 				return false;
 			}
 		}
-				
 		if(!empty($_POST["franchisee_remove_user"])) {
 			// jquery handles confirm... and it's already happened
 			self::remove_employee($_POST["id_user"],$_POST["id_store"]);
@@ -1011,6 +1058,7 @@ class Wpsqt_System {
 
 				$output .= '<thead><tr><th colspan='.$colspan.'><i>Employees</i></th></tr></thead>';
 			}
+
 			
 			if (count($users) > 0) {
 				$output .= "<thead><tr><th>Name</th><th>Email</th><th>Completion</th><th></th></tr></thead><tbody>"; 
@@ -1020,6 +1068,7 @@ class Wpsqt_System {
 					$output .= '<td><a href="mailto:'.$user['user_email'].'">'.$user['user_email']."</a></td>";
 
 					$output .= "<td>";
+
 					if (is_null($id_user)) {
 						$output .= '<a href="'.WPSQT_URL_EMPLOYEES.'&subsection=results&id_user='.$user['id'].'">';
 						$output .= self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']));
@@ -1034,6 +1083,7 @@ class Wpsqt_System {
 										<input type="submit" value="Results" name="results" class="button tiny secondary"/>
 									</form>';
 					}
+
 					// Reminder button
 					$output .= '<form action="" method="POST">
 									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
@@ -1109,8 +1159,6 @@ class Wpsqt_System {
 		}
 		
 		$output .="</tbody></table>";	
-
-
 		
 		return $output;		
 	}
@@ -1178,10 +1226,10 @@ class Wpsqt_System {
 		return $output;
 	}
 	
-	public function _log($x) {
+	public static function _log($x) {
 		
 		error_log("----------");
-		error_log(wp_get_current_user()->user_email);
+//		error_log(wp_get_current_user()->user_email);
 		if (is_array($x) || is_object($x)) {
 			error_log(print_r($x,true));
 		} else {

@@ -181,6 +181,13 @@ class Wpsqt_Upgrade {
 		if ( version_compare($version, '2.0.0.3') < 0 ){
 			$objUpgrade->addQuery("ALTER TABLE  `".WPSQT_TABLE_RESULTS."` ADD  `score` INT NULL , ADD  `total` INT  NULL , ADD  `percentage` INT NULL","Added scores columns to results");
 		}
+		
+		// this isn't actually going to be used, because i've removed the whole maintenance area from the admin section
+		// I've added the SQL here just as a record of the change I made manually to the one and only instance of this in the wild.
+		if ( version_compare($version, '2.13.2') < 0 ){
+			$objUpgrade->addQuery("ALTER TABLE  `".WPSQT_TABLE_STORES."` ADD  `completionRate` int(11) NOT NULL DEFAULT '-1'","Added completionRate column to Stores");
+		}
+		
 		apply_filters( 'wpsqt_upgrade_object', $objUpgrade, $version );
 	
 		return $objUpgrade;

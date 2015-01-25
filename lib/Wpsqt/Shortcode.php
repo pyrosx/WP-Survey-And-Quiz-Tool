@@ -735,31 +735,15 @@ class Wpsqt_Shortcode {
 					);
 
 			$_SESSION['wpsqt']['result_id'] = $wpdb->insert_id;
+
+			// New results added - update Store completion rate
+			Wpsqt_System::updateEmployeeCompletionRate(wp_get_current_user()->ID);
+			
+			
 		} else {
 			$_SESSION['wpsqt']['result_id'] = null;
 		}
-		/* These emails aren't necessary... or even reasonable!
-		$emailAddress = get_option('wpsqt_contact_email');
 
-		if ( isset($_SESSION['wpsqt'][$quizName]['details']['notificaton_type']) && $_SESSION['wpsqt'][$quizName]['details']['notificaton_type'] == 'instant' ){
-			$emailTrue = true;
-		} elseif ( isset($_SESSION['wpsqt'][$quizName]['details']['notificaton_type']) && $_SESSION['wpsqt'][$quizName]['details']['notificaton_type'] == 'instant-100'
-					&& $percentRight == 100 ) {
-			$emailTrue = true;
-		} elseif ( isset($_SESSION['wpsqt'][$quizName]['details']['notificaton_type']) && $_SESSION['wpsqt'][$quizName]['details']['notificaton_type'] == 'instant-75'
-					 && $percentRight > 75 ){
-			$emailTrue = true;
-		} elseif ( isset($_SESSION['wpsqt'][$quizName]['details']['notificaton_type']) && $_SESSION['wpsqt'][$quizName]['details']['notificaton_type'] == 'instant-50'
-					&& $percentRight > 50 ){
-			$emailTrue = true;
-		} elseif ( isset($_SESSION['wpsqt'][$quizName]['details']['notificaton_type']) && isset($_SESSION['wpsqt'][$quizName]['details']['send_user']) && $_SESSION['wpsqt'][$quizName]['details']['send_user'] == 'yes' ) {
-			$emailTrue = true;
-		}
-
-		if ( isset($emailTrue) ){
-			Wpsqt_Mail::sendMail();
-		}
-		*/
 		
 
 		if ( $this->_type == "survey" || $this->_type == "poll" ){

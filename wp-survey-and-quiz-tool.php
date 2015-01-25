@@ -5,7 +5,7 @@ Plugin URI: http://training.sushiizu.com.au/
 Description: Custom WP Plugin for Online Training with franchisee management
 Author: Daniel Beach
 Author URI: http://pyrosx.com/
-Version: 2.13.1
+Version: 2.13.2
 
 Based on - WP Survey And Quiz Tool
 Copyright (C) 2011  Fubra Limited
@@ -68,7 +68,7 @@ define( 'WPSQT_URL_STORES'           , admin_url('admin.php?page='.WPSQT_PAGE_ST
 define( 'WPSQT_URL_FRANCHISEES'      , admin_url('admin.php?page='.WPSQT_PAGE_FRANCHISEES) );
 define( 'WPSQT_URL_EMPLOYEES'        , admin_url('admin.php?page='.WPSQT_PAGE_EMPLOYEES) );
 define( 'WPSQT_CONTACT_EMAIL'        , 'support@catn.com' );
-define( 'WPSQT_VERSION'              , '2.13.1' );
+define( 'WPSQT_VERSION'              , '2.13.2' );
 define( 'WPSQT_DIR'                  , realpath(dirname(__FILE__)).'/') ;
 define( 'WPSQT_FILE'     , __FILE__ );
 
@@ -196,6 +196,7 @@ function wpsqt_main_install(){
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `location` varchar(255) CHARACTER SET utf8 NOT NULL,
 				  `state` varchar(255) CHARACTER SET utf8 NOT NULL,
+				  `completionRate` int(11) DEFAULT -1,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1") ;
 

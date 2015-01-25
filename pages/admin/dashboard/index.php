@@ -85,9 +85,6 @@ if ($alertOverFailLimit > 0) {
 		</tr>
 	</table>
 	</div>
-
-
-
 	
 	<div class="dashboard-box">
 		<h3>Reports</h3>
@@ -100,13 +97,9 @@ if ($alertOverFailLimit > 0) {
 		<h3>Tools</h3>
 		<p><a href="<?php echo WPSQT_URL_DASHBOARD; ?>&subsection=bulkemail">Emails &amp; Reminders</a></p>
 	</div>
-			
-	
+		
 
 	<p>&nbsp;</p>
-	
-
-
 	<p>&nbsp;</p>
 	<div class="store_table" class="dashboard-box">
 	
