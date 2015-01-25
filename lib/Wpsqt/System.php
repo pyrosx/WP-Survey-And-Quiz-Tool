@@ -598,11 +598,13 @@ class Wpsqt_System {
 			return $res['id'];
 		}
 		
-		
 		$wpdb->query($wpdb->prepare(
 			"INSERT INTO `".WPSQT_TABLE_EMPLOYEES."` (id_user,id_store,franchisee) VALUES (%d,%d,%d)",
 			array($id_user,$id_store,$franchisee)
 		));
+		
+		// Update the store completion rate, in case it's been changed by above
+		self::updateStoreCompletionRate($id_store);
 		
 		return $wpdb->insert_id;
 	}
@@ -612,6 +614,9 @@ class Wpsqt_System {
 			"UPDATE `".WPSQT_TABLE_EMPLOYEES."` SET id_user=%d, id_store=%d WHERE id=%d",
 			array($id_user,$id_store,$id)
 			);
+
+		// Update the store completion rate, in case it's been changed by above		
+		self::updateStoreCompletionRate($id_store);
 		
 		return $wpdb->get_results($sql, ARRAY_A);
 	}
@@ -628,13 +633,22 @@ class Wpsqt_System {
 	*/
 	public static function remove_employee($id_user, $id_store = null) {
 		global $wpdb;			
+		self::_log("remove_employee - id_user=".$id_user.", id_store=".$id_store);
+
 		if ($id_store != null) {
 			$sql = $wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d AND id_store=%d",array($id_user,$id_store));
+			$stores = array(array('id_store'=>$id_store));
 		} else {
+			// need to get and save Stores being affected, so that completion rates can be recalculated after the change
+			$stores = $wpdb->get_results($wpdb->prepare("SELECT id_store FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d",array($id_user)),'ARRAY_A');
 			$sql = $wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_user=%d",array($id_user));
 		}
 		$wpdb->query($sql);
-		self::_log("remove_employee - ".$id_user.", ".$id_store);
+
+		// now recalculate store completion rate for affected stores
+		foreach($stores as $store) {
+			self::updateStoreCompletionRate($store['id_store']);
+		}
 	}
 	
 	/**
@@ -802,7 +816,8 @@ class Wpsqt_System {
 			$storeCompletionRate = 0;
 		else 
 			$storeCompletionRate = $total/$count;
-					
+		self::_log("updateStoreCompletionRate, id_store = ".$id_store.", completionRate = ".$storeCompletionRate);
+		
 		$wpdb->query( $wpdb->prepare("UPDATE `".WPSQT_TABLE_STORES."` SET `completionRate`=%d WHERE `id`=%d", 
 							array($storeCompletionRate,$id_store)) );
 	}

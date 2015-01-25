@@ -5,9 +5,6 @@ class Wpsqt_Page_Dashboard extends Wpsqt_Page {
 	public function process(){
 		global $wpdb;
 
-Wpsqt_System::_log("timer start");
-$start = microtime(true);
-
 		$this->_pageVars = array();
 
 		if(isset($_GET['resetFailId'])) {
@@ -20,17 +17,12 @@ $start = microtime(true);
 
 		}
 
-Wpsqt_System::_log("1 ".(microtime(true)-$start));				
-
-
 		$sql = "SELECT count(id) FROM ".WPSQT_TABLE_STORES;
 		$this->_pageVars['numStores'] = $wpdb->get_var($sql);
-Wpsqt_System::_log("2 ".(microtime(true)-$start));				
 
 		$sql = "SELECT count(DISTINCT id_user) FROM ".WPSQT_TABLE_EMPLOYEES." WHERE franchisee = ";		
 		$this->_pageVars['numFranchisees'] = $wpdb->get_var($sql."1");
 		$this->_pageVars['numEmployees'] = $wpdb->get_var($sql."0");
-Wpsqt_System::_log("3 ".(microtime(true)-$start));				
 		
 		$sql = "SELECT count(s.id) FROM `".WPSQT_TABLE_STORES."` s
 				LEFT JOIN ( SELECT * FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE franchisee=true ) e ON e.id_store = s.id
@@ -39,8 +31,6 @@ Wpsqt_System::_log("3 ".(microtime(true)-$start));
 		$this->_pageVars['numStoresWithoutFranchisees'] = $wpdb->get_var($sql);
 
 		$this->_pageVars['overallCompRate'] = Wpsqt_System::colorCompletionRate( Wpsqt_System::getOverallCompletionRate() );
-Wpsqt_System::_log("4 ".(microtime(true)-$start));				
-
 
 		$query = $wpdb->get_results(
 		"SELECT u.ID, u.user_email, r.item_id, r.pass, r.status FROM `".WPSQT_TABLE_RESULTS."` r
@@ -49,8 +39,6 @@ Wpsqt_System::_log("4 ".(microtime(true)-$start));
 		$users = array();
 		$fails = 0;
 		$failDetails = array();
-
-Wpsqt_System::_log("5 ".(microtime(true)-$start));				
 		
 		foreach($query as $res) {
 			$failed = false;
@@ -94,8 +82,7 @@ Wpsqt_System::_log("5 ".(microtime(true)-$start));
 
 			}
 		}
-		
-Wpsqt_System::_log("6 ".(microtime(true)-$start));				
+
 
 //		print("<pre>");
 //		var_dump($query);
