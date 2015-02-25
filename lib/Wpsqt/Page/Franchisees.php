@@ -1,4 +1,8 @@
 <?php
+// WP_List_Table is not loaded automatically so we need to load it in our application
+if( ! class_exists( 'Employee_List_Table' ) ) {
+    require_once( 'EmployeeListTable.php' );
+}
 
 	/**
 	 * Base page for User/Franchise/Store Management
@@ -11,39 +15,18 @@
 
 class Wpsqt_Page_Franchisees extends Wpsqt_Page {
 
+
+	
 	public function process(){
+	
+		$customTable = new Employee_List_Table();
+		$customTable->prepare_items(true);
+		$this->_pageVars['customtable'] = $customTable;
 
-		global $wpdb;
-
-		$extraWhere = "";
-		
-		if (isset($_GET["location"])) {
-			$extraWhere = " AND store.location = '".$wpdb->escape($_GET["location"])."'";
-		} else if (isset($_GET["state"])) {
-			$extraWhere = " AND store.state = '".$wpdb->escape($_GET["state"])."'";
-		} 
-		
-
-		$sql = "SELECT emp.id AS id, user.id AS id_user, user.display_name As name, store.location, store.state 
-			FROM `".WPSQT_TABLE_EMPLOYEES."` emp
-			INNER JOIN `".WP_TABLE_USERS."` user ON (emp.id_user = user.id)
-			INNER JOIN `".WPSQT_TABLE_STORES."` store ON (emp.id_store = store.id)
-			WHERE emp.franchisee = TRUE
-			".$extraWhere."
-			ORDER BY store.state, store.location";
-			
-		
-		$res = $wpdb->get_results( $sql,ARRAY_A);
-
-		// need to convert state numbers to names here
-		for($i=0;$i<count($res);$i++) {
-			$res[$i]['state'] = Wpsqt_System::getStateName($res[$i]['state']);
-			$res[$i]['completion'] = Wpsqt_System::colorCompletionRate(Wpsqt_System::getEmployeeCompletionRate($res[$i]['id_user']));
-		}
-		$this->_pageVars['franchiseeList'] = $res;
-		
 		$this->_pageView = "admin/franchisees/index.php";
 			
 	}
 
 }
+
+

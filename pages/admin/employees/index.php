@@ -9,8 +9,7 @@
 		<h2 class="nav-tab-wrapper">
 			<a class="nav-tab" href="<?php echo WPSQT_URL_STORES; ?>">Stores</a>
 			<a class="nav-tab" href="<?php echo WPSQT_URL_FRANCHISEES; ?>">Franchisees</a>
-			<a class="nav-tab <?php if ($_GET['location']!="Corporate Stores") { echo "nav-tab-active"; }?>" href="<?php echo WPSQT_URL_EMPLOYEES; ?>">Employees</a>
-			<a class="nav-tab <?php if ($_GET['location']=="Corporate Stores") { echo "nav-tab-active"; }?>" href="<?php echo WPSQT_URL_EMPLOYEES; ?>&location=Corporate Stores">Corporate Employees</a>
+			<a class="nav-tab nav-tab-active" href="<?php echo WPSQT_URL_EMPLOYEES; ?>">Employees</a>
 		</h2>
 	</div>
 
@@ -18,25 +17,17 @@
 		Add Employee
 	</a></h2>
 
-	<?php	
-	if (isset($_GET["state"]) || isset($_GET["location"])) {
+	<form method="post">
+		<input type="hidden" name="page" value="custom_list_table" />
+		<?php $customtable->search_box('Search', 'search_id'); ?>
+	
+	<?php
+	$customtable->display();
 	?>
-	<h3>Filter: 
-	<?php
-		if (isset($_GET["state"])) { ?>
-			State = <?php echo $_GET["state"] ?>
-			
-		<?php 
-		} else if (isset($_GET["location"])) { ?>
-			Store = <?php echo $_GET["location"] ?>
-			
-		<?php
-		} ?>
-		 - <a href="<?php echo WPSQT_URL_EMPLOYEES; ?>">Clear</a></h3>
-	<?php
-	} ?>
+	</form>
 
 
+<!--
 	<table class="widefat post">
 		<thead>
 			<tr>
@@ -82,7 +73,7 @@
 				}?>
 		</tbody>
 	</table>
-	
+-->
 	<h2><a href="<?php echo WPSQT_URL_EMPLOYEES; ?>&section=addnew" class="button add-new-h2">
 		Add Employee
 	</a></h2>

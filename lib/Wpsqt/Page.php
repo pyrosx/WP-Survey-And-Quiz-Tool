@@ -1,5 +1,8 @@
 <?php
 
+
+
+
 	/**
 	 * The master class for Page classes 
 	 * 
@@ -37,6 +40,8 @@ abstract class Wpsqt_Page {
 	 * @since 2.0
 	 */
 	protected $_pageVars  = array();
+	
+	protected $_list_table;
 	
 	/**
 	 * Sets up the default values for the 
@@ -126,3 +131,6 @@ abstract class Wpsqt_Page {
 		return;
 	}
 }
+
+
+

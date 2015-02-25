@@ -888,7 +888,7 @@ class Wpsqt_System {
 				$franchisee = true;
 			}
 			if (self::add_user($_POST['id_store'],$_POST['new_name'],$_POST['new_email'],$franchisee) != 0) {							
-				$output .= '<div class="alert-box success">User added. Invitation email sent.</div>';
+				$output .= '<div class="alert-box success">User added</div>';
 			} else {
 				$output .= '<div class="alert-box">An error occurred while adding user</div>';
 			}

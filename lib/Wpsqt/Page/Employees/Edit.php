@@ -14,7 +14,7 @@ class Wpsqt_Page_Employees_Edit extends Wpsqt_Page {
 		global $wpdb;
 
 		if (isset($_GET['action']) && $_GET['action'] == 'delete') { //DELETE
-			// delete store clicked
+			// delete clicked
 		
 			if ( $_SERVER['REQUEST_METHOD'] != "POST" ){
 			
