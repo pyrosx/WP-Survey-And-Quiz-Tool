@@ -791,6 +791,7 @@ class Wpsqt_System {
 			self::updateEmployeeCompletionRate($id_employee);
 			$comprate = get_user_meta($id_employee,'wpsqt_completionrate',true);
 		}
+		if ($compRate > 100) $compRate = 100;
 		return $comprate;
 	}
 	
@@ -805,6 +806,7 @@ class Wpsqt_System {
 		$completions = $wpdb->get_var($sql);
 		
 		$compRate = intval(($completions / $total)*100);
+		if ($compRate > 100) $compRate = 100;
 		
 		update_user_meta( $id_employee, 'wpsqt_completionrate', $compRate);
 				
@@ -884,7 +886,7 @@ class Wpsqt_System {
 		global $wpdb;
 
 		// no point doing anything if completion rate isn't 100%
-		if (self::getEmployeeCompletionRate($id_employee) != 100) {
+		if (self::getEmployeeCompletionRate($id_employee) < 100) {
 			return 0;
 		}
 
@@ -1119,7 +1121,7 @@ class Wpsqt_System {
 										<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
 									</form>';
 						// Certificate button
-						if (self::getEmployeeCompletionRate($user['id']) == 100) {
+						if (self::getEmployeeCompletionRate($user['id']) <= 100) {
 							$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
 							$output .= '<input type="hidden" name="completed_date" value="'.self::getEmployeeCompletedDate($user['id']).'"/>';
 							$output .= '<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>';
@@ -1206,7 +1208,7 @@ class Wpsqt_System {
 									<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
 								</form>';
 					// Certificate button
-					if (self::getEmployeeCompletionRate($user['id']) == 100) {
+					if (self::getEmployeeCompletionRate($user['id']) <= 100) {
 						$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
 						$output .= '<input type="hidden" name="completed_date" value="'.self::getEmployeeCompletedDate($user['id']).'"/>';
 						$output .= '<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>';
