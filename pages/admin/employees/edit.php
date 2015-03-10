@@ -3,8 +3,8 @@
 
 	<?php if ( isset($successMessage) ) {?>
 		<div class='updated'><?php echo $successMessage; ?></div>
-				
 	<?php } ?>
+				
 	<div id="icon-tools" class="icon32"></div>
 	<h2>
 		Online Training - Edit Employee

@@ -661,32 +661,71 @@ class Wpsqt_System {
 		$id_user = 0;
 
 		$user = get_user_by('email',$new_email);
+		if (!$user) {
+			// try again, but attempt to match email address against user_login
+			
+			//// This was a bit of a weird one, but occurred in the wild.
+			//// A user had changed their email address, but still had the original email address set as their user_login (which can't be changed by normal methods)
+			//// When the original was used to try to add the user to a store, it didn't show up as an existing user because the email field didn't match
+			//// But also couldn't be created as a new user, because the user_login was already taken.
+			//// By checking the existing users again against the login field, we end up finding the existing account - the only weird thing left is that the
+			//// NEW email address will be displayed, not the one typed in.... but this was updated, so is hopefully more current anyway? Ugh!
+						
+			$user = get_user_by('login',$new_email);
+		}
+		
 		if ($user) {
 			// user exists, add employee to store
 			$id_user = $user->ID;
 			self::_log(array("add user, already exists",$new_name,$new_email,"user id = ".$user->ID,"store = ".$id_store,"franchisee = ".strval($franchisee)));
 
+			$message = "A User with the specified Email address already exists.";
 		} else {
 			// new user needs creating
 			$random_password = wp_generate_password();
 			$id_user = wp_insert_user( array (
 				'user_pass' => $random_password,
-				'user_name' => $new_email,
 				'user_login' => $new_email,
 				'user_email' => $new_email,
 				'display_name' => $new_name
 			) ) ;
+
+			if( is_wp_error($id_user) ) {
+				self::_log($id_user->get_error_messages());
+				$message = "Unable to create new user. ";
+				foreach($id_user->get_error_messages() as $errmsg) {
+					$message .= $errmsg;
+				}
+				return array ('success' => false, 'message' => $message);
+			}
+
 			wp_new_user_notification($id_user,$random_password);
 			self::_log(array("add user, new user created",$new_name,$new_email,"user id = ".$id_user,"store = ".$id_store,"franchisee = ".strval($franchisee)));
-		}
 
-		if ($franchisee) {
-			return self::add_franchisee($id_user,$id_store);
+			$message = "New User created. Invitation email sent.";
+			
+		}
+	
+		$add_return = self::add_employee($id_user,$id_store,$franchisee);
+		if ($add_return) {
+			$message .= " User added to store successfully.";
 		} else {
-			return self::add_employee($id_user,$id_store);
-		}		
+			$message .= " There was a problem adding the User to the specified Store.";
+		}
+		return array('success' => $add_return, 'message' => $message);
+		
 	}
 	
+	public static function reset_user_password($id_user) {
+		$random_password = wp_generate_password();
+		
+		wp_set_password($random_password, $id_user);
+		
+		wp_new_user_notification($id_user,$random_password);
+		
+		self::_log(array("reset user password, email sent","user id = ".$id_user));
+
+	}
 
 	public static function add_store($store, $state) {
 		global $wpdb;	
@@ -712,7 +751,10 @@ class Wpsqt_System {
 	}
 	public static function remove_store($id_store) {
 		global $wpdb;
-		$wpdb->query("DELETE FROM `".WPSQT_TABLE_STORES."` WHERE id=".$id_store);
+		// remove all related records from employee table
+		$wpdb->query($wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_store = %d", array($_GET['id'])));
+		// then remove record from store table
+		$wpdb->query($wpdb->prepare("DELETE FROM `".WPSQT_TABLE_STORES."` WHERE id = %d", array($_GET['id'])));
 	}
 
 	public static function getUsersForSelect() {
@@ -765,7 +807,7 @@ class Wpsqt_System {
 		$compRate = intval(($completions / $total)*100);
 		
 		update_user_meta( $id_employee, 'wpsqt_completionrate', $compRate);
-		
+				
 		// employee completion rate updated - so need to update stores comp rate as well
 		self::updateStoreCompletionRateForEmployee($id_employee);
 	}
@@ -836,6 +878,28 @@ class Wpsqt_System {
 		return $total/$count;
 	}
 	
+	// finds and returns the date of completion for the given user id
+	// returns 0 if employee hasn't completed training
+	public static function getEmployeeCompletedDate($id_employee) {
+		global $wpdb;
+
+		// no point doing anything if completion rate isn't 100%
+		if (self::getEmployeeCompletionRate($id_employee) != 100) {
+			return 0;
+		}
+
+		$completed_date = get_user_meta($id_employee,'wpsqt_completedDate',true);
+
+		// no completed date stored... need to calculate and store it
+		if ($completed_date == "") {
+				$completed_date = $wpdb->get_var("SELECT datetaken FROM `".WPSQT_TABLE_RESULTS."` WHERE user_id = '".$id_employee."' AND pass=1 ORDER BY datetaken DESC LIMIT 1 ");
+				update_user_meta( $id_employee, 'wpsqt_completedDate', $completed_date);
+				self::_log(array("user_meta updated, wpsqt_completedDate",$id_employee,$completed_date));
+		}
+		return $completed_date;
+		
+	}
+	
 	public static function colorCompletionRate($comp) {
 		
 		if (is_float($comp) & $comp <= 1) {
@@ -887,11 +951,10 @@ class Wpsqt_System {
 			if (!empty($_POST["add_franchisee"])) {
 				$franchisee = true;
 			}
-			if (self::add_user($_POST['id_store'],$_POST['new_name'],$_POST['new_email'],$franchisee) != 0) {							
-				$output .= '<div class="alert-box success">User added</div>';
-			} else {
-				$output .= '<div class="alert-box">An error occurred while adding user</div>';
-			}
+			$ret = self::add_user($_POST['id_store'],$_POST['new_name'],$_POST['new_email'],$franchisee);
+			$output .= '<div class="alert-box';
+			if ($ret['success']) { $output .= " success"; }
+			$output .= '">'.$ret['message'].'</div>';
 		}
 		if (!empty($_POST["remove_store"])) {
 			self::remove_store($_POST['id_store']);
@@ -900,6 +963,10 @@ class Wpsqt_System {
 		if (!empty($_POST['send_reminder'])) {
 			wpqst_reminder_email($_POST['id_user']);
 			$output .= '<div class="alert-box success">Reminder sent</div>';
+		}
+		if (!empty($_POST['reinvite'])) {
+			self::reset_user_password($_POST['id_user']);
+			$output .=  '<div class="alert-box success">Password reset and email sent</div>';
 		}
 		
 		$new_store_display = "none";
@@ -991,7 +1058,7 @@ class Wpsqt_System {
 						
 			if (is_null($id_user)) {
 
-				// remove Store Button
+				// "remove Store" Button
 				$output .= '<thead><tr><td colspan='.$colspan.'>
 					<form action="" method="POST">
 						<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
@@ -1033,7 +1100,12 @@ class Wpsqt_System {
 										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
 										<input type="submit" value="Reminder" name="send_reminder" class="button tiny secondary"/>
 									</form>';
-
+						// Reinvite button
+						$output .= '<form action="" method="POST">
+										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+										<input type="submit" value="Reinvite" name="reinvite" class="button tiny secondary"/>
+									</form>';
 						// Edit button
 						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
 							<input type="hidden" name="user_id" value="'.$user['id'].'">
@@ -1046,6 +1118,15 @@ class Wpsqt_System {
 										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
 										<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
 									</form>';
+						// Certificate button
+						if (self::getEmployeeCompletionRate($user['id']) == 100) {
+							$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
+							$output .= '<input type="hidden" name="completed_date" value="'.self::getEmployeeCompletedDate($user['id']).'"/>';
+							$output .= '<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>';
+							$output .= '<input type="submit" class="button tiny secondary" value="Generate Certificate"/>';
+							$output .= '</form>';
+						}	
+
 						$output .= "</td></tr>";
 					}
 				} else {
@@ -1103,9 +1184,14 @@ class Wpsqt_System {
 					$output .= '<form action="" method="POST">
 									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
 									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-									<input type="submit" value="Send Reminder" name="send_reminder" class="button tiny secondary"/>
+									<input type="submit" value="Reminder" name="send_reminder" class="button tiny secondary"/>
 								</form>';
-
+					// Reinvite button
+					$output .= '<form action="" method="POST">
+									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
+									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+									<input type="submit" value="Reinvite" name="reinvite" class="button tiny secondary"/>
+								</form>';
 					// Edit button
 					if (is_null($id_user)) {
 						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
@@ -1119,6 +1205,14 @@ class Wpsqt_System {
 									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
 									<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
 								</form>';
+					// Certificate button
+					if (self::getEmployeeCompletionRate($user['id']) == 100) {
+						$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
+						$output .= '<input type="hidden" name="completed_date" value="'.self::getEmployeeCompletedDate($user['id']).'"/>';
+						$output .= '<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>';
+						$output .= '<input type="submit" class="button tiny secondary" value="Generate Certificate"  style="margin-bottom: 5px; margin-top: 8px"/>';
+						$output .= '</form>';
+					}
 					$output .= "</td></tr>";
 				}
 			} else {

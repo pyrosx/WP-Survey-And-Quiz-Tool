@@ -15,12 +15,16 @@ if( ! class_exists( 'Employee_List_Table' ) ) {
 
 class Wpsqt_Page_Employees extends Wpsqt_Page {
 
-
-	
 	public function process(){
 	
 		$customTable = new Employee_List_Table();
-		$customTable->prepare_items(false);
+		if (isset($_GET['inactive']) && $_GET['inactive'] == 'true') {
+			// inactive employees table	
+			$customTable->prepare_items(false, true);
+		} else {
+			// normal employee table
+			$customTable->prepare_items(false);
+		}
 		$this->_pageVars['customtable'] = $customTable;
 
 		$this->_pageView = "admin/employees/index.php";

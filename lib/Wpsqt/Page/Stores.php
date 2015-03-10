@@ -46,9 +46,11 @@ class Store_List_Table extends WP_List_Table {
         $columns = array(
 			'cb'        		=> '<input type="checkbox" />',
             'id'         		=> 'ID',
-            'location'			=> 'Location',
-            'state'    			=> 'State',
-            'completionRate'	=> 'Completion Rate'
+            'storelocation'		=> 'Location',
+            'storestate'    	=> 'State',
+            'completionRate'	=> 'Completion',
+            'employees'			=> 'Employees',
+            'franchisees'		=> 'Franchise Owners',
         );
 
         return $columns;
@@ -59,36 +61,48 @@ class Store_List_Table extends WP_List_Table {
 	}
 	public function get_sortable_columns() {
 		return array(
-			'location' => array('location', false),
-			'state' => array('state',true),
-			'completionRate' => array('completionRate',false)
+			'storelocation' => array('storelocation', false),
+			'storestate' => array('storestate',true),
+			'completionRate' => array('completionRate',false),
+			'employees' => array('employees',false),
+			'franchisees' => array('franchisees',false)
 		);
 	}
 
-	function column_location($item) {
+	function column_storelocation($item) {
 		$actions = array(
 			'edit'      			=> sprintf('<a href="'.WPSQT_URL_STORES.'&section=edit&id='.$item['id'].'">Edit</a>'),
-			'Add Franchise Owner'	=> sprintf('<a href="'.WPSQT_URL_FRANCHISEES.'&section=addnew&id_store='.$item['id'].'">Add Franchisee</a>'),
-			'Add Employee' 			=> sprintf('<a href="'.WPSQT_URL_EMPLOYEES.'&section=addnew&id_store='.$item['id'].'">Add User</a>'),
-			'delete'    			=> sprintf('<a href="'.WPSQT_URL_STORES.'&section=edit&action=delete&id='.$item['id'].'">Remove</a>')
+			'Add Franchise Owner'	=> sprintf('<a href="'.WPSQT_URL_FRANCHISEES.'&section=addnew&id_store='.$item['id'].'">Add Franchise Owner</a>'),
+			'Add Employee' 			=> sprintf('<a href="'.WPSQT_URL_EMPLOYEES.'&section=addnew&id_store='.$item['id'].'">Add Employee</a>'),
+			'delete'    			=> sprintf('<a href="'.WPSQT_URL_STORES.'&section=edit&action=delete&id='.$item['id'].'">Delete</a>')
 		);
 
 		return sprintf(
-			'<a href="%s&location=%s">%s</a> %s',WPSQT_URL_EMPLOYEES,$item['location'],$item['location'], $this->row_actions($actions) 
+//			'<a href="%s&location=%s">%s</a> %s',WPSQT_URL_EMPLOYEES,$item['location'],$item['location'], $this->row_actions($actions) 
+			'%s %s',$item['storelocation'], $this->row_actions($actions) 
 		);
 		
 	}
-	function column_state($item) {
-		$state = Wpsqt_System::getStateName($item['state']);
+	function column_storestate($item) {
+		$state = Wpsqt_System::getStateName($item['storestate']);
 		return sprintf(
 			'<a href="%s&state=%s">%s</a>',WPSQT_URL_STORES,$state,$state
 		);
 	}
 	function column_completionRate($item) {
+		return Wpsqt_System::colorCompletionRate($item['completionRate']);
+	}
+	function column_employees($item) {
 		return sprintf(
-			'<a href="%s&location=%s">%s</a>',WPSQT_URL_EMPLOYEES,$item['location'],Wpsqt_System::colorCompletionRate($item['completionRate'])
+			'<a href="%s&location=%s">%s</a>',WPSQT_URL_EMPLOYEES,$item['storelocation'],$item['employees'] 
 		);
 	}
+	function column_franchisees($item) {
+		return sprintf(
+			'<a href="%s&location=%s">%s</a>',WPSQT_URL_FRANCHISEES,$item['storelocation'],$item['franchisees'] 
+		);
+	}
+	
 	function get_bulk_actions() {
 		$actions = array(
 			'delete'    => 'Remove'
@@ -104,9 +118,11 @@ class Store_List_Table extends WP_List_Table {
     {
         switch( $column_name ) {
             case 'id':
-            case 'location':
-            case 'state':
+            case 'storelocation':
+            case 'storestate':
             case 'completionRate' :
+            case 'employees' :
+            case 'franchisees' :
                 return $item[ $column_name ];
 
             default:
@@ -118,10 +134,8 @@ class Store_List_Table extends WP_List_Table {
     private function table_data() {
     	global $wpdb;
 
-		
 		// process bulk action - delete
 		if ($this->current_action()) {			
-		
 			if ($this->current_action() == "delete") {
 				foreach ($_POST['id'] AS $id) {
 					Wpsqt_System::_log("bulk remove store id=".$id);
@@ -143,7 +157,9 @@ class Store_List_Table extends WP_List_Table {
 
 
 		$orderby = "";
-		if (isset($_GET['orderby']) && $_GET['orderby'] != 'completion') {
+
+		if (isset($_GET['orderby']) && $_GET['orderby'] != 'employees' && $_GET['orderby'] != 'franchisees') {
+
 			$orderby = $_GET['orderby']." ".$_GET['order'];
 			
 			// manually add location to end of state search, or things look weird
@@ -154,7 +170,7 @@ class Store_List_Table extends WP_List_Table {
 			$orderby ="state, location";
 		}
 
-		$sql = "SELECT id, location, state, completionRate 
+		$sql = "SELECT id, location as storelocation, state as storestate, completionRate 
 			FROM `".WPSQT_TABLE_STORES."`
 			WHERE 1=1
 			".$search."
@@ -163,6 +179,26 @@ class Store_List_Table extends WP_List_Table {
 		//Wpsqt_System::_log($sql);
 						
 		$res = $wpdb->get_results( $sql,ARRAY_A);
+		
+		foreach($res as &$r) {
+			$r['employees'] = Wpsqt_System::getEmployeeCount($r['id']);
+			$r['franchisees'] = Wpsqt_System::getFranchiseeCount($r['id']);
+		}
+		
+		// and if required sort by completion here
+		if (isset($_GET['orderby']) && $_GET['orderby'] == 'employees') {
+			if ($_GET['order'] == "asc")
+				usort($res,"cmp");
+			else
+				usort($res,"cmpR");
+		}
+		// and if required sort by completion here
+		if (isset($_GET['orderby']) && $_GET['orderby'] == 'franchisees') {
+			if ($_GET['order'] == "asc")
+				usort($res,"cmp2");
+			else
+				usort($res,"cmp2R");
+		}
 		
 		$perPage = 20;
         $currentPage = $this->get_pagenum();
@@ -178,4 +214,19 @@ class Store_List_Table extends WP_List_Table {
 		
 		return $res;	
 	}
+}
+
+/// So... doubling up on an already probably-not-right way of doing things.... sorry!?
+
+function cmp($a, $b) {
+	return $a["employees"] > $b["employees"];	
+}
+function cmpR($a, $b) {
+	return $a["employees"] < $b["employees"];	
+}
+function cmp2($a, $b) {
+	return $a["franchisees"] > $b["franchisees"];	
+}
+function cmp2R($a, $b) {
+	return $a["franchisees"] < $b["franchisees"];	
 }

@@ -108,6 +108,41 @@ $role->add_cap('list_users');
 $role->add_cap('edit_users');
 
 
+// remove some weird/useless options from the user edit page
+remove_action("admin_color_scheme_picker", "admin_color_scheme_picker");
+
+function remove_contactmethods($contactmethods ) {
+  // Remove AIM, Yahoo IM, Google Talk/Jabber
+  unset($contactmethods['aim']);
+  unset($contactmethods['website']);
+  unset($contactmethods['yim']);
+  unset($contactmethods['jabber']);
+  // make it go!
+  return $contactmethods;
+}
+add_filter( 'user_contactmethods', 'remove_contactmethods' );
+
+if ( ! function_exists( 'cor_remove_personal_options' ) ) {
+  /**
+   * Removes the leftover 'Visual Editor', 'Keyboard Shortcuts' and 'Toolbar' options.
+   */
+  function cor_remove_personal_options( $subject ) {
+    $subject = preg_replace( '#<h3>Personal Options</h3>.+?/table>#s', '', $subject, 1 );
+    return $subject;
+  }
+
+  function cor_profile_subject_start() {
+    ob_start( 'cor_remove_personal_options' );
+  }
+
+  function cor_profile_subject_end() {
+    ob_end_flush();
+  }
+}
+add_action( 'admin_head-user-edit.php', 'cor_profile_subject_start' );
+add_action( 'admin_footer-user-edit.php', 'cor_profile_subject_end' );
+
+
 /**
  * Class for Installing plugin on activation.
  *

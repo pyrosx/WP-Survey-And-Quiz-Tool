@@ -24,17 +24,31 @@
 		<table>
 			<!-- User - select box (OR brand new user) -->
 			<tr><td>User</td>
-			<td>
-				<select name="wpqst_franchisee_user">
-				
+				<td><select name="wpqst_franchisee_user"  onchange="getval(this);">
 					<?php 
-					echo Wpsqt_System::addOption("","");
+					echo Wpsqt_System::addOption(-1,"Add New User...");
 					foreach($users as $user) {
 						echo Wpsqt_System::addOption($user['id'],$user['display_name'],$id_user);
 					}?>
 				</select>
-			</td>
+			</td></tr>
+
+			<tr><td>&nbsp;</td>
+				<td>
+					<table id="new_user" style="display:<?php echo $id_user ? 'none' : 'table';?>">			
+					<tr><td>User name</td>
+					<td>
+						<input type="text" name="user_name" value=""/>
+					</td>
+					</tr>
+					<tr><td>Email</td>
+					<td>
+						<input type="email" name="user_email" value=""/>
+					</td>
+					</tr></table>
+				</td>
 			</tr>
+
 			<!-- Store - select box (OR new store) -->
 			<tr><td>Store</td>
 			<td>
@@ -58,3 +72,15 @@
 	
 	
 </div>	
+
+<script type="text/javascript">
+    function getval(sel) {
+    	if(sel.value==-1) {
+    		// create new user selected
+		   //alert(sel.value);
+		   document.getElementById('new_user').style.display = 'table';
+       } else {
+		   document.getElementById('new_user').style.display = 'none';
+       }
+    }
+</script>

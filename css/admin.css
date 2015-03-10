@@ -105,3 +105,28 @@ div.alignleft a {
 }
 
 
+.column-name .row-actions, .column-storelocation .row-actions {
+	width: 400%;
+}
+.widefat td.column-name, .widefat td.column-storelocation {
+	overflow: visible !important;
+}
+.column-name {
+	width: 25%;
+}
+.column-email {
+	width: 25%;
+}
+.column-completion {
+	width: 10%;
+}
+
+.column-storestate {
+	width: 25%;
+}
+.column-storelocation {
+	width: 25%;
+}
+.column-completionRate {
+	width: 10%;
+}

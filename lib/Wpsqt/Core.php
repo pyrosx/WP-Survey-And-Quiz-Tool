@@ -26,6 +26,8 @@ class Wpsqt_Core {
 		->_addPage(WPSQT_PAGE_STORES, 'Stores', 'Stores', 'wpsqt-manage', 'Stores', WPSQT_PAGE_DASHBOARD)
 		->_addPage(WPSQT_PAGE_FRANCHISEES, 'Franchise Owners', 'Franchise Owners', 'wpsqt-manage', 'Franchisees', WPSQT_PAGE_DASHBOARD)
 		->_addPage(WPSQT_PAGE_EMPLOYEES, 'Employees', 'Employees', 'wpsqt-manage', 'Employees', WPSQT_PAGE_DASHBOARD)
+		->_addPage(WPSQT_PAGE_EMPLOYEES.'&inactive=true', 'Inactive', 'Inactive', 'wpsqt-manage', 'Inactive', WPSQT_PAGE_DASHBOARD)
+				
 //		->_addPage(WPSQT_PAGE_OPTIONS, "Options", "Options", "wpsqt-manage", "Options", WPSQT_PAGE_DASHBOARD)
 //		->_addPage(WPSQT_PAGE_MAINTENANCE, 'Maintenance', 'Maintenance', 'wpsqt-manage', 'Maintenance', WPSQT_PAGE_DASHBOARD)
 ;
@@ -520,19 +522,26 @@ class Wpsqt_Core {
 				}
 				$output .= "</tbody></table>";
 				
-			
+				// todo idea!
+				// sanity check - calculate completion rate in loop above... and then check it against the user_meta one
+				$meta_completed_date = get_user_meta(wp_get_current_user()->ID,'wpsqt_completedDate',true);
+				if ($meta_completed_date = "" || $meta_completed_date != $completed_date) {
+					// meta empty               or   doesn't match
+					update_user_meta( wp_get_current_user()->ID, 'wpsqt_completedDate', $meta_completed_date);
+					$completed_date = $meta_completed_date;
+				}
+
 				if ($completed) {
 
-				// pdf certificate
-				// if 100% completed
-
+					// pdf certificate
+					// if 100% completed		
 					$display_name = wp_get_current_user()->user_firstname .' '.wp_get_current_user()->user_lastname;
 					if ($display_name == ' ') {
 						$display_name = wp_get_current_user()->display_name;
 					}
 
 					$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
-					$output .= '<input type="hidden" name="completed_date" value="'.date('l jS \of F Y',$completed_date).'"/>';
+					$output .= '<input type="hidden" name="completed_date" value="'.$completed_date.'"/>';
 					$output .= '<input type="hidden" name="display_name" value="'.$display_name.'"/>';
 					$output .= '<input type="submit" class="button expand success" value="Training Complete! Download Certificate"/>';
 					$output .= '</form>';

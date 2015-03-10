@@ -21,13 +21,12 @@ class Wpsqt_Page_Stores_Edit extends Wpsqt_Page {
 				$result = $wpdb->get_row( $wpdb->prepare("SELECT location,state FROM `".WPSQT_TABLE_STORES."` WHERE id = %d",array($_GET['id'])),ARRAY_A);
 
 				$this->_pageVars['title'] = "Store";
-				$this->_pageVars['description'] = "Store: ".$result['location'].", ".$result['state'];												
+				$this->_pageVars['description'] = "Store: ".$result['location'].", ".Wpsqt_System::getStateName($result['state']);
 				$this->_pageView = "admin/store/delete.php";
 				return;
 			}
 		
-		
-			$wpdb->query($wpdb->prepare("DELETE FROM `".WPSQT_TABLE_STORES."` WHERE id = %d", array($_GET['id'])));
+			Wpsqt_System::remove_store($_GET['id']);
 	
 			$this->_pageView ="admin/misc/redirect.php";					
 			$this->_pageVars['redirectLocation'] = WPSQT_URL_STORES;	

@@ -7,11 +7,17 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 class Employee_List_Table extends WP_List_Table {
 
 	protected $isFranchiseOwner = 'FALSE';
-	
-	public function prepare_items($isFranchisee) {
+	protected $isInactive;
+		
+	public function prepare_items($isFranchisee, $isInactive = false) {
 	
         $this->isFranchiseOwner = $isFranchisee ? 'TRUE' : 'FALSE';
         $this->page_url = $isFranchisee ? WPSQT_URL_FRANCHISEES : WPSQT_URL_EMPLOYEES;
+	
+		if ($isInactive) { 
+			$this->isInactive = true;
+			$this->page_url = WPSQT_URL_EMPLOYEES."&inactive=true";
+		}
 	
         $columns = $this->get_columns();
         $hidden = $this->get_hidden_columns();
@@ -29,10 +35,14 @@ class Employee_List_Table extends WP_List_Table {
             'id'         	=> 'ID',
             'id_user'       => 'User ID',
             'name' 			=> 'Name',
-            'completion'	=> 'Completion',
-            'location'		=> 'Location',
-            'state'    		=> 'State'
+            'email'			=> 'Email',
+            'completion'	=> 'Completion'
         );
+        
+        if (!$this->isInactive) {		
+			$columns['location'] = 'Location';
+			$columns['state'] = 'State';
+        }
 
         return $columns;
     }    
@@ -43,6 +53,7 @@ class Employee_List_Table extends WP_List_Table {
 	public function get_sortable_columns() {
 		return array(
 			'name' => array('name', false),
+			'email' => array('email',false),
 			'completion' => array('completion',false),
 			'location' => array('location', false),
 			'state' => array('state',true)
@@ -51,15 +62,31 @@ class Employee_List_Table extends WP_List_Table {
 	function column_name($item) {
 		$actions = array(
 			'results' 	=> sprintf('<a href="'.WPSQT_URL_EMPLOYEES.'&subsection=results&id_user=%d">Results</a>',$item['id_user']),
-			'edit'      => sprintf('<a href="'.$this->page_url.'&section=edit&id=%d">Edit</a>',$item['id']),
-			'delete'    => sprintf('<a href="'.$this->page_url.'&section=edit&action=delete&id=%d">Remove</a>',$item['id'])
-		);
-
+			'edit'      => sprintf('<a href="'.admin_url('user-edit.php').'?user_id=%d">Edit Profile</a>',$item['id_user']),		
+			'remind' 	=> sprintf('<a href="'.$this->page_url.'&subsection=remind&id_user=%d">Send Reminder</a>',$item['id_user']),	
+			'reinvite' 	=> sprintf('<a href="'.$this->page_url.'&subsection=reinvite&id_user=%d">Reset and reinvite</a>',$item['id_user']),
+			'certificate' => sprintf('<a href="%s?display_name=%s&completed_date=%d">Certificate</a>',plugins_url('cert/pdf.php',WPSQT_FILE),$item['name'],Wpsqt_System::getEmployeeCompletedDate($item['id_user'])),
+			'add'		=> sprintf('<a href="'.$this->page_url.'&subsection=addnew&id_user=%d">Add to other store</a>',$item['id_user']),
+			'remove'    => sprintf('<a href="'.$this->page_url.'&section=edit&action=remove&id=%d">Remove from store</a>',$item['id']),
+			'delete'	=> sprintf('<a href="'.$this->page_url.'&section=edit&action=delete&id_user=%d">Delete</a>',$item['id_user'])
+		);	
+		
+		// remove reminder link if completion is at 100%
+		if ($item['completion']==100) 
+			unset($actions['remind']);
+		else 
+			unset($actions['certificate']);
+		
+		// Fix a few things for Inactive page
+		if ($this->isInactive) {
+			unset($actions['remove']);
+			$actions['add'] = str_replace("other ", "", $actions['add']);
+		}
 		return sprintf('%1$s %2$s', $item['name'], $this->row_actions($actions) );
 	}
 	function column_location($item) {
 		return sprintf(
-			'<a href="%s&location=%s">%s</a>',$this->page_url,$item['location'],$item['location']
+			'<a href="%s&location=%s">%s</a>',WPSQT_URL_EMPLOYEES,$item['location'],$item['location']
 		);
 	}
 
@@ -74,7 +101,7 @@ class Employee_List_Table extends WP_List_Table {
 	}
 	function get_bulk_actions() {
 		$actions = array(
-			'delete'    => 'Remove'
+			'remove'    => 'Remove from store'
 		);
 		return $actions;
 	}
@@ -89,6 +116,7 @@ class Employee_List_Table extends WP_List_Table {
             case 'id':
             case 'id_user':
             case 'name':
+            case 'email' :
             case 'completion' :
             case 'location':
             case 'state':
@@ -104,20 +132,23 @@ class Employee_List_Table extends WP_List_Table {
     	global $wpdb;
 
 		
-		// process bulk action - delete
+		// process bulk action - remove
 		if ($this->current_action()) {			
 		
-			if ($this->current_action() == "delete") {
+			if ($this->current_action() == "remove") {
 				foreach ($_POST['id'] AS $id) {
 					Wpsqt_System::_log("bulk remove employee id=".$id);
 					$wpdb->query($wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id = %d", array($id)));
 				}
+				add_action( 'admin_notices', 'my_admin_notice' );
 			}
 		}
 		
+
+		
 		$search = "";
 		if (isset($_POST['s']) && $_POST['s']) {
-			$search = "AND (user.display_name LIKE '%".$_POST['s']."%' OR store.location LIKE '%".$_POST['s']."%')";
+			$search = " AND (user.display_name LIKE '%".$_POST['s']."%' OR user.user_email LIKE '%".$_POST['s']."%' OR store.location LIKE '%".$_POST['s']."%')";
 		}
 		if (isset($_GET['location']) && $_GET['location']) {
 			$search .= " AND store.location='".$_GET['location']."' ";
@@ -139,14 +170,23 @@ class Employee_List_Table extends WP_List_Table {
 			$orderby ="state, location";
 		}
 
-		$sql = "SELECT emp.id AS id, user.id AS id_user, user.display_name AS name, store.location, store.state 
-			FROM `".WPSQT_TABLE_EMPLOYEES."` emp
-			INNER JOIN `".WP_TABLE_USERS."` user ON (emp.id_user = user.id)
-			INNER JOIN `".WPSQT_TABLE_STORES."` store ON (emp.id_store = store.id)
-			WHERE emp.franchisee = ".$this->isFranchiseOwner.
-				$search."
-			ORDER BY ".$orderby;
-						
+		if (!$this->isInactive) {
+			$sql = "SELECT emp.id AS id, user.id AS id_user, user.display_name AS name, user.user_email AS email, store.location, store.state 
+				FROM `".WPSQT_TABLE_EMPLOYEES."` emp
+				INNER JOIN `".WP_TABLE_USERS."` user ON (emp.id_user = user.id)
+				INNER JOIN `".WPSQT_TABLE_STORES."` store ON (emp.id_store = store.id)
+				WHERE emp.franchisee = ".$this->isFranchiseOwner.
+					$search."
+				ORDER BY ".$orderby;
+		} else {
+			$sql = "SELECT emp.id AS id, user.id AS id_user, user.display_name AS name, user.user_email AS email
+				FROM `".WP_TABLE_USERS."` user
+				LEFT OUTER JOIN `".WPSQT_TABLE_EMPLOYEES."` emp ON (emp.id_user = user.id)
+				WHERE emp.id_user is NULL ".
+					$search."
+				ORDER BY user.display_name";
+		}
+// 		Wpsqt_System::_log($sql);
 		$res = $wpdb->get_results( $sql,ARRAY_A);
 
 		// add completion rates

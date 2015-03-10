@@ -39,21 +39,38 @@ class Wpsqt_Page_Franchisees_Addnew extends Wpsqt_Page {
 		$errors = array();
 
 
-		if ( $_SERVER['REQUEST_METHOD'] == "POST" ){
+				if ( $_SERVER['REQUEST_METHOD'] == "POST" ){
 	
-			if (!isset($_POST['wpqst_franchisee_user']) || empty($_POST['wpqst_franchisee_user'])) {
-				array_push($errors,"User must be selected");
-			}
 			if (!isset($_POST['wpqst_franchisee_store']) || empty($_POST['wpqst_franchisee_store'])) {
 				array_push($errors,"Store must be selected");
 			}
-		
-		
-			if (empty($errors)) {	
-				// flag chosen user as Franchisee by adding user meta data			
-				Wpsqt_System::add_franchisee($_POST['wpqst_franchisee_user'],$_POST['wpqst_franchisee_store']);
+			if ($_POST['wpqst_franchisee_user'] == -1) {
+			
+				if (!isset($_POST['user_name']) || empty($_POST['user_name'])) {
+					array_push($errors,"User's name must be entered");
+				}		
+				if (!isset($_POST['user_email']) || empty($_POST['user_name'])) {
+					array_push($errors,"User's email address must be entered");
+				}		
+			}
 						
-				$this->_pageVars['successMessage'] = "New Franchisee added successfully";
+			if (empty($errors)) {
+				
+				if ($_POST['wpqst_franchisee_user'] == -1) {
+					$result = Wpsqt_System::add_user($_POST['wpqst_franchisee_store'],$_POST['user_name'],$_POST['user_email'],true);
+					if ($result['success']) {
+						$this->_pageVars['successMessage'] = $result['message'];
+					} else {
+						array_push($errors,$result['message']);
+					}
+				} else {
+					if(Wpsqt_System::add_franchisee($_POST['wpqst_franchisee_user'],$_POST['wpqst_franchisee_store']) == 0) {
+						array_push($errors,"The specified user could not be added to the store");
+					} else {
+						$this->_pageVars['successMessage'] = "Existing User added to Store";
+					}
+				}	
+						
 			}
 					
 		}	

@@ -2,23 +2,44 @@
 	require_once dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/wp-load.php';
 	require_once WPSQT_DIR.'lib/fpdf.php';
 
-	if (!$_POST || !isset($_POST['display_name']) || empty($_POST['display_name']) || !isset($_POST['completed_date']) || empty($_POST['completed_date'] )) {
-		// $_POST is necessary, don't want people making blank certificates!
-		echo("<h1>NOPES!</h1>");
-		return false;
+//	if (!$_POST || !isset($_POST['display_name']) || empty($_POST['display_name']) || !isset($_POST['completed_date']) || empty($_POST['completed_date'] )) {
+//		// $_POST is necessary, don't want people making blank certificates!
+//		echo("<h1>NOPES!</h1>");
+//		return false;
+//	}  
+//
+//
+//	
+
+	if ($_POST) {
+	 	if (!isset($_POST['display_name']) || empty($_POST['display_name']) || !isset($_POST['completed_date']) || empty($_POST['completed_date'] )) {
+    	// don't want people making blank certificates!
+    	echo("<h1>NOPES!</h1>");
+    	return false;
+		} else {
+			// looks good...
+			$display_name = strtoupper($_POST['display_name']);
+			$completed_date = date('l jS \of F Y',$_POST['completed_date']);
+		}
+	} else if ($_GET) {
+		// better make sure we've come from wordpress admin.... 
+		if (!current_user_can('wpsqt-manage')) {
+    	echo("<h1>DOUBLE NOPES!</h1>");
+    	return false;
+		} else {
+			// yay!
+			$display_name = strtoupper($_GET['display_name']);
+			$completed_date = date('l jS \of F Y',$_GET['completed_date']);
+		}
+	} else {
+		// no data at all? wtf?
+		exit();
 	}
-
-
-	$display_name = strtoupper($_POST['display_name']);
-	$completed_date = $_POST['completed_date'];
-
+	
 
 	$pdf = new FPDF("L","mm","A4");
 	$pdf->SetMargins(0,0,0,0);
 	$pdf->SetAutoPageBreak(true, 0);
-
-	$completed_date = $_POST['completed_date'];
-
 
 	$pdf->AddPage();
 
