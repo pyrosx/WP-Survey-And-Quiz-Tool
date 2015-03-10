@@ -786,13 +786,13 @@ class Wpsqt_System {
 	
 	public static function getEmployeeCompletionRate($id_employee) {
 		
-		$comprate = get_user_meta($id_employee,'wpsqt_completionrate',true);
-		if ($comprate == "") {
+		$compRate = get_user_meta($id_employee,'wpsqt_completionrate',true);
+		if ($compRate == "") {
 			self::updateEmployeeCompletionRate($id_employee);
-			$comprate = get_user_meta($id_employee,'wpsqt_completionrate',true);
+			$compRate = get_user_meta($id_employee,'wpsqt_completionrate',true);
 		}
 		if ($compRate > 100) $compRate = 100;
-		return $comprate;
+		return $compRate;
 	}
 	
 	public static function updateEmployeeCompletionRate($id_employee) {
