@@ -157,7 +157,9 @@ class Employee_List_Table extends WP_List_Table {
 		
 		$search = "";
 		if (isset($_POST['s']) && $_POST['s']) {
-			$search = " AND (user.display_name LIKE '%".$_POST['s']."%' OR user.user_email LIKE '%".$_POST['s']."%' OR store.location LIKE '%".$_POST['s']."%')";
+			$search = " AND (user.display_name LIKE '%".$_POST['s']."%' OR user.user_email LIKE '%".$_POST['s']."%'";
+			if (!$this->isInactive) { $search .= " OR store.location LIKE '%".$_POST['s']."%'"; }
+			$search .= ")";
 		}
 		if (isset($_GET['location']) && $_GET['location']) {
 			$search .= " AND store.location='".$_GET['location']."' ";
@@ -174,8 +176,11 @@ class Employee_List_Table extends WP_List_Table {
 			// manually add location to end of state search, or things look weird
 			if ($_GET['orderby'] == 'state')
 				$orderby .= ", location ".$_GET['order'];
-		
+		} else if ($this->isInactive) {
+			// default order for inactive
+			$orderby="user.display_name";
 		} else {
+			// default order for normal
 			$orderby ="state, location";
 		}
 
@@ -193,9 +198,9 @@ class Employee_List_Table extends WP_List_Table {
 				LEFT OUTER JOIN `".WPSQT_TABLE_EMPLOYEES."` emp ON (emp.id_user = user.id)
 				WHERE emp.id_user is NULL ".
 					$search."
-				ORDER BY user.display_name";
+				ORDER BY ".$orderby;
 		}
-// 		Wpsqt_System::_log($sql);
+ 		Wpsqt_System::_log($sql);
 		$res = $wpdb->get_results( $sql,ARRAY_A);
 
 		// add completion rates
