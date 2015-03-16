@@ -486,6 +486,8 @@ class Wpsqt_Core {
 		if ( is_user_logged_in() ) {
 			if ( Wpsqt_System::is_current_user_assigned() ) {
 		
+				$user = wp_get_current_user();
+		
 				// for each quiz
 				$output .= "<h4>My Training Progress</h4>";
 				$output .= '<table id="wpsqt_info"><thead><tr><th>Module</th><th>Completion</th></tr></thead><tbody>';
@@ -522,22 +524,25 @@ class Wpsqt_Core {
 				}
 				$output .= "</tbody></table>";
 				
-				// todo idea!
-				// sanity check - calculate completion rate in loop above... and then check it against the user_meta one
-				$meta_completed_date = get_user_meta(wp_get_current_user()->ID,'wpsqt_completedDate',true);
-				if ($meta_completed_date = "" || $meta_completed_date != $completed_date) {
-					// meta empty               or   doesn't match
-					update_user_meta( wp_get_current_user()->ID, 'wpsqt_completedDate', $meta_completed_date);
-					$completed_date = $meta_completed_date;
-				}
 
 				if ($completed) {
 
+					// sanity check - calculate completion rate in loop above... and then check it against the user_meta one
+					$meta_completed_date = get_user_meta($user->ID,'wpsqt_completedDate',true);
+					
+					if ($meta_completed_date = "" || $meta_completed_date != $completed_date) {
+						// meta empty               or   doesn't match
+						update_user_meta( $user->ID, 'wpsqt_completedDate', $completed_date);
+					
+					}
+					
+
+
 					// pdf certificate
 					// if 100% completed		
-					$display_name = wp_get_current_user()->user_firstname .' '.wp_get_current_user()->user_lastname;
+					$display_name = $user->user_firstname .' '.$user->user_lastname;
 					if ($display_name == ' ') {
-						$display_name = wp_get_current_user()->display_name;
+						$display_name = $user->display_name;
 					}
 
 					$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';

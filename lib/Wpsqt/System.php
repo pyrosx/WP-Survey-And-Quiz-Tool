@@ -893,7 +893,7 @@ class Wpsqt_System {
 		$completed_date = get_user_meta($id_employee,'wpsqt_completedDate',true);
 
 		// no completed date stored... need to calculate and store it
-		if ($completed_date == "") {
+		if ($completed_date == "" || $completed_date == 1) {
 				$completed_date = $wpdb->get_var("SELECT datetaken FROM `".WPSQT_TABLE_RESULTS."` WHERE user_id = '".$id_employee."' AND pass=1 ORDER BY datetaken DESC LIMIT 1 ");
 				update_user_meta( $id_employee, 'wpsqt_completedDate', $completed_date);
 				self::_log(array("user_meta updated, wpsqt_completedDate",$id_employee,$completed_date));
@@ -1212,8 +1212,9 @@ class Wpsqt_System {
 						$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
 						$output .= '<input type="hidden" name="completed_date" value="'.self::getEmployeeCompletedDate($user['id']).'"/>';
 						$output .= '<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>';
-						$output .= '<input type="submit" class="button tiny secondary" value="Generate Certificate"  style="margin-bottom: 5px; margin-top: 8px"/>';
-						$output .= '</form>';
+						$output .= '<input type="submit" class="button tiny secondary" value="Generate Certificate"';
+						if (!is_admin()) $output .= 'style="margin-bottom: 5px; margin-top: 8px"';
+						$output .= ' /></form>';
 					}
 					$output .= "</td></tr>";
 				}

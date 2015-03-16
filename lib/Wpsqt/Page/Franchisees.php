@@ -20,7 +20,8 @@ class Wpsqt_Page_Franchisees extends Wpsqt_Page {
 	public function process(){
 	
 		$customTable = new Employee_List_Table();
-		$customTable->prepare_items(true);
+		$customTable->setFranchiseOwner();
+		$customTable->prepare_items();
 		$this->_pageVars['customtable'] = $customTable;
 
 		$this->_pageView = "admin/franchisees/index.php";

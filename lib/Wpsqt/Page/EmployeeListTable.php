@@ -7,18 +7,27 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 class Employee_List_Table extends WP_List_Table {
 
 	protected $isFranchiseOwner = 'FALSE';
-	protected $isInactive;
+	protected $isInactive = false;
+	protected $page_url = WPSQT_URL_EMPLOYEES;
+	
+	public function setEmployee() {
+		$this->isFranchiseOwner = 'FALSE';
+		$this->page_url = WPSQT_URL_EMPLOYEES;
+		$this->isInactive = false;
+	}	
+	public function setFranchiseOwner() {
+		$this->isFranchiseOwner = 'TRUE';
+		$this->page_url = WPSQT_URL_FRANCHISEES;
+		$this->isInactive = false;
+	}
+	public function setInactive() {
+		$this->isFranchiseOwner = 'FALSE';
+		$this->page_url = WPSQT_URL_EMPLOYEES."&inactive=true";
+		$this->isInactive = true;
+	}
 		
-	public function prepare_items($isFranchisee, $isInactive = false) {
-	
-        $this->isFranchiseOwner = $isFranchisee ? 'TRUE' : 'FALSE';
-        $this->page_url = $isFranchisee ? WPSQT_URL_FRANCHISEES : WPSQT_URL_EMPLOYEES;
-	
-		if ($isInactive) { 
-			$this->isInactive = true;
-			$this->page_url = WPSQT_URL_EMPLOYEES."&inactive=true";
-		}
-	
+	public function prepare_items() {
+		
         $columns = $this->get_columns();
         $hidden = $this->get_hidden_columns();
         $sortable = $this->get_sortable_columns();

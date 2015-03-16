@@ -19,12 +19,13 @@ class Wpsqt_Page_Employees extends Wpsqt_Page {
 	
 		$customTable = new Employee_List_Table();
 		if (isset($_GET['inactive']) && $_GET['inactive'] == 'true') {
-			// inactive employees table	
-			$customTable->prepare_items(false, true);
+			$customTable->setInactive();
 		} else {
 			// normal employee table
-			$customTable->prepare_items(false);
+			$customTable->setEmployee();
 		}
+		
+		$customTable->prepare_items();
 		$this->_pageVars['customtable'] = $customTable;
 
 		$this->_pageView = "admin/employees/index.php";
