@@ -1003,6 +1003,7 @@ class Wpsqt_System {
 			$colspan = 4;
 		}
 		$output .= '<th>Employees</th><th>Completion</th><th></th></tr></thead><tbody>';
+
 		
 		foreach($stores as $store) {
 		
@@ -1038,8 +1039,7 @@ class Wpsqt_System {
 			$output .= '<td><input type="submit" value="'.$users_button.'" class="display_user_table button tiny secondary" id="store_'.$store['id'].'" /></td>';
 		
 			$output .= "</tr>";						
-			
-			
+						
 			// list employees
 			$sql1 = "SELECT user.id, user.display_name, user.user_email
 					FROM `".WP_TABLE_USERS."` user
@@ -1082,12 +1082,14 @@ class Wpsqt_System {
 						$output .= "<tr><td>".$user['display_name']."</td>";
 						$output .= '<td><a href="mailto:'.$user['user_email'].'">'.$user['user_email']."</a></td>";
 						$output .= "<td>";
+
+						$comp = self::getEmployeeCompletionRate($user['id']);
 						if (is_null($id_user)) {
 							$output .= '<a href="'.WPSQT_URL_EMPLOYEES.'&subsection=results&id_user='.$user['id'].'">';
-							$output .= self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']));
+							$output .= self::colorCompletionRate($comp);
 							$output .= '</a></td><td>';
 						} else {
-							$output .= self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']));
+							$output .= self::colorCompletionRate($comp);
 							$output .= "</td><td>";
 							// Results button
 							$output .= '<form action="'.home_url('/results/').'" method="POST">
@@ -1120,8 +1122,9 @@ class Wpsqt_System {
 										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
 										<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
 									</form>';
+
 						// Certificate button
-						if (self::getEmployeeCompletionRate($user['id']) <= 100) {
+						if ($comp >= 100) {
 							$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
 							$output .= '<input type="hidden" name="completed_date" value="'.self::getEmployeeCompletedDate($user['id']).'"/>';
 							$output .= '<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>';
@@ -1156,7 +1159,6 @@ class Wpsqt_System {
 
 				$output .= '<thead><tr><th colspan='.$colspan.'><i>Employees</i></th></tr></thead>';
 			}
-
 			
 			if (count($users) > 0) {
 				$output .= "<thead><tr><th>Name</th><th>Email</th><th>Completion</th><th></th></tr></thead><tbody>"; 
@@ -1167,12 +1169,13 @@ class Wpsqt_System {
 
 					$output .= "<td>";
 
+					$comp = self::getEmployeeCompletionRate($user['id']);
 					if (is_null($id_user)) {
 						$output .= '<a href="'.WPSQT_URL_EMPLOYEES.'&subsection=results&id_user='.$user['id'].'">';
-						$output .= self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']));
+						$output .= self::colorCompletionRate($comp);
 						$output .= '</a></td><td>';
 					} else {
-						$output .= self::colorCompletionRate(self::getEmployeeCompletionRate($user['id']));
+						$output .= self::colorCompletionRate($comp);
 						$output .= "</td><td>";
 						// Results button
 						$output .= '<form action="'.home_url('/results/').'" method="POST">
@@ -1208,7 +1211,7 @@ class Wpsqt_System {
 									<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
 								</form>';
 					// Certificate button
-					if (self::getEmployeeCompletionRate($user['id']) <= 100) {
+					if ($comp >= 100) {
 						$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
 						$output .= '<input type="hidden" name="completed_date" value="'.self::getEmployeeCompletedDate($user['id']).'"/>';
 						$output .= '<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>';
