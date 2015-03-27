@@ -616,6 +616,11 @@ class Wpsqt_Core {
 	public function enqueue_files() {
 		wp_enqueue_script("jquery");
 		wp_enqueue_script('site',plugins_url('/js/site.js', WPSQT_FILE));
+		$l10n_obj = array(
+		    'plugin_url' => plugin_dir_url( __FILE__ )
+		);
+		wp_localize_script('site', 'l10n', $l10n_obj);
+
 		wp_enqueue_style("wpsqt-main",plugins_url('/css/main.css',WPSQT_FILE));
 	}
 	

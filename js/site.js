@@ -2,14 +2,54 @@ jQuery(document).ready( function($) {
 
 	///////////////////
 	// Franchise user table (tr.franchise_users) hidden until button (.display_user_table) pressed
-	jQuery('.display_user_table').click( function() {
+	jQuery('.display_user_table').click( function($) {
 		var user_table_id = '#row'+jQuery(this).attr('id');
 		if (jQuery(this).attr('value') == "+") {
 			jQuery(this).attr('value',"-");
 		} else {
 			jQuery(this).attr('value',"+");
 		}
-		jQuery(user_table_id).fadeToggle(500);
+		
+		
+		var store_id = jQuery(this).attr('id').substring(6);
+		var table_store_id = '#table'+jQuery(this).attr('id');
+
+		if (jQuery(table_store_id).html() == "") {
+			
+			// nothing in table - load it!
+			jQuery(table_store_id).load(l10n.plugin_url+"Page/Dashboard/Lookup.php?id_store="+store_id, {noncache: new Date().getTime()}, function($) {
+				jQuery(user_table_id).toggle();		
+	
+				// Need to specifially define these scripts so that they work for the new content
+				jQuery(table_store_id+' .remove_user').click( function($) {
+					return confirm('Are you sure you want to remove this user?');
+				});
+				jQuery(table_store_id+' .remove_store').click( function($) {
+					return confirm('Are you sure you want to remove this store?');
+				});
+					
+				jQuery(table_store_id+' .add_user').click( function($) {
+					var id = '#add_'+jQuery(this).attr('id');	
+					jQuery(id).toggle();
+					jQuery(this).hide();
+					return false;
+				});
+				
+				jQuery(table_store_id+' .add_user_form').submit( function($) {
+				
+					name_input = jQuery(this).find('input[name=new_name]').val();
+				
+					if (name_input.indexOf(" ") == -1) { 
+						// name contains no spaces
+						return confirm('Are you sure this is the correct full name?\r\nThe name entered contains no spaces\r\nThis name will be printed on the Certificate');
+					
+					}
+				});
+			});
+		} else {
+			jQuery(table_store_id).toggle();
+		}
+		
 		return false;
 	});
 
@@ -22,7 +62,7 @@ jQuery(document).ready( function($) {
 	});
 		
 	jQuery('.add_user').click( function($) {
-		var id = '#add_'+jQuery(this).attr('id');		
+		var id = '#add_'+jQuery(this).attr('id');	
 		jQuery(id).toggle();
 		jQuery(this).hide();
 		return false;
@@ -34,19 +74,12 @@ jQuery(document).ready( function($) {
 	
 		if (name_input.indexOf(" ") == -1) { 
 			// name contains no spaces
-			return confirm('Are you sure this is the correct, full name?\r\nThe name entered contains no spaces\r\nThis name will be printed on the Certificate');
+			return confirm('Are you sure this is the correct full name?\r\nThe name entered contains no spaces\r\nThis name will be printed on the Certificate');
 		
 		}
-			
 	});
-	
-	
-	jQuery('.open_results').click( function($) {
-		var id = '#results_'+jQuery(this).attr('id');
-		jQuery(id).toggle();
-		return false;
-	});
-	
+
+
 	////////////////////////
 	// Bulk Email
 	

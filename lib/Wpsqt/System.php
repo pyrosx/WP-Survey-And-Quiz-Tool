@@ -752,9 +752,9 @@ class Wpsqt_System {
 	public static function remove_store($id_store) {
 		global $wpdb;
 		// remove all related records from employee table
-		$wpdb->query($wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_store = %d", array($_GET['id'])));
+		$wpdb->query($wpdb->prepare("DELETE FROM `".WPSQT_TABLE_EMPLOYEES."` WHERE id_store = %d", array($id_store)));
 		// then remove record from store table
-		$wpdb->query($wpdb->prepare("DELETE FROM `".WPSQT_TABLE_STORES."` WHERE id = %d", array($_GET['id'])));
+		$wpdb->query($wpdb->prepare("DELETE FROM `".WPSQT_TABLE_STORES."` WHERE id = %d", array($id_store)));
 	}
 
 	public static function getUsersForSelect() {
@@ -814,6 +814,8 @@ class Wpsqt_System {
 		self::updateStoreCompletionRateForEmployee($id_employee);
 	}
 	
+	// Not sure what the original intention of $includesFranchisees was....
+	// But it doens't seem to have a purpose anymore. Probably should just remove it at some stage...
 
 	public static function getStoreCompletionRate($id_store, $includesFranchisees = true) {
 		global $wpdb;			
@@ -845,9 +847,10 @@ class Wpsqt_System {
 
 		$sql = "SELECT id_user FROM `".WPSQT_TABLE_EMPLOYEES."` 
 					WHERE id_store=".$id_store;
-		if (!$includesFranchisees) {
-			$sql.=" AND franchisee = 0 ";
-		}
+// So... I dunno what this was about at all. Why would we want to possibly calculate a wrong value occasionally?
+//		if (!$includesFranchisees) {
+//			$sql.=" AND franchisee = 0 ";
+//		}
 		$employees = $wpdb->get_results($sql,'ARRAY_A');
 	
 		$total = 0;
@@ -923,7 +926,219 @@ class Wpsqt_System {
 		return $output;
 	}
 	
-	
+	public static function getStoreTableSection($id_store, $id_user = null) {
+		global $wpdb;
+		
+			$output = "";
+			
+			// list employees
+			$sql1 = "SELECT user.id, user.display_name, user.user_email
+					FROM `".WP_TABLE_USERS."` user
+					INNER JOIN `".WPSQT_TABLE_EMPLOYEES."` emp on user.id = emp.id_user
+					WHERE emp.id_store = ".$id_store." AND emp.franchisee = ";
+					
+			$sql2= " ORDER BY user.display_name";
+			
+			$sql = $sql1."0".$sql2;
+			$users = $wpdb->get_results($sql, 'ARRAY_A');
+			
+			$colspan = 4;	
+			
+			if (is_null($id_user)) {
+				$colspan = 5;
+				// "remove Store" Button
+				$output .= '<thead><tr><td colspan='.$colspan.'>
+					<form action="" method="POST">
+						<input type="hidden" name="id_store" class="id_store" value="'.$id_store.'"/>
+						<input type="submit" value="Remove Store" name="remove_store" class="remove_store button tiny secondary"/>
+					</form>
+				</td></tr></thead>
+				<tr><td></td></tr>';
+
+				// display franchisees, and add franchisee option
+				
+				$sql = $sql1."1".$sql2;
+				$franchisees = $wpdb->get_results($sql, 'ARRAY_A');
+				
+				$output .= '<thead><tr><th colspan='.$colspan.'><i>Franchise Owner(s)</i></th></tr></thead>';
+				if(count($franchisees) > 0) {
+					$output .= "<thead><tr><th>Name</th><th>Email</th><th>Completion</th><th></th></tr></thead><tbody>"; 
+			
+					foreach($franchisees as $user) {
+						$output .= "<tr><td>".$user['display_name']."</td>";
+						$output .= '<td><a href="mailto:'.$user['user_email'].'">'.$user['user_email']."</a></td>";
+						$output .= "<td>";
+
+						$comp = self::getEmployeeCompletionRate($user['id']);
+						if (is_null($id_user)) {
+							$output .= '<a href="'.WPSQT_URL_EMPLOYEES.'&subsection=results&id_user='.$user['id'].'">';
+							$output .= self::colorCompletionRate($comp);
+							$output .= '</a></td><td>';
+						} else {
+							$output .= self::colorCompletionRate($comp);
+							$output .= "</td><td>";
+							// Results button
+							$output .= '<form action="'.home_url('/results/').'" method="POST">
+											<input type="hidden" name="id_user" value="'.$user['id'].'"/>
+											<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
+											<input type="submit" value="Results" name="results" class="button tiny secondary"/>
+										</form>';
+						}
+						// Reminder button
+						$output .= '<form action="" method="POST">
+										<input type="hidden" name="id_store" class="id_store" value="'.$id_store.'"/>
+										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+										<input type="submit" value="Reminder" name="send_reminder" class="button tiny secondary"/>
+									</form>';
+						// Reinvite button
+						$output .= '<form action="" method="POST">
+										<input type="hidden" name="id_store" class="id_store" value="'.$id_store.'"/>
+										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+										<input type="submit" value="Reinvite" name="reinvite" class="button tiny secondary"/>
+									</form>';
+						// Edit button
+						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
+							<input type="hidden" name="user_id" value="'.$user['id'].'">
+							<input type="submit" value="Edit" class="button tiny secondary"/>
+						</form>';
+
+						// Remove button
+						$output .= '<form action="" method="POST">
+										<input type="hidden" name="id_store" class="id_store" value="'.$id_store.'"/>
+										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+										<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
+									</form>';
+
+						// Certificate button
+						if ($comp >= 100) {
+							$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
+							$output .= '<input type="hidden" name="completed_date" value="'.self::getEmployeeCompletedDate($user['id']).'"/>';
+							$output .= '<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>';
+							$output .= '<input type="submit" class="button tiny secondary" value="Generate Certificate"/>';
+							$output .= '</form>';
+						}	
+
+						$output .= "</td></tr>";
+					}
+				} else {
+					$output .= '<tr><td colspan='.$colspan.'><p>No franchise owners assigned yet</p></td></tr>';
+				}
+
+				$output .= '<tr><td colspan='.$colspan.'>
+								<input type="submit" value="Add Franchise Owner" class="add_user button tiny secondary" id="fstore_'.$id_store.'" />
+								<div class="add_user_area" id="add_fstore_'.$id_store.'" style="display:none">
+									<form action="" method="POST" class="add_user_form">
+										<input type="hidden" name="id_store" class="id_store" value="'.$id_store.'"/>
+									
+										<table>
+										<thead><tr><td colspan=3>New Franchise Owner:</td></tr></thead>
+										<tbody>
+										<tr>
+											<td>Full Name: <input type="text" name="new_name" required/></td>
+											<td>Email: <input type="email" name="new_email" required/></td>
+											<td><input type="submit" value="Add Franchise Owner" name="add_franchisee" class="button tiny secondary"/></td>
+										</tr>
+										</tbody></table>
+									</form>
+								</div>
+							</td></tr></tbody>';					
+
+				$output .= '<thead><tr><th colspan='.$colspan.'><i>Employees</i></th></tr></thead>';
+			}
+			
+			if (count($users) > 0) {
+				$output .= "<thead><tr><th>Name</th><th>Email</th><th>Completion</th><th></th></tr></thead><tbody>"; 
+			
+				foreach($users as $user) {
+					$output .= "<tr><td>".$user['display_name']."</td>";
+					$output .= '<td><a href="mailto:'.$user['user_email'].'">'.$user['user_email']."</a></td>";
+
+					$output .= "<td>";
+
+					$comp = self::getEmployeeCompletionRate($user['id']);
+					if (is_null($id_user)) {
+						$output .= '<a href="'.WPSQT_URL_EMPLOYEES.'&subsection=results&id_user='.$user['id'].'">';
+						$output .= self::colorCompletionRate($comp);
+						$output .= '</a></td><td>';
+					} else {
+						$output .= self::colorCompletionRate($comp);
+						$output .= "</td><td>";
+						// Results button
+						$output .= '<form action="'.home_url('/results/').'" method="POST">
+										<input type="hidden" name="id_user" value="'.$user['id'].'"/>
+										<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
+										<input type="submit" value="Results" name="results" class="button tiny secondary"/>
+									</form>';
+					}
+
+					// Reminder button
+					$output .= '<form action="" method="POST">
+									<input type="hidden" name="id_store" class="id_store" value="'.$id_store.'"/>
+									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+									<input type="submit" value="Reminder" name="send_reminder" class="button tiny secondary"/>
+								</form>';
+					// Reinvite button
+					$output .= '<form action="" method="POST">
+									<input type="hidden" name="id_store" class="id_store" value="'.$id_store.'"/>
+									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+									<input type="submit" value="Reinvite" name="reinvite" class="button tiny secondary"/>
+								</form>';
+					// Edit button
+					if (is_null($id_user)) {
+						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
+							<input type="hidden" name="user_id" value="'.$user['id'].'">
+							<input type="submit" value="Edit" class="button tiny secondary"/>
+						</form>';
+					}
+					// Remove button
+					$output .= '<form action="" method="POST">
+									<input type="hidden" name="id_store" class="id_store" value="'.$id_store.'"/>
+									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
+									<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
+								</form>';
+					// Certificate button
+					if ($comp >= 100) {
+						$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
+						$output .= '<input type="hidden" name="completed_date" value="'.self::getEmployeeCompletedDate($user['id']).'"/>';
+						$output .= '<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>';
+						$output .= '<input type="submit" class="button tiny secondary" value="Generate Certificate"';
+
+						$output .= ' /></form>';
+					}
+					$output .= "</td></tr>";
+				}
+			} else {
+				$output .= '<tr><td colspan='.$colspan.'><p>No employees assigned yet</p></td></tr>';
+			}
+
+			$output .= '<tr><td colspan='.$colspan.'>
+							<input type="submit" value="Add Employee" class="add_user button tiny secondary" id="store_'.$id_store.'"/>
+							<div class="add_user_area" id="add_store_'.$id_store.'" style="display:none">
+								<form action="" method="POST" class="add_user_form">
+									<input type="hidden" name="id_store" class="id_store" value="'.$id_store.'"/>
+									
+									<table>
+									<thead><tr><td colspan=2>New Employee Details: </td></tr></thead>
+									<tbody>
+									<tr>
+										<td>Full Name: <input type="text" name="new_name" required/></td>
+										<td>Email: <input type="email" name="new_email" required/></td>
+									</tr>
+									<tr>
+										<td colspan=2>
+										<p>New users will added to the system, and will receive a welcome email with a temporary password. Users already in the system will be assigned to this store.</p>
+										<center><input type="submit" value="Add Employee" name="franchisee_add_user" class="button tiny secondary"/></center>
+										</td>
+									</tr>
+									</tbody></table>
+								</form>
+							</div>
+						</td></tr>'; 
+						
+			$output .="</tbody>";
+			
+			return $output;
+	}
 	
 	public static function getStoreTable($id_user = null) {
 				
@@ -1010,23 +1225,11 @@ class Wpsqt_System {
 			//make active section stay open after a POST/reload
 			$users_style = "none";
 			$users_button = "+";
-			$new_user_display = "none";
-			$new_user_button = "block";
-			$new_franc_display = "none";
-			$new_franc_button = "block";
 			
 			if (!empty($_POST['id_store']) && $_POST['id_store']==$store['id']) {
 				$users_style = "table-row";
 				$users_button = "-";
-				if (!empty($_POST['new_name'])) {
-					if (!empty($_POST["franchisee_add_user"])) {
-						$new_user_display = "block";
-						$new_user_button = "none";
-					} else if (!empty($_POST["add_franchisee"])) {
-						$new_franc_display = "block";
-						$new_franc_button = "none";
-					}
-				}
+
 			}
 		
 			$output .= "<tr>";
@@ -1040,216 +1243,21 @@ class Wpsqt_System {
 		
 			$output .= "</tr>";						
 						
-			// list employees
-			$sql1 = "SELECT user.id, user.display_name, user.user_email
-					FROM `".WP_TABLE_USERS."` user
-					INNER JOIN `".WPSQT_TABLE_EMPLOYEES."` emp on user.id = emp.id_user
-					WHERE emp.id_store = ".$store['id']." AND emp.franchisee = ";
-					
-			$sql2= " ORDER BY user.display_name";
-			
-			$sql = $sql1."0".$sql2;
-
-			$users = $wpdb->get_results($sql, 'ARRAY_A');
 
 			// extra column to maintain alternate colouring and have users in matching colour...
 			$output .= '<tr style="display:none;"><td></td></tr>';
 			
 			$output .= '<tr class="franchise_users" id="rowstore_'.$store['id'].'" style="display:'.$users_style.';"><td colspan='.$colspan.'>
-						<table>';
-						
-			if (is_null($id_user)) {
+						<table id="tablestore_'.$store['id'].'">';
 
-				// "remove Store" Button
-				$output .= '<thead><tr><td colspan='.$colspan.'>
-					<form action="" method="POST">
-						<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-						<input type="submit" value="Remove Store" name="remove_store" class="remove_store button tiny secondary"/>
-					</form>
-				</td></tr></thead>
-				<tr><td></td></tr>';
-
-				// display franchisees, and add franchisee option
-				
-				$sql = $sql1."1".$sql2;
-				$franchisees = $wpdb->get_results($sql, 'ARRAY_A');
-				
-				$output .= '<thead><tr><th colspan='.$colspan.'><i>Franchise Owner(s)</i></th></tr></thead>';
-				if(count($franchisees) > 0) {
-					$output .= "<thead><tr><th>Name</th><th>Email</th><th>Completion</th><th></th></tr></thead><tbody>"; 
-			
-					foreach($franchisees as $user) {
-						$output .= "<tr><td>".$user['display_name']."</td>";
-						$output .= '<td><a href="mailto:'.$user['user_email'].'">'.$user['user_email']."</a></td>";
-						$output .= "<td>";
-
-						$comp = self::getEmployeeCompletionRate($user['id']);
-						if (is_null($id_user)) {
-							$output .= '<a href="'.WPSQT_URL_EMPLOYEES.'&subsection=results&id_user='.$user['id'].'">';
-							$output .= self::colorCompletionRate($comp);
-							$output .= '</a></td><td>';
-						} else {
-							$output .= self::colorCompletionRate($comp);
-							$output .= "</td><td>";
-							// Results button
-							$output .= '<form action="'.home_url('/results/').'" method="POST">
-											<input type="hidden" name="id_user" value="'.$user['id'].'"/>
-											<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
-											<input type="submit" value="Results" name="results" class="button tiny secondary"/>
-										</form>';
-						}
-						// Reminder button
-						$output .= '<form action="" method="POST">
-										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-										<input type="submit" value="Reminder" name="send_reminder" class="button tiny secondary"/>
-									</form>';
-						// Reinvite button
-						$output .= '<form action="" method="POST">
-										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-										<input type="submit" value="Reinvite" name="reinvite" class="button tiny secondary"/>
-									</form>';
-						// Edit button
-						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
-							<input type="hidden" name="user_id" value="'.$user['id'].'">
-							<input type="submit" value="Edit" class="button tiny secondary"/>
-						</form>';
-
-						// Remove button
-						$output .= '<form action="" method="POST">
-										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-										<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-										<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
-									</form>';
-
-						// Certificate button
-						if ($comp >= 100) {
-							$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
-							$output .= '<input type="hidden" name="completed_date" value="'.self::getEmployeeCompletedDate($user['id']).'"/>';
-							$output .= '<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>';
-							$output .= '<input type="submit" class="button tiny secondary" value="Generate Certificate"/>';
-							$output .= '</form>';
-						}	
-
-						$output .= "</td></tr>";
-					}
-				} else {
-					$output .= '<tr><td colspan='.$colspan.'><p>No franchise owners assigned yet</p></td></tr>';
-				}
-
-				$output .= '<tr><td colspan='.$colspan.'>
-								<input type="submit" value="Add Franchise Owner" class="add_user button tiny secondary" id="fstore_'.$store['id'].'" style="display:'.$new_franc_button.'"/>
-								<div class="add_user_area" id="add_fstore_'.$store['id'].'" style="display:'.$new_franc_display.'">
-									<form action="" method="POST" class="add_user_form">
-										<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-									
-										<table>
-										<thead><tr><td colspan=3>New Franchise Owner:</td></tr></thead>
-										<tbody>
-										<tr>
-											<td>Full Name: <input type="text" name="new_name" required/></td>
-											<td>Email: <input type="email" name="new_email" required/></td>
-											<td><input type="submit" value="Add Franchise Owner" name="add_franchisee" class="button tiny secondary"/></td>
-										</tr>
-										</tbody></table>
-									</form>
-								</div>
-							</td></tr></tbody>';					
-
-				$output .= '<thead><tr><th colspan='.$colspan.'><i>Employees</i></th></tr></thead>';
-			}
-			
-			if (count($users) > 0) {
-				$output .= "<thead><tr><th>Name</th><th>Email</th><th>Completion</th><th></th></tr></thead><tbody>"; 
-			
-				foreach($users as $user) {
-					$output .= "<tr><td>".$user['display_name']."</td>";
-					$output .= '<td><a href="mailto:'.$user['user_email'].'">'.$user['user_email']."</a></td>";
-
-					$output .= "<td>";
-
-					$comp = self::getEmployeeCompletionRate($user['id']);
-					if (is_null($id_user)) {
-						$output .= '<a href="'.WPSQT_URL_EMPLOYEES.'&subsection=results&id_user='.$user['id'].'">';
-						$output .= self::colorCompletionRate($comp);
-						$output .= '</a></td><td>';
-					} else {
-						$output .= self::colorCompletionRate($comp);
-						$output .= "</td><td>";
-						// Results button
-						$output .= '<form action="'.home_url('/results/').'" method="POST">
-										<input type="hidden" name="id_user" value="'.$user['id'].'"/>
-										<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>
-										<input type="submit" value="Results" name="results" class="button tiny secondary"/>
-									</form>';
-					}
-
-					// Reminder button
-					$output .= '<form action="" method="POST">
-									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-									<input type="submit" value="Reminder" name="send_reminder" class="button tiny secondary"/>
-								</form>';
-					// Reinvite button
-					$output .= '<form action="" method="POST">
-									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-									<input type="submit" value="Reinvite" name="reinvite" class="button tiny secondary"/>
-								</form>';
-					// Edit button
-					if (is_null($id_user)) {
-						$output .= '<form method="GET" action="'.admin_url('/user-edit.php').'">
-							<input type="hidden" name="user_id" value="'.$user['id'].'">
-							<input type="submit" value="Edit" class="button tiny secondary"/>
-						</form>';
-					}
-					// Remove button
-					$output .= '<form action="" method="POST">
-									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-									<input type="hidden" name="id_user" class="id_user" value="'.$user['id'].'"/>
-									<input type="submit" value="Remove" name="franchisee_remove_user" class="remove_user button tiny secondary"/>
-								</form>';
-					// Certificate button
-					if ($comp >= 100) {
-						$output .= '<form method="POST" action="'.plugins_url('cert/pdf.php',WPSQT_FILE).'">';
-						$output .= '<input type="hidden" name="completed_date" value="'.self::getEmployeeCompletedDate($user['id']).'"/>';
-						$output .= '<input type="hidden" name="display_name" value="'.$user['display_name'].'"/>';
-						$output .= '<input type="submit" class="button tiny secondary" value="Generate Certificate"';
-						if (!is_admin()) $output .= 'style="margin-bottom: 5px; margin-top: 8px"';
-						$output .= ' /></form>';
-					}
-					$output .= "</td></tr>";
-				}
-			} else {
-				$output .= '<tr><td colspan='.$colspan.'><p>No employees assigned yet</p></td></tr>';
+// 			This now loaded by ajax calls, one at a time!
+// 			BUT! Because we're still doing some old-way things... might need to have this already loaded, if display style for the table has been changed above....
+			if ($users_style == "table-row") {
+				$output .= self::getStoreTableSection($store['id'],$id_user);
 			}
 
-			$output .= '<tr><td colspan='.$colspan.'>
-							<input type="submit" value="Add Employee" class="add_user button tiny secondary" id="store_'.$store['id'].'" style="display:'.$new_user_button.'"/>
-							<div class="add_user_area" id="add_store_'.$store['id'].'" style="display:'.$new_user_display.'">
-								<form action="" method="POST" class="add_user_form">
-									<input type="hidden" name="id_store" class="id_store" value="'.$store['id'].'"/>
-									
-									<table>
-									<thead><tr><td colspan=2>New Employee Details: </td></tr></thead>
-									<tbody>
-									<tr>
-										<td>Full Name: <input type="text" name="new_name" required/></td>
-										<td>Email: <input type="email" name="new_email" required/></td>
-									</tr>
-									<tr>
-										<td colspan=2>
-										<p>New users will added to the system, and will receive a welcome email with a temporary password. Users already in the system will be assigned to this store.</p>
-										<center><input type="submit" value="Add Employee" name="franchisee_add_user" class="button tiny secondary"/></center>
-										</td>
-									</tr>
-									</tbody></table>
-								</form>
-							</div>
-						</td></tr>'; 
-						
-			$output .="</tbody></table>";
+
+			$output .="</table>";
 		}
 		
 		if (is_null($id_user)) {
