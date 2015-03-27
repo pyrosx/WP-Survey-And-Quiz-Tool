@@ -78,28 +78,28 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 			$stores[$i]['state'] = Wpsqt_System::getStateName($stores[$i]['state']);
 		}
 
-		$this->csvLines[] = "State, Store Location, Franchisee, Employees, Email";
+		$this->csvLines[] = "State,Store Location,Franchisee,Employees,Email";
 		
 		foreach($stores as $store) {
-			$this->csvLines[] = $store['state'].", ".$store['location'];
+			$this->csvLines[] = $store['state'].',"'.$store['location'].'"';
 			
 			// franchisees
 			$sql = "SELECT DISTINCT user_email,display_name FROM ".WP_TABLE_USERS." u INNER JOIN ".WPSQT_TABLE_EMPLOYEES." e ON u.id = e.id_user WHERE e.id_store =".$store['id']." AND e.franchisee=1 ORDER BY u.user_login";
 			$franchisees = $wpdb->get_results($sql, ARRAY_A);
 			foreach($franchisees as $franchisee) {
-				$this->csvLines[] = ',,'.$franchisee['display_name'].',,'.$franchisee['user_email'].'';
+				$this->csvLines[] = ',,"'.$franchisee['display_name'].'",,"'.$franchisee['user_email'].'"';
 			}
 
 			// employees
 			$sql = "SELECT DISTINCT user_email,display_name FROM ".WP_TABLE_USERS." u INNER JOIN ".WPSQT_TABLE_EMPLOYEES." e ON u.id = e.id_user WHERE e.id_store =".$store['id']." AND e.franchisee=0 ORDER BY u.user_login";
 			$users = $wpdb->get_results($sql, ARRAY_A);
 			foreach($users as $user) {
-				$this->csvLines[] = ',,,'.$user['display_name'].','.$user['user_email'];
+				$this->csvLines[] = ',,,"'.$user['display_name'].'","'.$user['user_email'].'"';
 			}
 
 		}
 		
-		$this->filename = "stores-report-ALL-".date("Ymd");
+		$this->filename = "stores-employees-list-".date("Ymd");
 
 		return $this->csvLines;
 	}
@@ -118,10 +118,10 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 		$this->csvLines[] = "State, Store Location, Average Result";
 		
 		foreach($stores as $store) {
-			$this->csvLines[] = $store['state'].", ".$store['location'].", ".Wpsqt_System::getStoreCompletionRate($store['id']);
+			$this->csvLines[] = '"'.$store['state'].'","'.$store['location'].'",'.Wpsqt_System::getStoreCompletionRate($store['id']);
 		}
 		
-		$this->filename = "stores-report-ALL-".date("Ymd");
+		$this->filename = "stores-results-".date("Ymd");
 
 		return $this->csvLines;
 	}
@@ -159,7 +159,7 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 
 		}
 		
-		$this->filename = "stores-report-ALL-".date("Ymd");
+		$this->filename = "stores-employees-results-".date("Ymd");
 
 		return $this->csvLines;
 	}
