@@ -267,6 +267,10 @@ END;
 				
 					if ($_GET['subsection'] == "stores") {
 						$lines = $csvExporter->generateStoreReport();
+					} else if ($_GET['subsection'] == "storeResults") {
+						$lines = $csvExporter->generateStoreResultsReport();
+					} else if ($_GET['subsection'] == "storeUserResults") {
+						$lines = $csvExporter->generateStoreUserResultsReport();
 					} else if ($_GET['subsection'] == "results") {
 						$lines = $csvExporter->generateResultsReport(isset($_GET['full']));
 					}

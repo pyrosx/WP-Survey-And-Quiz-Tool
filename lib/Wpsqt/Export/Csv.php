@@ -104,6 +104,61 @@ class Wpsqt_Export_Csv extends Wpsqt_Export {
 		return $this->csvLines;
 	}
 
+	public function generateStoreResultsReport() {
+		
+		global $wpdb;
+		
+		$stores = $wpdb->get_results("SELECT id,location,state FROM ".WPSQT_TABLE_STORES." ORDER BY state, location", ARRAY_A);
+
+		// need to convert state numbers to names here
+		for($i=0;$i<count($stores);$i++) {
+			$stores[$i]['state'] = Wpsqt_System::getStateName($stores[$i]['state']);
+		}
+
+		$this->csvLines[] = "State, Store Location, Average Result";
+		
+		foreach($stores as $store) {
+			$this->csvLines[] = $store['state'].", ".$store['location'].", ".Wpsqt_System::getStoreCompletionRate($store['id']);
+		}
+		
+		$this->filename = "stores-report-ALL-".date("Ymd");
+
+		return $this->csvLines;
+	}
+	
+	public function generateStoreUserResultsReport() {
+		
+		global $wpdb;
+		
+		$stores = $wpdb->get_results("SELECT id,location,state FROM ".WPSQT_TABLE_STORES." ORDER BY state, location", ARRAY_A);
+
+		// need to convert state numbers to names here
+		for($i=0;$i<count($stores);$i++) {
+			$stores[$i]['state'] = Wpsqt_System::getStateName($stores[$i]['state']);
+		}
+
+		$this->csvLines[] = "State, Store Location, Store Completion (%), Staff Member, Individual Completion (%)";
+		
+		foreach($stores as $store) {
+			$this->csvLines[] = $store['state'].", ".$store['location'].",".Wpsqt_System::getStoreCompletionRate($store['id']);
+			
+			// franchisees
+			$sql = "SELECT DISTINCT e.franchisee, u.id, display_name FROM ".WP_TABLE_USERS." u INNER JOIN ".WPSQT_TABLE_EMPLOYEES." e ON u.id = e.id_user WHERE e.id_store =".$store['id']." ORDER BY e.franchisee DESC, u.user_login";
+			$results = $wpdb->get_results($sql, ARRAY_A);
+			foreach($results as $user) {
+				$name = $user['display_name'];
+				if ($user['franchisee'] == 1) $name .= " (Franchise Owner)";
+				
+				$this->csvLines[] = ',,,'.$name.','.Wpsqt_System::getEmployeeCompletionRate($user['id']);
+			}
+
+		}
+		
+		$this->filename = "stores-report-ALL-".date("Ymd");
+
+		return $this->csvLines;
+	}
+	
 	public function generateResultsReport($isFull = false) {
 	
 		global $wpdb;

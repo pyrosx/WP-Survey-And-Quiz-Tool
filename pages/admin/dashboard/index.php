@@ -89,9 +89,12 @@ if ($alertOverFailLimit > 0) {
 	<div class="dashboard-box">
 		<h3>Reports</h3>
 <!-- 		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&wpsqt-download">Export All Results as CSV</a></p> -->
-		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=stores&wpsqt-download">Stores &amp; Staff</a></p>
-		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=results&wpsqt-download">Results - Overview</a></p>
+		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=stores&wpsqt-download">Stores &amp; Staff List</a></p>
+		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeResults&wpsqt-download">Results by Store</a></p>
+		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeUserResults&wpsqt-download">Results by Store and Employees</a></p>
+<!--		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=results&wpsqt-download">Results - Overview</a></p>
 		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=results&full&wpsqt-download">Results - Full</a></p>
+-->
 	</div>
 	<div class="dashboard-box">
 		<h3>Tools</h3>

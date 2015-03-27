@@ -1,6 +1,7 @@
 lang/po
 *.po
 *.sh
+*.bak
 Vagrantfile
 .vagrant
 scripts/*
