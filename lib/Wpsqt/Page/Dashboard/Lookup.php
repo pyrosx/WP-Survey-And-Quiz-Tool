@@ -6,7 +6,7 @@ require_once( $parse_uri[0] . 'wp-load.php' );
 
 //require_once WPSQT_DIR.'lib/Wpsqt/System.php';
 
-if (strpos($_SERVER['HTTP_REFERER'],'wpsqt-menu-dashboard') !== false) {
+if (strpos($_SERVER['HTTP_REFERER'],'admin.php') !== false) {
 	// admin area/view
 	echo Wpsqt_System::getStoreTableSection($_GET['id_store'], null);
 } else {

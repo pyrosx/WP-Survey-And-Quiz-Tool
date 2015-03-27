@@ -103,11 +103,10 @@ if ($alertOverFailLimit > 0) {
 		
 
 	<p>&nbsp;</p>
-	<p>&nbsp;</p>
-	<div class="store_table" class="dashboard-box">
-	
-	<h3>Location Management</h3>
-	<?php echo Wpsqt_System::getStoreTable(); ?>	
-	</div>
+
+	<p class="clear">&nbsp;</p>
+
+	<h4><a href="<?php echo WPSQT_URL_LOCATIONS;?>">Go to Location Management - Store Table</a></h4>
+
 		
 </div>

@@ -22,6 +22,7 @@ class Wpsqt_Core {
 	public function __construct(){
 
 		$this->_addPage(WPSQT_PAGE_DASHBOARD, "Online Training", "Online Training", "wpsqt-manage", "Dashboard")
+		->_addPage(WPSQT_PAGE_LOCATIONS, "Location Management", "Location Management", "wpsqt-manage", "LocationManagement", WPSQT_PAGE_DASHBOARD)
 		->_addPage(WPSQT_PAGE_MAIN, "Modules", "Modules", "wpsqt-manage", "Main", WPSQT_PAGE_DASHBOARD)
 		->_addPage(WPSQT_PAGE_STORES, 'Stores', 'Stores', 'wpsqt-manage', 'Stores', WPSQT_PAGE_DASHBOARD)
 		->_addPage(WPSQT_PAGE_FRANCHISEES, 'Franchise Owners', 'Franchise Owners', 'wpsqt-manage', 'Franchisees', WPSQT_PAGE_DASHBOARD)

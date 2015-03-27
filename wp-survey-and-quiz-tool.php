@@ -34,6 +34,7 @@ define( 'WPSQT_EMAIL_NAME'			, 'Training Admin');
 
 define( 'WPSQT_PAGE_DASHBOARD'       , 'wpsqt-menu-dashboard' );
 define( 'WPSQT_PAGE_MAIN'            , 'wpsqt-menu' );
+define( 'WPSQT_PAGE_LOCATIONS'       , 'wpsqt-menu-locations' );
 define( 'WPSQT_PAGE_QUESTIONS'       , 'wpsqt-menu-question' );
 define( 'WPSQT_PAGE_QUIZ_RESULTS'    , 'wpsqt-menu-quiz-results' );
 define( 'WPSQT_PAGE_OPTIONS'         , 'wpsqt-menu-options' ) ;
@@ -62,6 +63,7 @@ define( 'WP_TABLE_USERSMETA'	     , $wpdb->get_blog_prefix().'usermeta' );
 
 
 define( 'WPSQT_URL_DASHBOARD'        , admin_url('admin.php?page='.WPSQT_PAGE_DASHBOARD) );
+define( 'WPSQT_URL_LOCATIONS'        , admin_url('admin.php?page='.WPSQT_PAGE_LOCATIONS) );
 define( 'WPSQT_URL_MAIN'             , admin_url('admin.php?page='.WPSQT_PAGE_MAIN) );
 define( 'WPSQT_URL_MAINENTANCE'      , admin_url('admin.php?page='.WPSQT_PAGE_MAINTENANCE) );
 define( 'WPSQT_URL_STORES'           , admin_url('admin.php?page='.WPSQT_PAGE_STORES) );
