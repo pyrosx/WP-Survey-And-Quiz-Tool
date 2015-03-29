@@ -269,8 +269,14 @@ END;
 						$lines = $csvExporter->generateStoreReport();
 					} else if ($_GET['subsection'] == "storeResults") {
 						$lines = $csvExporter->generateStoreResultsReport();
+					} else if ($_GET['subsection'] == "storeResultsByState") {
+						$lines = $csvExporter->generateStoreResultsByState($_GET['state']);
+
 					} else if ($_GET['subsection'] == "storeUserResults") {
 						$lines = $csvExporter->generateStoreUserResultsReport();
+					} else if ($_GET['subsection'] == "storeUserResultsByState") {
+						$lines = $csvExporter->generateStoreUserResultsByState($_GET['state']);
+					
 					} else if ($_GET['subsection'] == "results") {
 						$lines = $csvExporter->generateResultsReport(isset($_GET['full']));
 					}

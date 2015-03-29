@@ -91,7 +91,35 @@ if ($alertOverFailLimit > 0) {
 <!-- 		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=results&subsection=quiz&wpsqt-download">Export All Results as CSV</a></p> -->
 		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=stores&wpsqt-download">Stores &amp; Staff List</a></p>
 		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeResults&wpsqt-download">Results by Store</a></p>
-		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeUserResults&wpsqt-download">Results by Store and Employees</a></p>
+		<blockquote><blockquote>
+			<p><a id="stateReportsClick" href="#" onClick="displayStates()">... by State</a></p>
+			<div id="stateReports" style="display:none">
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeResultsByState&state=1&wpsqt-download">ACT</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeResultsByState&state=2&wpsqt-download">NSW</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeResultsByState&state=4&wpsqt-download">NT</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeResultsByState&state=8&wpsqt-download">Qld</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeResultsByState&state=16&wpsqt-download">SA</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeResultsByState&state=32&wpsqt-download">Tas</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeResultsByState&state=64&wpsqt-download">Vic</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeResultsByState&state=128&wpsqt-download">WA</a></p>	
+				</div>
+			</blockquote></blockquote>
+		
+		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeUserResults&wpsqt-download">Results by Store with Employees</a></p>
+		<blockquote><blockquote>
+			<p><a id="stateUserReportsClick" href="#" onClick="displayUserStates()">... by State</a></p>
+			<div id="stateUserReports" style="display:none">
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeUserResultsByState&state=1&wpsqt-download">ACT</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeUserResultsByState&state=2&wpsqt-download">NSW</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeUserResultsByState&state=4&wpsqt-download">NT</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeUserResultsByState&state=8&wpsqt-download">Qld</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeUserResultsByState&state=16&wpsqt-download">SA</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeUserResultsByState&state=32&wpsqt-download">Tas</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeUserResultsByState&state=64&wpsqt-download">Vic</a></p>	
+				<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=storeUserResultsByState&state=128&wpsqt-download">WA</a></p>	
+				</div>
+			</blockquote></blockquote>
+
 <!--		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=results&wpsqt-download">Results - Overview</a></p>
 		<p><a href="<?php echo WPSQT_URL_MAIN; ?>&section=report&subsection=results&full&wpsqt-download">Results - Full</a></p>
 -->
@@ -110,3 +138,15 @@ if ($alertOverFailLimit > 0) {
 
 		
 </div>
+
+<script>
+function displayStates($) {
+	jQuery('#stateReportsClick').toggle();
+	jQuery('#stateReports').toggle();
+	return false;
+}
+function displayUserStates($) {
+	jQuery('#stateUserReportsClick').toggle();
+	jQuery('#stateUserReports').toggle();
+	return false;
+}</script>
