@@ -17,34 +17,39 @@ jQuery(document).ready( function($) {
 		if (jQuery(table_store_id).html() == "") {
 			
 			// nothing in table - load it!
-			jQuery(table_store_id).load(l10n.plugin_url+"Page/Dashboard/Lookup.php?id_store="+store_id, {noncache: new Date().getTime()}, function($) {
-				jQuery(user_table_id).toggle();		
-	
-				// Need to specifially define these scripts so that they work for the new content
-				jQuery(table_store_id+' .remove_user').click( function($) {
-					return confirm('Are you sure you want to remove this user?');
-				});
-				jQuery(table_store_id+' .remove_store').click( function($) {
-					return confirm('Are you sure you want to remove this store?');
-				});
+			jQuery(table_store_id).load(l10n.plugin_url+"Page/Dashboard/Lookup.php?id_store="+store_id, {noncache: new Date().getTime()}, function(responseText, textStatus, XMLHttpRequest) {
+				if (textStatus == "error") {
+					jQuery('#storeTableErrors').append(responseText);
+				} else {
 					
-				jQuery(table_store_id+' .add_user').click( function($) {
-					var id = '#add_'+jQuery(this).attr('id');	
-					jQuery(id).toggle();
-					jQuery(this).hide();
-					return false;
-				});
-				
-				jQuery(table_store_id+' .add_user_form').submit( function($) {
-				
-					name_input = jQuery(this).find('input[name=new_name]').val();
-				
-					if (name_input.indexOf(" ") == -1) { 
-						// name contains no spaces
-						return confirm('Are you sure this is the correct full name?\r\nThe name entered contains no spaces\r\nThis name will be printed on the Certificate');
+					jQuery(user_table_id).toggle();		
+		
+					// Need to specifially define these scripts so that they work for the new content
+					jQuery(table_store_id+' .remove_user').click( function($) {
+						return confirm('Are you sure you want to remove this user?');
+					});
+					jQuery(table_store_id+' .remove_store').click( function($) {
+						return confirm('Are you sure you want to remove this store?');
+					});
+						
+					jQuery(table_store_id+' .add_user').click( function($) {
+						var id = '#add_'+jQuery(this).attr('id');	
+						jQuery(id).toggle();
+						jQuery(this).hide();
+						return false;
+					});
 					
-					}
-				});
+					jQuery(table_store_id+' .add_user_form').submit( function($) {
+					
+						name_input = jQuery(this).find('input[name=new_name]').val();
+					
+						if (name_input.indexOf(" ") == -1) { 
+							// name contains no spaces
+							return confirm('Are you sure this is the correct full name?\r\nThe name entered contains no spaces\r\nThis name will be printed on the Certificate');
+						
+						}
+					});
+				}
 			});
 		} else {
 			jQuery(table_store_id).toggle();

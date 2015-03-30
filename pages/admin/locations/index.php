@@ -7,8 +7,10 @@
 	
 	<h3>Location Management</h3>
 	
-		<div class="store_table" class="dashboard-box">
+		<div id="storeTableErrors"></div>
+	
+		<div class="store_table">
 			<?php echo Wpsqt_System::getStoreTable(); ?>	
-	</div>
+		</div>	
 		
 </div>
