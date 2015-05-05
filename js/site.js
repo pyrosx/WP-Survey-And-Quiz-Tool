@@ -18,9 +18,6 @@ jQuery(document).ready( function($) {
 			
 			// nothing in table - load it!
 			jQuery(table_store_id).load(l10n.plugin_url+"Page/Dashboard/Lookup.php?id_store="+store_id, {noncache: new Date().getTime()}, function(responseText, textStatus, XMLHttpRequest) {
-				if (textStatus == "error") {
-					jQuery('#storeTableErrors').append(responseText);
-				} else {
 					
 					jQuery(user_table_id).toggle();		
 		
@@ -49,7 +46,7 @@ jQuery(document).ready( function($) {
 						
 						}
 					});
-				}
+				
 			});
 		} else {
 			jQuery(table_store_id).toggle();

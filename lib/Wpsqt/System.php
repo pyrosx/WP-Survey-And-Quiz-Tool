@@ -1247,7 +1247,7 @@ class Wpsqt_System {
 			// extra column to maintain alternate colouring and have users in matching colour...
 			$output .= '<tr style="display:none;"><td></td></tr>';
 			
-			$output .= '<tr class="franchise_users" id="rowstore_'.$store['id'].'" style="display:'.$users_style.';"><td colspan='.$colspan.'>
+			$output .= '<tr class="franchise_users" id="rowstore_'.$store['id'].'" style="display:'.$users_style.'"><td colspan='.$colspan.'>
 						<table id="tablestore_'.$store['id'].'">';
 
 // 			This now loaded by ajax calls, one at a time!
