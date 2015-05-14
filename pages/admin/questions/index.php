@@ -69,7 +69,7 @@ var saveOrder = function() {
 				<th>ID</th>
 				<th>Question</th>
 				<th>Type</th>
-				<th>Rate</th>
+				<!--<th>Rate</th>-->
 				<th>Edit</th>
 				<th>Delete</th>
 				<th></th>
@@ -80,7 +80,7 @@ var saveOrder = function() {
 				<th>ID</th>
 				<th>Question</th>
 				<th>Type</th>
-				<th>Rate</th>
+				<!--<th>Rate</th>-->
 				<th>Edit</th>
 				<th>Delete</th>
 				<th></th>
@@ -102,22 +102,21 @@ var saveOrder = function() {
 				<td><?php echo $question['id']; ?></td>
 				<td><?php echo stripslashes($question['name']); ?></td>
 				<td><?php echo ucfirst( stripslashes($question['type']) ); ?></td>
-                
-				<td>
+
+<!--				<td>
 					<?php    
-                    
+/*               
                     //global $wpdb;
                     $correct_answer = 0;
                     
-                    $RESULTS_count = $wpdb->get_var( "SELECT COUNT(*) FROM ".WPSQT_TABLE_RESULTS );
-                    $lastID = $wpdb->get_var( "SELECT id FROM ".WPSQT_TABLE_RESULTS." ORDER BY `id` DESC LIMIT 0,1" );
+                    $RESULTS_count = $wpdb->get_var( "SELECT COUNT(id) FROM `".WPSQT_TABLE_RESULTS."` WHERE item_id =".$_GET['id']);
+//                    var_dump($RESULTS_count);
+                    $results = $wpdb->get_results( "SELECT * FROM ".WPSQT_TABLE_RESULTS."` WHERE item_id =".$_GET['id'],ARRAY_A);
+//                    var_dump($ids);
+                    foreach($results as $res){
                     
-                    for($i = 1; $i <= $lastID; $i++){
-                    
-                        $rawResult = $wpdb->get_row(
-                                        $wpdb->prepare("SELECT * FROM ".WPSQT_TABLE_RESULTS." WHERE id = %d", $i),ARRAY_A);
-                                                        
-                        $rawResult['sections'] = unserialize($rawResult['sections']);
+                        $rawResult['sections'] = unserialize($res['sections']);
+//var_dump($rawResult['sections']);                                                        
                         
                         foreach((array)$rawResult['sections'] as $result_sections){
                             if(isset($result_sections['answers'][$question['id']]['mark']) && ($result_sections['answers'][$question['id']]['mark'] == 'correct')) $correct_answer++;
@@ -128,10 +127,12 @@ var saveOrder = function() {
 					} else {
 						$success_rate = 0;
 					}
-                    echo ($success_rate<80 ? "<span style=\"color:red;\">$success_rate%</span>" : "<span style=\"color:green;\">$success_rate%</span>");
+					// echo ($success_rate<80 ? "<span style=\"color:red;\">$success_rate%</span>" : "<span style=\"color:green;\">$success_rate%</span>");
+					echo Wpsqt_System::colorCompletionRate($success_rate);
+*/
                     ?>
                 </td>
-                
+-->
 				<td><a href="<?php echo WPSQT_URL_MAIN; ?>&section=questionedit&subsection=<?php esc_html_e($_GET['subsection'], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($_GET['id'], 'wp-survey-and-quiz-tool'); ?>&questionid=<?php esc_html_e($question['id'], 'wp-survey-and-quiz-tool'); ?>" class="button-secondary" title="Edit Question">Edit</a></td>
 				<td><a href="<?php echo WPSQT_URL_MAIN; ?>&section=questiondelete&subsection=<?php esc_html_e($_GET['subsection'], 'wp-survey-and-quiz-tool'); ?>&id=<?php esc_html_e($_GET['id'], 'wp-survey-and-quiz-tool'); ?>&questionid=<?php esc_html_e($question['id'], 'wp-survey-and-quiz-tool'); ?>" class="button-secondary" title="Delete Question">Delete</a></td>
 				<td><img src="<?php echo plugin_dir_url(WPSQT_DIR.'images/handle.png').'handle.png'; ?>" /></td>
