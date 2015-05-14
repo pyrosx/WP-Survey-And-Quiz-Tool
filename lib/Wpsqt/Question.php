@@ -26,7 +26,7 @@ abstract class Wpsqt_Question {
 	 * @var string
 	 * @since 2.0
 	 */
-	protected static $_id;
+	protected $_id;
 	
 	/**
 	 * The absolute path to the page view for the form. Needs to 
